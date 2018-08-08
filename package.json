@@ -1,6 +1,6 @@
 {
   "name": "dm-tpl",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A tmplate manager for projects",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://gitlab.com/divramod/dm-tpl/issues"
   },
-  "homepage": "https://gitlab.com/divramod/dm-tpl#README"
+  "homepage": "https://gitlab.com/divramod/dm-tpl#README",
+  "bin": {
+    "dm-tpl": "./bin/dm-tpl"
+  }
 }
