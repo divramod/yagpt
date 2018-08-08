@@ -1,1 +1,1 @@
-node dm-tpl.js
+node ./dm-tpl.js
