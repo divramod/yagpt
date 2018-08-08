@@ -1,4 +1,4 @@
 #! /bin/bash
 echo "hello bin world"
 ls -lisa
-node ../dm-tpl/index.js
+node node_modules/dm-tpl/index.js
