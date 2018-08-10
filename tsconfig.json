@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "sourceMap": true,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "resolveJsonModule": true,
+        "lib": [
+            "esnext", "dom"
+        ],
+        "baseUrl": "./src",
+        "paths": {
+            "@utils/*": ["utils/*"],
+            "@typings/*": ["typings/*"],
+            "@src/*": [ "./*" ],
+            "@test/*": [ "test/*" ]
+        }
+    },
+    "include": [
+        "./src"
+    ]
+}
