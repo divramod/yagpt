@@ -1,4 +1,5 @@
 # dm-tpl
+- using gitflow: https://www.atlassian.com/git/tutorials/comparing-workflows
 
 ## TODO: Description
 - with this module i want to automate my coding process
