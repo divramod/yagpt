@@ -15,7 +15,9 @@
             "@utils/*": ["utils/*"],
             "@typings/*": ["typings/*"],
             "@src/*": [ "./*" ],
-            "@test/*": [ "test/*" ]
+            "@test/*": [ "test/*" ],
+            "@devops/*": [ "jobs/devops/jobs*" ],
+            "@business/*": [ "jobs/business/jobs*" ]
         }
     },
     "include": [

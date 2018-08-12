@@ -5,7 +5,7 @@ import { run } from '.'
 
 describe(__filename, () => {
 
-    describe.only('without path', () => {
+    describe('without path', () => {
 
         it('should publish the npm module in which i am located', async () => {
             await run()
