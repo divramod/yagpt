@@ -1,11 +1,12 @@
-import { ITest } from '@typings/index'
-import { ask } from '@utils/prompt/ask'
-import { runDmTplPrompt } from '@utils/prompt/dmTplPrompt'
-import { runJobsPrompt } from '@utils/prompt/jobsPrompt'
-import { runProjectsPrompt } from '@utils/prompt/projectsPrompt'
-import * as path from 'path'
+const path = require('path')
 const shell = require('shelljs')
 const program = require('commander')
+
+import { ITest } from '@typings/index'
+import { ask } from '@utils/index'
+import { promptDmTpl } from '@utils/index'
+import { promptJobs } from '@utils/index'
+import { promptProjects } from '@utils/index'
 
 // TODO: decide between cli and programatically usage
 program
@@ -41,7 +42,7 @@ async function main(PROGRAM) {
 
         if (JOBS_PATH_EXISTANT) {
             // 1. if --path is prompt (has jobs directory) run prompt
-            await runJobsPrompt(JOBS_PATH)
+            await promptJobs(JOBS_PATH)
         } else if (!JOBS_PATH_EXISTANT && 1) {
             // TODO: 2. else if path has single job
             const JOB_PATH = path.join(CWD.toString(), PROGRAM.path, 'index')
@@ -57,10 +58,10 @@ async function main(PROGRAM) {
         // project > src/jobs > dmTpl
         if ( packageJsonExists && packageJson.projects.length > 0) {
             // 1. if package.json projects are existant
-            const JOB_PATH = await runProjectsPrompt(packageJson.projects)
+            const JOB_PATH = await promptProjects(packageJson.projects)
         } else if (await shell.test('-d', path.join(CWD.toString(), 'src', 'jobs'))) {
             // 2. if directory has src/jobs directory
-            await runJobsPrompt(path.join(CWD.toString(), 'src', 'jobs'))
+            await promptJobs(path.join(CWD.toString(), 'src', 'jobs'))
             // const CHOICES = [ 'test-1', 'test-2' ]
             // const QUESTIONS = [ { type: 'list', name: 'menu', message: '', choices: CHOICES } ]
             // await ask(QUESTIONS)
@@ -69,7 +70,7 @@ async function main(PROGRAM) {
             // TODO: 3. if directory is virgin (no src/jobs && no config.json with projects)
             // - run global dmTpl
             const JOBS_PATH = path.join(CWD.toString(), PROGRAM.path, 'jobs')
-            await runDmTplPrompt()
+            await promptDmTpl()
             // TODO if directory is npm repo add npm jobs
             // TODO if directory is git repo add git jobs
         }

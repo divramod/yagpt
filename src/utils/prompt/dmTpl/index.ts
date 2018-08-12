@@ -1,7 +1,7 @@
 /**
- * runDmTplPrompt
+ * promptDmTpl
  * - TODO
  */
-export async function runDmTplPrompt() {
+export async function promptDmTpl() {
   console.log('runDmTplPrompt') // tslint:disable-line:no-console
 }

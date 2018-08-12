@@ -2,7 +2,7 @@
 import { expect } from 'chai'
 import 'mocha'
 
-import { gitBranchCheckout, gitBranchGetName } from '@utils/git'
+import { gitBranchCheckout, gitBranchGetName } from '@utils/index'
 
 const gitP = require('simple-git/promise')
 const path = require('path')

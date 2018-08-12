@@ -1,21 +1,21 @@
 const shell = require('shelljs')
 import * as path from 'path'
 const inquirer = require('inquirer')
-import { runJobsPrompt } from '@utils/prompt/jobsPrompt'
+import { promptJobs } from '@utils/index'
 
 /**
- * runProjectsPrompt
+ * promptProjects
  * - TODO
  */
-export async function runProjectsPrompt(PROJECTS) {
-    const MENU_CHOICE = await menu(PROJECTS)
+export async function promptProjects(PROJECTS) {
+    const MENU_CHOICE = await promptProjectsMenu(PROJECTS)
 }
 
 /**
- * menu
+ * promptProjectsMenu
  * - TODO
  */
-async function menu(PROJECTS) {
+async function promptProjectsMenu(PROJECTS) {
     console.log('menu', PROJECTS) // tslint:disable-line:no-console
     const CHOICES = []
     for (const PROJECT_ENTRY of PROJECTS) {
@@ -36,5 +36,5 @@ async function menu(PROJECTS) {
     const CWD = await shell.pwd()
     const SUBMENU_PATH = path.join(CWD.toString(), CHOICE.menu, 'src', 'jobs')
     console.log('SUBMENU_PATH', SUBMENU_PATH) // tslint:disable-line:no-console
-    const result = runJobsPrompt(SUBMENU_PATH)
+    const result = promptJobs(SUBMENU_PATH)
 }

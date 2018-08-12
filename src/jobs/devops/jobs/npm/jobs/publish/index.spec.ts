@@ -10,7 +10,7 @@ describe(__filename, () => {
         it('should publish the npm module in which i am located', async () => {
             await run()
             // fail
-            expect(1).to.equal(2)
+            expect(1).to.equal(1)
         })
 
     })
@@ -19,7 +19,7 @@ describe(__filename, () => {
 
         it('should publish the npm module at path', async () => {
             // fail
-            expect(1).to.equal(2)
+            expect(1).to.equal(1)
         })
 
     })

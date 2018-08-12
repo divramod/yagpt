@@ -4,21 +4,23 @@
   "description": "A tmplate manager for projects",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/ts-node -r tsconfig-paths/register src/index.ts",
-    "start:watch": "./node_modules/.bin/nodemon",
-    "start1": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
-    "dev": "npm-run-all --parallel start",
-    "prod": "node dist/index.js",
-    "debug": "dotenv -- nodemon -e ts -x ts-node --inspect src/index.ts",
     "build": "rimraf dist && tsc",
     "build:watch": "rimraf dist && tsc -w",
+    "coverage": "nyc mocha --opts mocha.coverage.opts",
+    "coverage:chrome": "nyc mocha --opts mocha.coverage.opts && google-chrome coverage/index.html",
+    "debug": "dotenv -- nodemon -e ts -x ts-node --inspect src/index.ts",
+    "dev": "npm-run-all --parallel start",
     "lint": "./node_modules/.bin/tslint 'src/**/*.ts'",
     "lint:watch": "./node_modules/.bin/chokidar src/**/*.ts -c \"./node_modules/.bin/tslint 'src/**/*.ts'\" --initial --verbose",
-    "test:src": "nyc mocha --opts mocha.src.opts",
-    "test:src:watch": "mocha --opts mocha.src.opts --watch",
+    "prod": "node dist/index.js",
+    "start": "./node_modules/.bin/ts-node -r tsconfig-paths/register src/index.ts",
+    "start1": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
+    "start:watch": "./node_modules/.bin/nodemon",
+    "test": "npm run test:src",
     "test:dist": "nyc mocha --opts mocha.dist.opts",
     "test:dist:watch": "mocha --opts mocha.dist.opts --watch",
-    "test": "npm run test:src",
+    "test:src": "nyc mocha --opts mocha.src.opts",
+    "test:src:watch": "mocha --opts mocha.src.opts --watch",
     "test:watch": "npm run test:src:watch"
   },
   "repository": {
@@ -36,12 +38,16 @@
       ".ts",
       ".tsx"
     ],
+    "include": [
+        "src/**/*.ts"
+    ],
     "exclude": [
-      "**/*.d.ts"
+      "*.d.ts",
+      "node_modules/**",
+      "test-assets/**",
+      "src/**/*.spec.ts"
     ],
-    "reporter": [
-      "html"
-    ],
+    "reporter": [ "text", "html" ],
     "all": true
   },
   "devDependencies": {

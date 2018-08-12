@@ -4,20 +4,20 @@ const inquirer = require('inquirer')
 import { sortBy } from 'underscore'
 
 /**
- * runJobsPrompt
+ * promptJobs
  * - TODO
  */
-export async function runJobsPrompt(JOBS_PATH) {
-    const JOBS_ARR = await getJobsRecursively(JOBS_PATH)
-    const JOB_CHOICE = await createMenu(JOBS_ARR)
+export async function promptJobs(JOBS_PATH) {
+    const JOBS_ARR = await promptJobsGetJobsRecursively(JOBS_PATH)
+    const JOB_CHOICE = await promptJobsCreateMenu(JOBS_ARR)
     console.log('JOB_CHOICE', JOB_CHOICE) // tslint:disable-line:no-console
 }
 
 /**
- * createMenu
+ * promptJobsCreateMenu
  * - TODO
  */
-async function createMenu(JOBS_ARR) {
+async function promptJobsCreateMenu(JOBS_ARR) {
     // TODO: add seperator
     // TODO: add quit
     // TODO: add back
@@ -29,8 +29,8 @@ async function createMenu(JOBS_ARR) {
     const SUBMENU_PATH = path.join(CHOICE.menu, 'jobs')
     let job = ''
     if (await shell.test('-d', path.join(PATH, 'jobs'))) {
-        const JOBS_ARR_SUBMENU = await getJobsRecursively(SUBMENU_PATH)
-        job = await createMenu(JOBS_ARR_SUBMENU)
+        const JOBS_ARR_SUBMENU = await promptJobsGetJobsRecursively(SUBMENU_PATH)
+        job = await promptJobsCreateMenu(JOBS_ARR_SUBMENU)
     } else {
         job = PATH
     }
@@ -38,9 +38,9 @@ async function createMenu(JOBS_ARR) {
 }
 
 /**
- * getJobsRecursively
+ * promptJobsGetJobsRecursively
  */
-async function getJobsRecursively(JOBS_PATH) {
+async function promptJobsGetJobsRecursively(JOBS_PATH) {
     let jobs = []
     const FILES_IN_JOBS_DIRECTORY = await shell.find(JOBS_PATH)
     for (const FILE of FILES_IN_JOBS_DIRECTORY) {

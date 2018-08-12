@@ -1,5 +1,5 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
-import { gitBranchGetName } from '@utils/git/branchGetName'
+import { gitBranchGetName } from '@utils/index'
 
 /**
  * gitIssueGetNumberFromBranchName()
