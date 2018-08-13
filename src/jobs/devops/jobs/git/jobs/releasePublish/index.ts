@@ -12,7 +12,8 @@ import { promptAsk } from '@utils/prompt/index' // running
  * run()
  * DONE: parse current path
  * DONE: git: prove if is git repo
- * TODO: prompt: ask if the repo is the right one
+ * DONE: prompt: ask if the repo is the right one
+ * TODO: git: check if dirty / commit changes
  * TODO: git: checkout develop
  * TODO: git: checkout release from develop (use version from package.json)
  * TODO: git: checkout develop and merge release back to it, when changes occur
@@ -43,7 +44,24 @@ export async function run() {
         },
     ]
     const R_PROMPT_ASK_RIGHT_REPOSITORY = await promptAsk(QUESTIONS)
-    if (R_PROMPT_ASK_RIGHT_REPOSITORY === 'yes') {
-    
+    if (R_PROMPT_ASK_RIGHT_REPOSITORY.menu === 'yes') {
+        await rightRepository(CWD)
     }
+
+}
+
+// https://gitlab.com///issues/
+
+/**
+ * rightRepository()
+ * [ ]
+ */
+export async function rightRepository(CWD) {
+    // TODO: git: check if dirty
+    const git = gitP(CWD)
+    const R_GIT_STATUS = await git.status()
+    if (R_GIT_STATUS.files.length > 0) {
+        console.log('R_GIT_STATUS', R_GIT_STATUS.files) // tslint:disable-line:no-console
+    }
+
 }

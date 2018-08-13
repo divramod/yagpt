@@ -8,6 +8,15 @@ export async function promptAsk(QUESTIONS) {
     return RESULT
 }
 
+export async function promptAskYesNo(MESSAGE) {
+    const CHOICES = [ 'yes', 'no' ]
+    const QUESTIONS = [ { type: 'list', name: 'menu', message: MESSAGE, choices: CHOICES } ]
+    const CLEANUP_COMMAND = testHelper(QUESTIONS)
+    const RESULT = await inquirer.prompt(QUESTIONS)
+    cleanup(CLEANUP_COMMAND)
+    return RESULT.menu
+}
+
 function testHelper(QUESTIONS) {
     const emptyChars = [ ]
     for (let q = 0; q < QUESTIONS.length; q++) {

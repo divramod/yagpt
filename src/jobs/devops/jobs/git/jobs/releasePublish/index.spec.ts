@@ -6,24 +6,18 @@ const SHELL = require('shelljs')
 
 import { run } from './'
 
-describe('@jobs/git/releasePublish', async () => {
-
-    let stdin
-
-    beforeEach( async () => {
-        stdin = require('mock-stdin').stdin()
-    })
+describe.skip('@jobs/git/releasePublish', async () => {
 
     it('it should create a release and publish it', async () => {
 
         // set input
-        process.env.DM_TPL_COMMANDS = 'j,ENTER ENTER'
+        process.env.DM_TPL_COMMANDS = 'ENTER'
 
         // RUN
         const R_RUN = await run()
 
         // TEST
-        expect(1).to.equal(1) // passes
+        expect(0).to.equal(1) // fails
     })
 
 })

@@ -3,11 +3,11 @@ const shell = require('shelljs')
 const program = require('commander')
 
 // import { ITest } from '@typings/index'
-import { promptAsk } from '@utils/index'
-import { promptDmTpl } from '@utils/index'
-import { promptJobs } from '@utils/index'
+import { promptAsk } from '@utils/prompt/index'
+import { promptDmTpl } from '@utils/prompt/index'
+import { promptJobs } from '@utils/prompt/index'
+import { promptProjects } from '@utils/prompt/index'
 // import { promptProjects } from '@utils/prompt/index'
-import { promptProjects } from '@utils/index'
 // import { promptProjects } from './utils/prompt/projects'
 
 export async function main() {

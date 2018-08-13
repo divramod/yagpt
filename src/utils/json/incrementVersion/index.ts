@@ -1,6 +1,6 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
 
-import { promptAsk } from '@utils/index'
+import { promptAsk } from '@utils/prompt/index'
 import { jsonChangeKeyValue } from './../changeKeyValue'
 const semver = require('semver')
 const fs = require('fs')

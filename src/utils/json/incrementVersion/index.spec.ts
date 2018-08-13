@@ -69,7 +69,6 @@ describe('@utils/json/incrementVersion', () => {
 
         // change value
         const RESULT = jsonIncrementVersion(FILE_PATH_JSON_NEW, { release: 'minor' })
-        // const RESULT = jsonIncrementVersion(FILE_PATH_JSON_NEW, { release: '' })
 
         // read value after
         delete require.cache[FILE_PATH_JSON_NEW]
