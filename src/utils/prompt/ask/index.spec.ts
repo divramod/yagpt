@@ -3,7 +3,7 @@
 import { expect } from 'chai'
 import 'mocha'
 const shell = require('shelljs')
-import { ask } from './'
+import { promptAsk } from './'
 
 describe('@utils/prompt/ask', () => {
     let stdin
@@ -18,7 +18,7 @@ describe('@utils/prompt/ask', () => {
             stdin.send('j')
             stdin.send('\r')
         })
-        const result = await ask(QUESTIONS)
+        const result = await promptAsk(QUESTIONS)
         shell.exec('tput cuu1')
 
         expect(result.menu).to.equal('test-2')

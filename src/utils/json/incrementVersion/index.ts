@@ -1,6 +1,6 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
 
-import { ask } from '@utils/prompt/ask'
+import { promptAsk } from '@utils/index'
 import { jsonChangeKeyValue } from './../changeKeyValue'
 const semver = require('semver')
 const fs = require('fs')
@@ -20,7 +20,7 @@ export async function jsonIncrementVersion(FILE_PATH, { release: RELEASE }) {
     } else {
         const CHOICES = [ 'patch', 'minor', 'major' ]
         const QUESTIONS = [ { type: 'list', name: 'menu', message: '', choices: CHOICES } ]
-        const answer = await ask(QUESTIONS)
+        const answer = await promptAsk(QUESTIONS)
         NEW_VERSION = semver.inc(FILE.version, answer.menu)
     }
     jsonChangeKeyValue(FILE_PATH, 'version', NEW_VERSION)

@@ -12,11 +12,9 @@ const FILE_PATH_JSON_TPL =  path.join(EXAMPLE_FILE_PATH, 'project.json')
 const FILE_PATH_JSON_NEW =  path.join(EXAMPLE_FILE_PATH, 'project_new.json')
 
 describe('@utils/json/incrementVersion', () => {
-    let stdin
 
     beforeEach( async () => {
         fs.copyFileSync(FILE_PATH_JSON_TPL, FILE_PATH_JSON_NEW)
-        stdin = require('mock-stdin').stdin()
     })
 
     afterEach( async () => {
@@ -31,15 +29,9 @@ describe('@utils/json/incrementVersion', () => {
         const VERSION_BEFORE = FILE_BEFORE.version
         expect(VERSION_BEFORE).to.equal('1.1.1-1')
 
-        // send user input
-        process.nextTick(function mockResponse() {
-            stdin.send('j')
-            stdin.send('\r')
-        })
-
         // change value
+        process.env.DM_TPL_COMMANDS = 'j,ENTER'
         const RESULT = await jsonIncrementVersion(FILE_PATH_JSON_NEW, { release: '' })
-        shell.exec('tput cuu1')
 
         // read value after
         delete require.cache[FILE_PATH_JSON_NEW]

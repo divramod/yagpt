@@ -4,6 +4,8 @@
   "description": "A tmplate manager for projects",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node --require tsconfig-paths/register --require source-map-support/register src/index.ts",
+    "start2": "./node_modules/.bin/ts-node --require tsconfig-paths/register --require ts-node/register --require source-map-support/register src/index.ts",
     "build": "rimraf dist && tsc",
     "build:watch": "rimraf dist && tsc -w",
     "coverage": "nyc mocha --opts mocha.coverage.opts",
@@ -13,7 +15,6 @@
     "lint": "./node_modules/.bin/tslint 'src/**/*.ts'",
     "lint:watch": "./node_modules/.bin/chokidar src/**/*.ts -c \"./node_modules/.bin/tslint 'src/**/*.ts'\" --initial --verbose",
     "prod": "node dist/index.js",
-    "start": "./node_modules/.bin/ts-node -r tsconfig-paths/register src/index.ts",
     "start1": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
     "start:watch": "./node_modules/.bin/nodemon",
     "test": "npm run test:src",
@@ -21,7 +22,7 @@
     "test:dist:watch": "mocha --opts mocha.dist.opts --watch",
     "test:src": "nyc mocha --opts mocha.src.opts",
     "test:src:watch": "mocha --opts mocha.src.opts --watch",
-    "test:watch": "npm run test:src:watch"
+    "test:watch": "DM_TPL_ENV=testing npm run test:src:watch"
   },
   "repository": {
     "type": "git",
@@ -39,7 +40,7 @@
       ".tsx"
     ],
     "include": [
-        "src/**/*.ts"
+      "src/**/*.ts"
     ],
     "exclude": [
       "*.d.ts",
@@ -47,7 +48,10 @@
       "test-assets/**",
       "src/**/*.spec.ts"
     ],
-    "reporter": [ "text", "html" ],
+    "reporter": [
+      "text",
+      "html"
+    ],
     "all": true
   },
   "devDependencies": {
@@ -90,22 +94,5 @@
     "dm-tpl": "./bin/dm-tpl",
     "dmTpl": "./bin/dm-tpl",
     "dmp": "./bin/dm-tpl"
-  },
-  "projects": [
-    {
-      "name": "specific",
-      "path": "example/project/specific",
-      "type": "specific",
-      "entrypoint": "index.ts",
-      "active": "true"
-    },
-    {
-      "name": "tpl-server-nodejs-workers",
-      "path": "example/project/tpl-server-nodejs-workers",
-      "type": "tpl",
-      "upstream": "git@gitlab.com:divramod/tmpl-server-nodejs-workers.git",
-      "version": "0.0.1",
-      "active": "true"
-    }
-  ]
+  }
 }
