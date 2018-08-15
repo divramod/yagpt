@@ -10,16 +10,17 @@ import {
 } from './index.d'
 
 export class SuperTask {
-    public cwd: string
-    public name: string
-    public logging: boolean
-    public runStartTime: Date
-    public runEndTime: Date
-    public LOG_VALUE_COLOR_THEME: ISuperTaskLogValueColorTheme = {
+
+    private cwd: string
+    private name: string
+    private logging: boolean
+    private runStartTime: Date
+    private runEndTime: Date
+    private LOG_VALUE_COLOR_THEME: ISuperTaskLogValueColorTheme = {
         description: ['rainbow'],
         value: ['white'],
     }
-    public LOG_HEADER_COLOR_THEME: ISuperTaskLogHeaderColorTheme = {
+    private LOG_HEADER_COLOR_THEME: ISuperTaskLogHeaderColorTheme = {
         devider: ['rainbow'],
         value: ['white', 'bold'],
     }

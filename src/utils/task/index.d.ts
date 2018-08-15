@@ -1,4 +1,10 @@
 // Task
+// ========================================================
+export interface ITaskConstructorParams {
+    cwd: string;
+    logging?: boolean;
+}
+
 export interface ITaskClass {
     run();
 }
@@ -22,6 +28,7 @@ export interface ITaskRunResult {
 }
 
 // SuperTask
+// ========================================================
 export interface ISuperTaskConstructorParams {
     cwd: string;
     logging: boolean;

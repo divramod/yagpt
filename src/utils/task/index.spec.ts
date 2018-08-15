@@ -1,8 +1,9 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
 import { expect } from 'chai'
 import 'mocha'
+
 import { SuperTask } from './'
-import { ITaskClass, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
+import { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
 
 // TEST RETURN INTERFACE for Task.run()
 export interface ITestTaskRunSubResults extends ITaskRunSubResults {
@@ -13,8 +14,8 @@ export interface ITestTaskRunSubResults extends ITaskRunSubResults {
 // TEST CLASS Task
 class Task extends SuperTask implements ITaskClass {
 
-    constructor(cwd: string = '', logging: boolean = false) {
-        super({ name: 'Test', cwd, logging })
+    constructor(opts: ITaskConstructorParams) {
+        super({ name: 'Test', cwd: opts.cwd, logging: opts.logging || false })
     }
 
     public async run(): Promise<ITaskRunResult> {
@@ -55,7 +56,7 @@ describe.only('@utils/task', async () => {
 
     it('should run a task', async () => {
 
-        const TEST_TASK = new Task(__dirname, true)
+        const TEST_TASK = new Task({ cwd: __dirname, logging: true })
         const R_TEST_TASK = await TEST_TASK.run()
 
         expect(R_TEST_TASK.results.someResult1.success).to.equal(true)
