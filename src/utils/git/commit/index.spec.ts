@@ -1,15 +1,22 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
+
+// IMPORT
 import { expect } from 'chai'
 import 'mocha'
 
+// REQUIRE
 const GIT_P = require('simple-git/promise')
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
+// FUNCTIONS
 import { gitCommit } from '@utils/git/index'
 
-describe.only('@utils/git/commit', async () => {
+// TYPINGS
+import { IUtilsResult } from '@typings/utils/index'
+
+describe.skip('@utils/git/commit', async () => {
 
     it('should commit when repo dirty (success: true)', async () => {
 
@@ -26,16 +33,20 @@ describe.only('@utils/git/commit', async () => {
 
         // RUN
         // const R_GIT_COMMIT = await gitCommit({ cwd: TEST_DIR, testingA: { name: 'hello world' } })
-        const R_GIT_COMMIT = await gitCommit({
+        const R_GIT_COMMIT: IUtilsResult = await gitCommit({
             automaticCommit: false,
             cwd: TEST_DIR,
-            testingA: { name: 'hello world' },
+            testing: {
+                execute: true,
+                params: {},
+            },
         })
 
         // TEST
         expect(R_GIT_COMMIT.success).to.equal(true)
         // expect(R_GIT_COMMIT.message).to.equal('Repository at ' + CWD + ' is clean. Nothing to commit!')
         // expect(R_GIT_COMMIT.message).to.equal('Repository at ' + CWD + ' is clean. Nothing to commit!')
+        //
 
         // FAIL
         expect(0).to.equal(1) // fails

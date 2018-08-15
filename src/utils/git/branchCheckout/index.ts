@@ -1,57 +1,98 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
 
-const gitP = require('simple-git/promise')
-const path = require('path')
-const shell = require('shelljs')
+// REQUIRE
+const GIT_P = require('simple-git/promise')
+const PATH = require('path')
+const SHELL = require('shelljs')
+
+// FUNCTIONS
+import { gitBranchGetName } from '@utils/git/index'
+
+// TYPINGS
+import {
+    IGitBranchCheckoutResults,
+    IParamsGitBranchCheckout,
+    IUtilsResult,
+    IUtilsTaskResults,
+    SUB_RESULT,
+} from './index.typings'
 
 /**
- * gitBranchCheckout(PATH, NAME)
- * [ ]
+ * gitBranchCheckout(paramCwd, NAME)
  */
-export async function gitBranchCheckout(PATH, NAME, { create } ) {
+export async function gitBranchCheckout({
+    paramCwd,
+    paramBranchName,
+    paramCreateRepositoryIfNotExistant = true,
+    paramCreateBranchIfNotExistant = true,
+}: IParamsGitBranchCheckout): Promise<IUtilsResult> {
 
-    // construct result
-    const MSG_CREATE_REPO = 'Repository ' + NAME + ' was existant!'
-    const result = {
-        msg: '',
-        msgCreateRepo: MSG_CREATE_REPO,
+    // FUNCTION RESULT
+    const R: IUtilsResult = {
+        results: {},
         success: false,
+        value: '',
     }
 
-    // create directory if not existant
-    const GIT_DIR = path.resolve(PATH)
-    shell.mkdir('-p', GIT_DIR)
+    // TASKS RESULTS
+    const R_TASKS: IGitBranchCheckoutResults = {
+        branchCheckedOut: Object.assign({}, SUB_RESULT),
+        branchCreated: Object.assign({}, SUB_RESULT),
+        branchExistant: Object.assign({}, SUB_RESULT),
+        repositoryCreated: Object.assign({}, SUB_RESULT),
+        repositoryExistant: Object.assign({}, SUB_RESULT),
+    }
 
-    // construct git
-    const git = gitP(GIT_DIR)
-
-    // create repo if not existant and options.create true
-    let GIT_REPO_EXISTANT = await git.checkIsRepo()
-    if (!GIT_REPO_EXISTANT) {
-        if (create) {
-            const R_GIT_INIT = await git.init()
-            GIT_REPO_EXISTANT = true
-            result.msgCreateRepo = 'Repository ' + PATH + ' not existant. Created it!'
+    // createRepoIfNotExistant repo if not existant and options.createRepoIfNotExistant true
+    const GIT = GIT_P(paramCwd)
+    let REPOSITORY_EXISTANT = await GIT.checkIsRepo()
+    if (!REPOSITORY_EXISTANT) {
+        R_TASKS.repositoryExistant.value = true
+        if (paramCreateRepositoryIfNotExistant) {
+            const GIT_DIR = PATH.resolve(paramCwd)
+            SHELL.mkdir('-p', GIT_DIR)
+            const R_GIT_INIT = await GIT.init()
+            REPOSITORY_EXISTANT = true
+            // R.results.repoCreated = {
+                // msg: 'Repository ' + paramCwd + ' not existant. Created it!',
+                // success: true,
+            // }
         } else {
-            result.msgCreateRepo = 'Repository ' + PATH + ' not existant. Creation aborted!'
+            // R.results.repoCreated = {
+                // msg: 'Repository ' + paramCwd + ' not existant. Creation aborted!',
+                // success: false,
+            // }
         }
     }
 
     // checkout branch, if repo existant
-    if (GIT_REPO_EXISTANT) {
-        const R_GIT_CHECKOUT = await git.raw([
+    if (REPOSITORY_EXISTANT) {
+        const R_GIT_CHECKOUT = await GIT.raw([
             'checkout',
             '-b',
-            NAME,
+            paramBranchName,
         ])
         if (R_GIT_CHECKOUT === null) {
-            result.success = true
+            // R.results.branchCheckedOut = {
+                // msg: 'Branch ' + paramBranchName + ' checked out atparamCwdutCwd + '!',
+                // success: true,
+            // }
+        } else {
+            // R.results.branchCheckedOut = {
+                // error: R_GIT_CHECKOUT,
+                // msg: 'Branch ' + paramBranchName + ' not checked out atparamCwdutCwd + '!',
+                // success: false,
+            // }
         }
-        result.msg = 'Branch ' + NAME + ' checked out at ' + PATH + '!'
     } else {
-        result.msg = 'Branch ' + NAME + ' not checked out!'
+        // R.results.branchCheckedOut = {
+            // msg: 'Branch ' + paramBranchName + ' not checked out! Git RepositoryparamCwdutCwd + ' not existant!',
+            // success: false,
+        // }
     }
 
+    R.results = R_TASKS
+
     // RETURN
-    return result
+    return R
 }

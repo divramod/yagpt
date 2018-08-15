@@ -11,15 +11,14 @@ import { promptAskYesNo } from '@utils/prompt/index'
 import { IUtilsResult } from '@typings/utils/index'
 
 interface IGitCommitTesting {
-    parameters?: string;
-    name?: string;
+    execute: boolean;
+    params?: any;
 }
 
-interface IGitCommit {
+interface IGitCommitInput {
     cwd: string;
     automaticCommit?: boolean;
     testing?: IGitCommitTesting;
-    testingA?: IGitCommitTesting;
 }
 
 /**
@@ -33,32 +32,33 @@ interface IGitCommit {
 export async function gitCommit({
     cwd,
     automaticCommit = false,
-    testing,
-}: IGitCommit) {
+    testing = { execute: false },
+}: IGitCommitInput): Promise<IUtilsResult> {
 
-    if (automaticCommit) {
-        console.log('automaticCommit', automaticCommit) // tslint:disable-line:no-console
-    }
-    if (testing) {
-        console.log('testing', testing) // tslint:disable-line:no-console
-    }
-    console.log('cwd', cwd) // tslint:disable-line:no-console
-    const UTILS_RESULT: IUtilsResult = {
-        message: '',
+    // FUNCTION RESULT
+    const R: IUtilsResult = {
+        results: {},
         success: false,
         value: '',
     }
-    console.log('gitCommit') // tslint:disable-line:no-console
-    const git = gitP(cwd)
+
+    // TASKS RESULTS
+    // const R_TASKS: IGitCommitResults = {
+        // branchCheckedOut: Object.assign({}, SUB_RESULT),
+        // branchCreated: Object.assign({}, SUB_RESULT),
+        // branchExistant: Object.assign({}, SUB_RESULT),
+        // repositoryCreated: Object.assign({}, SUB_RESULT),
+        // repositoryExistant: Object.assign({}, SUB_RESULT),
+    // }
 
     // check if directory dirty
     const R_REPO_CLEAN = await gitRepoClean(cwd)
     if (R_REPO_CLEAN) {
         console.log('repo clean') // tslint:disable-line:no-console
-        UTILS_RESULT.message = 'Repository at ' + cwd + ' is clean. Nothing to commit!'
+        // R.message = 'Repository at ' + cwd + ' is clean. Nothing to commit!'
     } else {
-        UTILS_RESULT.message = 'Repository at ' + cwd + ' was not clean. Committed changes!'
+        // R.message = 'Repository at ' + cwd + ' was not clean. Committed changes!'
         console.log('repo not clean') // tslint:disable-line:no-console
     }
-    return UTILS_RESULT
+    return R
 }

@@ -2,7 +2,7 @@
 const branchName = require('branch-name')
 
 /**
- * gitBranchGetName(PATH)
+ * gitBranchGetName(cwd)
  * [ ]
  */
 export async function gitBranchGetName(PATH) {

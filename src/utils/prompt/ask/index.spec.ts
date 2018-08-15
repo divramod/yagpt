@@ -5,7 +5,7 @@ import 'mocha'
 const shell = require('shelljs')
 import { promptAsk, promptAskYesNo } from './'
 
-describe('@utils/prompt/ask', () => {
+describe('@utils/prompt/ask DEFAULT', () => {
 
     describe('@utils/prompt/ask DEFAULT', () => {
         let stdin

@@ -1,13 +1,6 @@
 const inquirer = require('inquirer')
 const SHELL = require('shelljs')
 
-export async function promptAsk(QUESTIONS) {
-    const CLEANUP_COMMAND = testHelper(QUESTIONS)
-    const RESULT = await inquirer.prompt(QUESTIONS)
-    cleanup(CLEANUP_COMMAND)
-    return RESULT
-}
-
 export async function promptAskYesNo(MESSAGE) {
     const CHOICES = [ 'yes', 'no' ]
     const QUESTIONS = [ { type: 'list', name: 'menu', message: MESSAGE, choices: CHOICES } ]
@@ -15,6 +8,13 @@ export async function promptAskYesNo(MESSAGE) {
     const RESULT = await inquirer.prompt(QUESTIONS)
     cleanup(CLEANUP_COMMAND)
     return RESULT.menu
+}
+
+export async function promptAsk(QUESTIONS) {
+    const CLEANUP_COMMAND = testHelper(QUESTIONS)
+    const RESULT = await inquirer.prompt(QUESTIONS)
+    cleanup(CLEANUP_COMMAND)
+    return RESULT
 }
 
 function testHelper(QUESTIONS) {
