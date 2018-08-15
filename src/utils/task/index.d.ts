@@ -27,3 +27,13 @@ export interface ISuperTaskConstructorParams {
     logging: boolean;
     name: string;
 }
+
+export interface ISuperTaskLogValueColorTheme {
+    description: [string];
+    value: any;
+}
+
+export interface ISuperTaskLogHeaderColorTheme {
+    devider: [string];
+    value: any;
+}

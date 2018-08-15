@@ -55,7 +55,7 @@ describe.only('@utils/task', async () => {
 
     it('should run a task', async () => {
 
-        const TEST_TASK = new Task()
+        const TEST_TASK = new Task(__dirname, true)
         const R_TEST_TASK = await TEST_TASK.run()
 
         expect(R_TEST_TASK.results.someResult1.success).to.equal(true)
