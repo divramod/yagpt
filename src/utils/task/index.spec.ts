@@ -56,14 +56,12 @@ describe.only('@utils/task', async () => {
 
     it('should run a task', async () => {
 
-        const TEST_TASK = new Task({ cwd: __dirname, logging: true })
+        const TEST_TASK = new Task({ cwd: __dirname, logging: false })
         const R_TEST_TASK = await TEST_TASK.run()
 
+        // TEST
         expect(R_TEST_TASK.results.someResult1.success).to.equal(true)
         expect(R_TEST_TASK.results.someResult2.success).to.equal(false)
-
-        // TEST
-        expect(1).to.equal(1) // passes
 
     })
 
