@@ -9,6 +9,8 @@ import {
     ISuperTaskLogValueColorTheme,
 } from './index.d'
 
+export { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
+
 export class SuperTask {
 
     private cwd: string
@@ -32,6 +34,7 @@ export class SuperTask {
     }
 
     public printName() {
+        let printed = false
         if (this.logging) {
             this.logHeader(
                 this.name,
@@ -40,7 +43,16 @@ export class SuperTask {
                 20,
                 this.LOG_HEADER_COLOR_THEME,
             )
+            printed = true
         }
+        return printed
+    }
+
+    public getTaskPath() {
+        let taskPath = ''
+        const CURRENT_PATH = this.cwd
+        taskPath = '@' + CURRENT_PATH.substring(CURRENT_PATH.lastIndexOf('src') + 4, CURRENT_PATH.length)
+        return taskPath
     }
 
     public getName() {
@@ -48,6 +60,7 @@ export class SuperTask {
     }
 
     public async runBefore() {
+        let runBefore = false
         if (this.logging) {
             // TODO: print out name
             this.runStartTime = MOMENT(new Date())
@@ -57,11 +70,13 @@ export class SuperTask {
                 MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
                 this.LOG_VALUE_COLOR_THEME,
             )
+            runBefore = true
         }
-
+        return runBefore
     }
 
     public async runAfter() {
+        let runAfter = false
         if (this.logging) {
             this.runEndTime = MOMENT(new Date())
             this.logValue(
@@ -74,7 +89,9 @@ export class SuperTask {
                 this.getDateDiff(this.runStartTime, this.runEndTime),
                 this.LOG_VALUE_COLOR_THEME,
             )
+            runAfter = true
         }
+        return runAfter
     }
 
     public getRunSubResultObject() {
@@ -96,27 +113,30 @@ export class SuperTask {
     }
 
     public logValue(DESCRIPTION: string, VALUE: any, THEME?) {
-        let msg: string
-        let description = DESCRIPTION.toString()
-        const RUNS = 15 - DESCRIPTION.length
-        for (let i = 0; i < RUNS; i++) {
-            description = ' ' + description
+        if (this.logging) {
+            let msg: string
+            let description = DESCRIPTION.toString()
+            const RUNS = 15 - DESCRIPTION.length
+            for (let i = 0; i < RUNS; i++) {
+                description = ' ' + description
+            }
+            if (THEME) {
+                COLORS.setTheme(THEME)
+                msg = [
+                    COLORS.description(description),
+                    ' ',
+                    COLORS.value(VALUE.toString()),
+                ].join('')
+            } else {
+                msg = [
+                    description,
+                    ' ',
+                    VALUE,
+                ].join('')
+            }
+            console.log(msg) // tslint:disable-line:no-console
         }
-        if (THEME) {
-            COLORS.setTheme(THEME)
-            msg = [
-                COLORS.description(description),
-                ' ',
-                COLORS.value(VALUE.toString()),
-            ].join('')
-        } else {
-            msg = [
-                description,
-                ' ',
-                VALUE,
-            ].join('')
-        }
-        console.log(msg) // tslint:disable-line:no-console
+        return this.logging
     }
 
     public getDateDiff(DATE1, DATE2) {
@@ -129,38 +149,41 @@ export class SuperTask {
         })
     }
 
-    private logHeader(
+    public logHeader(
         VALUE: string,
         DEVIDER: string,
         OFFSET: number = 0,
         DEVIDER_LENGTH: number = 0,
         THEME?,
     ) {
-        let msg: string
-        let offset: string = ''
-        let devider: string = ''
-        for (let i = 0; i < OFFSET; i++) {
-            offset = offset + ' '
+        if (this.logging) {
+            let msg: string
+            let offset: string = ''
+            let devider: string = ''
+            for (let i = 0; i < OFFSET; i++) {
+                offset = offset + ' '
+            }
+            for (let i = 0; i < DEVIDER_LENGTH; i++) {
+                devider = devider + DEVIDER
+            }
+            if (THEME) {
+                COLORS.setTheme(THEME)
+                msg = [
+                    offset,
+                    COLORS.devider(devider),
+                    ' ',
+                    COLORS.value(VALUE),
+                    ' ',
+                    COLORS.devider(devider),
+                ].join('')
+            } else {
+                msg = [
+                    offset + VALUE,
+                ].join('')
+            }
+            console.log(msg) // tslint:disable-line:no-console
         }
-        for (let i = 0; i < DEVIDER_LENGTH; i++) {
-            devider = devider + DEVIDER
-        }
-        if (THEME) {
-            COLORS.setTheme(THEME)
-            msg = [
-                offset,
-                COLORS.devider(devider),
-                ' ',
-                COLORS.value(VALUE),
-                ' ',
-                COLORS.devider(devider),
-            ].join('')
-        } else {
-            msg = [
-                offset + VALUE,
-            ].join('')
-        }
-        console.log(msg) // tslint:disable-line:no-console
+        return this.logging
     }
 
 }

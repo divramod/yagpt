@@ -1,5 +1,5 @@
 export async function main() {
-    const G = './utils/test/test1'
+    const G = './jobs/npm/publish'
     const TASK_IMPORT = await import(G)
     const TASK_CLASS = TASK_IMPORT.Task
     const TASK = new TASK_CLASS(__dirname)

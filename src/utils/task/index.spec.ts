@@ -52,16 +52,63 @@ class Task extends SuperTask implements ITaskClass {
 
 }
 
-describe.only('@utils/task', async () => {
+const TEST_TASK = new Task({ cwd: __dirname, logging: false })
+describe.only(TEST_TASK.getTaskPath(), async () => {
 
-    it('should run a task', async () => {
+    it('run()', async () => {
 
-        const TEST_TASK = new Task({ cwd: __dirname, logging: false })
         const R_TEST_TASK = await TEST_TASK.run()
-
-        // TEST
         expect(R_TEST_TASK.results.someResult1.success).to.equal(true)
         expect(R_TEST_TASK.results.someResult2.success).to.equal(false)
+
+    })
+
+    it('getTaskPath()', async () => {
+
+        const TASK_PATH = TEST_TASK.getTaskPath()
+        expect(TASK_PATH).to.equal('@utils/task')
+
+    })
+
+    it('printName()', async () => {
+
+        const R_PRINT_NAME = TEST_TASK.printName()
+        expect(R_PRINT_NAME).to.equal(false)
+
+    })
+
+    it('runBefore()', async () => {
+
+        const R_RUN_BEFORE = await TEST_TASK.runBefore()
+        expect(R_RUN_BEFORE).to.equal(false)
+
+    })
+
+    it('runAfter()', async () => {
+
+        const R = await TEST_TASK.runAfter()
+        expect(R).to.equal(false)
+
+    })
+
+    it('getName()', async () => {
+
+        const R = TEST_TASK.getName()
+        expect(R).to.equal('Test')
+
+    })
+
+    it('logValue()', async () => {
+
+        const R = TEST_TASK.logValue('', '')
+        expect(R).to.equal(false)
+
+    })
+
+    it('logHeader()', async () => {
+
+        const R = TEST_TASK.logHeader('', '')
+        expect(R).to.equal(false)
 
     })
 

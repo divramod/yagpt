@@ -9,6 +9,7 @@
     "build": "rimraf dist && tsc",
     "build:watch": "rimraf dist && tsc -w",
     "coverage": "nyc mocha --opts mocha.coverage.opts",
+    "coverage:watch": "nodemon --exec nyc mocha --opts mocha.coverage.opts",
     "coverage:chrome": "nyc mocha --opts mocha.coverage.opts && google-chrome coverage/index.html",
     "debug": "dotenv -- nodemon -e ts -x ts-node --inspect src/index.ts",
     "dev": "npm-run-all --parallel start",
