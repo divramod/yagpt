@@ -1,14 +1,13 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
+import { describe, expect, it } from '@utils/mocha/index'
 import { ITaskRunResult } from '@utils/task/index'
-import { expect } from 'chai'
-import 'mocha'
 import { Task } from './'
 
 // PREPARE
 const TASK = new Task({ cwd: __dirname, logging: false })
 
 // TESTSUITE
-describe.only(TASK.getTaskPath(), async () => {
+describe(TASK.getTaskPath(), async () => {
 
     it('run()', async () => {
 
@@ -26,7 +25,6 @@ describe.only(TASK.getTaskPath(), async () => {
     })
 
     it('userInputCleanup(): 3 lines', async () => {
-
         console.log('some very very very very very very long input') // tslint:disable-line:no-console
         console.log('some very very very very very very long input') // tslint:disable-line:no-console
         console.log('some very very very very very very long input') // tslint:disable-line:no-console

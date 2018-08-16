@@ -1,14 +1,14 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
+import { describe, expect, it } from '@utils/mocha/index'
+
 import { ITaskRunResult } from '@utils/task/index'
-import { expect } from 'chai'
-import 'mocha'
 import { Task } from './'
 
 // PREPARE
 const TASK = new Task({ cwd: __dirname, logging: false })
 
 // TESTSUITE
-describe.only(TASK.getTaskPath(), async () => {
+describe(TASK.getTaskPath(), async () => {
 
     it('should run a task', async () => {
 

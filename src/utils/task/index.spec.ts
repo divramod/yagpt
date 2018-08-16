@@ -1,6 +1,5 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { expect } from 'chai'
-import 'mocha'
+import { describe, expect, it } from '@utils/mocha/index'
 
 import { SuperTask } from './'
 import { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
@@ -53,7 +52,7 @@ class Task extends SuperTask implements ITaskClass {
 }
 
 const TEST_TASK = new Task({ cwd: __dirname, logging: false })
-describe.only(TEST_TASK.getTaskPath(), async () => {
+describe(TEST_TASK.getTaskPath(), async () => {
 
     it('run()', async () => {
 
