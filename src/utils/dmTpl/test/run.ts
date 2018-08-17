@@ -5,7 +5,7 @@ const PATH = require('path')
 const SHELL = require('shelljs')
 const execSync = require('child_process').execSync
 
-async function run() {
+export async function run() {
     const mocha = new MOCHA({
         fullStackTrace: false,
         // reporter: 'base',
@@ -31,6 +31,7 @@ async function run() {
         })
     })
 
+    return true
 }
 
 run()

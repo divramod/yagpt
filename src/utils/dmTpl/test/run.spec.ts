@@ -1,12 +1,13 @@
 // https://gitlab.com///issues/
 import { describe, expect, it } from '@utils/dmTpl/test/export'
+import { run } from './run'
 
 describe(__filename, async () => {
 
-    it('test', async () => {
+    it('run()', async () => {
 
-        // TEST
-        expect(1).to.equal(1) // passes
+        const R = await run()
+        expect(R).to.equal(true) // passes
 
     })
 

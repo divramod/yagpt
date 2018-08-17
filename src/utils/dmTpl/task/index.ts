@@ -1,5 +1,7 @@
 const MOMENT = require('moment')
 const COLORS = require('colors/safe')
+import { UTest } from '@utils/dmTpl/test'
+import { UDate } from '@utils/nodejs/date'
 
 // TYPINGS
 import {
@@ -12,11 +14,12 @@ import {
 export { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
 
 export class SuperTask {
+    public UTEST = UTest.getInstance()
+    public UDATE = UDate.getInstance()
 
     private cwd: string
     private name: string
     private logging: boolean
-    private testing: boolean
     private runStartTime: Date
     private runEndTime: Date
     private LOG_VALUE_COLOR_THEME: ISuperTaskLogValueColorTheme = {
@@ -28,11 +31,10 @@ export class SuperTask {
         value: ['white', 'bold'],
     }
 
-    constructor( { name, cwd, logging = false, testing = false }: ISuperTaskConstructorParams ) {
+    constructor( { name, cwd, logging }: ISuperTaskConstructorParams ) {
         this.cwd = cwd
         this.logging = logging
         this.name = name
-        this.testing = testing
     }
 
     public printName() {
@@ -64,7 +66,6 @@ export class SuperTask {
     public async runBefore() {
         let runBefore = false
         if (this.logging) {
-            // TODO: print out name
             this.runStartTime = MOMENT(new Date())
             this.printName()
             this.logValue(
@@ -73,9 +74,6 @@ export class SuperTask {
                 this.LOG_VALUE_COLOR_THEME,
             )
             runBefore = true
-            if (this.testing) {
-                // TODO
-            }
         }
         return runBefore
     }
@@ -91,7 +89,7 @@ export class SuperTask {
             )
             this.logValue(
                 'duration:',
-                this.getDateDiff(this.runStartTime, this.runEndTime),
+                this.UDATE.getDateDiff(this.runStartTime, this.runEndTime),
                 this.LOG_VALUE_COLOR_THEME,
             )
             runAfter = true
@@ -140,18 +138,9 @@ export class SuperTask {
                 ].join('')
             }
             console.log(msg) // tslint:disable-line:no-console
+            this.UTEST.userInputCleanup(1)
         }
         return this.logging
-    }
-
-    public getDateDiff(DATE1, DATE2) {
-        return DATE2 - DATE1
-    }
-
-    public async wait(ms) {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms)
-        })
     }
 
     public logHeader(
@@ -187,6 +176,7 @@ export class SuperTask {
                 ].join('')
             }
             console.log(msg) // tslint:disable-line:no-console
+            this.UTEST.userInputCleanup(1)
         }
         return this.logging
     }

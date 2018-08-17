@@ -23,16 +23,22 @@ export class UTest {
 
     public async userInputCleanup(LINE_COUNT: number) {
         let userInputCleanupRun = false
-        const CLEANUP_COMMAND = 'tput cuu1 && echo "                                                " && tput cuu1'
-        for (let i = 0; i < LINE_COUNT; i++) {
-            SHELL.exec(CLEANUP_COMMAND)
+        if (this.getEnv() === 'testing') {
+            let cleanupCommand = 'tput cuu1 && echo "'
+            for (let i = 0; i < 120; i++) {
+                cleanupCommand = cleanupCommand + ' '
+            }
+            cleanupCommand = cleanupCommand + '" && tput cuu1'
+            for (let i = 0; i < LINE_COUNT; i++) {
+                SHELL.exec(cleanupCommand)
+            }
+            userInputCleanupRun = true
         }
-        userInputCleanupRun = true
         return userInputCleanupRun
     }
 
-    public async getEnv() {
-        return true
+    public getEnv() {
+        return process.env.DMTPL_ENV
     }
 
 }

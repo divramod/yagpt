@@ -5,11 +5,21 @@ import { Utility as Utility } from './'
 // TESTSUITE
 describe(__filename, async () => {
 
-    it('test()', async () => {
+    it('constructor()', async () => {
+
+        try {
+            const U = new Utility()
+        } catch (e) {
+            expect(e.message).to.equal('Error: Instantiation failed: Use Utility.getInstance() instead of new.')
+        }
+
+    })
+
+    it('getInstance()', async () => {
 
         const U = Utility.getInstance()
-        const R = await U.test()
-        expect(R).to.equal(true)
+        const U1 = Utility.getInstance()
+        expect(U).to.deep.equal(U1)
 
     })
 

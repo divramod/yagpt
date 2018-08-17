@@ -6,10 +6,10 @@ describe(__filename, async () => {
 
     it('main()', async () => {
         // const R_RUN_MAIN = await main()
-        await main()
+        const R = await main()
 
         // TEST
-        expect(1).to.equal(1) // passes
+        expect(R).to.equal(true) // passes
 
     })
 

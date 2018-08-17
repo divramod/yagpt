@@ -20,8 +20,8 @@ export class UDate {
         UDate.INSTANCE = this
     }
 
-    public async test() {
-        return true
+    public getDateDiff(DATE1, DATE2) {
+        return DATE2 - DATE1
     }
 
 }

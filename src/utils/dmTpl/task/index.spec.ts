@@ -6,8 +6,8 @@ import { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, 
 
 // TEST RETURN INTERFACE for Task.run()
 export interface ITestTaskRunSubResults extends ITaskRunSubResults {
-    someResult1: ITaskRunSubResult;
-    someResult2: ITaskRunSubResult;
+    someResult1: ITaskRunSubResult
+    someResult2: ITaskRunSubResult
 }
 
 // TEST CLASS Task
@@ -51,63 +51,72 @@ class Task extends SuperTask implements ITaskClass {
 
 }
 
-const TEST_TASK = new Task({ cwd: __dirname, logging: false })
 describe(__filename, async () => {
 
     it('run()', async () => {
 
-        const R_TEST_TASK = await TEST_TASK.run()
-        expect(R_TEST_TASK.results.someResult1.success).to.equal(true)
-        expect(R_TEST_TASK.results.someResult2.success).to.equal(false)
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = await T.run()
+        expect(R.results.someResult1.success).to.equal(true)
+        expect(R.results.someResult2.success).to.equal(false)
 
     })
 
-    it('getTaskPath()', async () => {
+    it('constructor()', async () => {
 
-        const TASK_PATH = TEST_TASK.getTaskPath()
-        expect(TASK_PATH).to.equal('@utils/task')
+        const T = new Task({ cwd: __dirname})
+        expect(T).to.deep.equal(T)
 
     })
 
     it('printName()', async () => {
 
-        const R_PRINT_NAME = TEST_TASK.printName()
-        expect(R_PRINT_NAME).to.equal(false)
-
-    })
-
-    it('runBefore()', async () => {
-
-        const R_RUN_BEFORE = await TEST_TASK.runBefore()
-        expect(R_RUN_BEFORE).to.equal(false)
-
-    })
-
-    it('runAfter()', async () => {
-
-        const R = await TEST_TASK.runAfter()
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = T.printName()
         expect(R).to.equal(false)
+
+        const T1 = new Task({ cwd: __dirname, logging: true })
+        const R1 = T1.printName()
+        expect(R1).to.equal(true)
+
+    })
+
+    it('getTaskPath()', async () => {
+
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = T.getTaskPath()
+        expect(R).to.equal('@utils/dmTpl/task')
 
     })
 
     it('getName()', async () => {
 
-        const R = TEST_TASK.getName()
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = T.getName()
         expect(R).to.equal('Test')
 
     })
 
-    it('logValue()', async () => {
+    it('async runBefore()', async () => {
 
-        const R = TEST_TASK.logValue('', '')
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = await T.runBefore()
         expect(R).to.equal(false)
 
+        const T1 = new Task({ cwd: __dirname, logging: true })
+        const R1 = await T1.runBefore()
+        expect(R1).to.equal(true)
     })
 
-    it('logHeader()', async () => {
+    it('async runAfter()', async () => {
 
-        const R = TEST_TASK.logHeader('', '')
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = await T.runAfter()
         expect(R).to.equal(false)
+
+        const T1 = new Task({ cwd: __dirname, logging: true })
+        const R1 = await T1.runAfter()
+        expect(R1).to.equal(true)
 
     })
 
@@ -119,8 +128,8 @@ describe(__filename, async () => {
             value: undefined,
         }
 
-        const TASK = new Task({ cwd: __dirname, logging: false })
-        const R = await TASK.getRunSubResultObject()
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = await T.getRunSubResultObject()
         expect(RETURN_OBJECT).to.deep.equal(R)
 
     })
@@ -133,9 +142,33 @@ describe(__filename, async () => {
             value: undefined,
         }
 
-        const TASK = new Task({ cwd: __dirname, logging: false })
-        const R = await TASK.getRunReturnObject()
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = await T.getRunReturnObject()
         expect(RETURN_OBJECT).to.deep.equal(R)
+
+    })
+
+    it('logValue()', async () => {
+
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = T.logValue('', '')
+        expect(R).to.equal(false)
+
+        const T1 = new Task({ cwd: __dirname, logging: true })
+        const R1 = T1.logValue('', '')
+        expect(R1).to.equal(true)
+
+    })
+
+    it('logHeader()', async () => {
+
+        const T = new Task({ cwd: __dirname, logging: false })
+        const R = T.logHeader('', '')
+        expect(R).to.equal(false)
+
+        const T1 = new Task({ cwd: __dirname, logging: true })
+        const R1 = T1.logHeader('', '')
+        expect(R1).to.equal(true)
 
     })
 

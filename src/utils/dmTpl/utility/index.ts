@@ -20,12 +20,4 @@ export class Utility {
         Utility.INSTANCE = this
     }
 
-    public async test() {
-        return true
-    }
-
-    public async test1() {
-        return true
-    }
-
 }
