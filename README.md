@@ -1,50 +1,40 @@
 # dm-tpl
 - using gitflow: https://www.atlassian.com/git/tutorials/comparing-workflows
 
-## TODO: Description
-- with this module i want to automate my coding process
-
-## TODO: Install
-
-
-# How To
-
-## TODO: Examples
+# Install
 ```
-dmTpl --path jobs/...
+npm install dm-tpl -g
+# or
+npm install dm-tpl --save-dev
 ```
+# Features
 
-## TODO: Create new Job
+## Technical Features
+- [x] programatic mocha testing with livereload (```npm run test:watch```)
+- [x] nyc code coverage with livereload (```npm run coverage:watch```)
+- [x] class based typescript
+- [x] gitflow support 
+- [x] run via ts-node with livereload (```npm run start:watch```)
+- [ ] node debugger
+- [ ] ci
 
-# jobs
+## Workflow Features
+- npm
+  - [ ] publish release
+- gitflow
+  - [ ] publish release
+  - [ ] create hotfix
+  - [ ] publish hotfix
+  - [ ] create feature
 
-## local jobs
-```
-[ ] ./src/jobs/npm/jobs/publish/index.ts
-```
+# TODO: Usage
 
-## project jobs
-```
-[ ] ./src/jobs/project/jobs/templates/jobs/createFromTemplate/index.ts
-```
+# Utility vs Tasks
 
-## utils jobs
+## Utility
+- are [Singletons](https://stackoverflow.com/questions/30174078/how-to-define-singleton-in-typescript)
+- offer Helper functions
 
-```
-# docker
-[ ] ./src/utils/docker
-
-# git
-[ ] ./src/utils/git/branchGetIssueNumber.ts
-[ ] ./src/utils/git/commit.ts
-[ ] ./src/utils/git/push.ts
-[ ] ./src/utils/git/tagCreate.ts
-
-# npm
-[ ] ./src/utils/npm/publish.ts
-
-# prompt
-[ ] ./src/utils/prompt/fromDirectory.ts
-[ ] ./src/utils/prompt/fromPackageJsonProject.ts
-
-```
+## Tasks
+- have a run function
+- use Utility functions

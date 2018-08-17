@@ -31,8 +31,9 @@ export interface ITaskRunResult {
 // ========================================================
 export interface ISuperTaskConstructorParams {
     cwd: string;
-    logging: boolean;
+    logging?: boolean;
     name: string;
+    testing?: boolean;
 }
 
 export interface ISuperTaskLogValueColorTheme {

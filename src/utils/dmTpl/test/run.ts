@@ -1,6 +1,5 @@
 export {}
 import * as MOCHA from 'mocha'
-// const filter =  MOCHA.utils.stackTraceFilter
 const FS = require('fs')
 const PATH = require('path')
 const SHELL = require('shelljs')

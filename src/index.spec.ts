@@ -1,10 +1,10 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
-import { describe, expect, it } from '@utils/mocha/index'
+import { describe, expect, it } from '@utils/dmTpl/test/export'
 
 import { main } from './'
-describe('index.ts', async () => {
+describe(__filename, async () => {
 
-    it('should start a job', async () => {
+    it('main()', async () => {
         // const R_RUN_MAIN = await main()
         await main()
 

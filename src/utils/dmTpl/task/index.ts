@@ -16,6 +16,7 @@ export class SuperTask {
     private cwd: string
     private name: string
     private logging: boolean
+    private testing: boolean
     private runStartTime: Date
     private runEndTime: Date
     private LOG_VALUE_COLOR_THEME: ISuperTaskLogValueColorTheme = {
@@ -27,10 +28,11 @@ export class SuperTask {
         value: ['white', 'bold'],
     }
 
-    constructor( { name, cwd, logging }: ISuperTaskConstructorParams ) {
+    constructor( { name, cwd, logging = false, testing = false }: ISuperTaskConstructorParams ) {
         this.cwd = cwd
         this.logging = logging
         this.name = name
+        this.testing = testing
     }
 
     public printName() {
@@ -71,6 +73,9 @@ export class SuperTask {
                 this.LOG_VALUE_COLOR_THEME,
             )
             runBefore = true
+            if (this.testing) {
+                // TODO
+            }
         }
         return runBefore
     }

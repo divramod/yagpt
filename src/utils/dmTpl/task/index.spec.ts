@@ -1,5 +1,5 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { describe, expect, it } from '@utils/mocha/index'
+import { describe, expect, it } from '@utils/dmTpl/test/export'
 
 import { SuperTask } from './'
 import { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
@@ -52,7 +52,7 @@ class Task extends SuperTask implements ITaskClass {
 }
 
 const TEST_TASK = new Task({ cwd: __dirname, logging: false })
-describe(TEST_TASK.getTaskPath(), async () => {
+describe(__filename, async () => {
 
     it('run()', async () => {
 
@@ -108,6 +108,34 @@ describe(TEST_TASK.getTaskPath(), async () => {
 
         const R = TEST_TASK.logHeader('', '')
         expect(R).to.equal(false)
+
+    })
+
+    it('getRunSubResultObject()', async () => {
+        const RETURN_OBJECT = {
+            error: undefined,
+            msg: undefined,
+            success: undefined,
+            value: undefined,
+        }
+
+        const TASK = new Task({ cwd: __dirname, logging: false })
+        const R = await TASK.getRunSubResultObject()
+        expect(RETURN_OBJECT).to.deep.equal(R)
+
+    })
+
+    it('getRunReturnObject()', async () => {
+        const RETURN_OBJECT = {
+            options: undefined,
+            results: undefined,
+            success: undefined,
+            value: undefined,
+        }
+
+        const TASK = new Task({ cwd: __dirname, logging: false })
+        const R = await TASK.getRunReturnObject()
+        expect(RETURN_OBJECT).to.deep.equal(R)
 
     })
 

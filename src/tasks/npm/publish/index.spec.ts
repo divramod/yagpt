@@ -1,16 +1,15 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { describe, expect, it } from '@utils/mocha/index'
-
-import { ITaskRunResult } from '@utils/task/index'
+import { ITaskRunResult } from '@utils/dmTpl/task/index'
+import { describe, expect, it } from '@utils/dmTpl/test/export'
 import { Task } from './'
 
-// PREPARE
-const TASK = new Task({ cwd: __dirname, logging: false })
-
 // TESTSUITE
-describe(TASK.getTaskPath(), async () => {
+describe(__filename, async () => {
 
-    it('should run a task', async () => {
+    it('run()', async () => {
+
+        // PREPARE TASK
+        const TASK = new Task({ cwd: __dirname, logging: false })
 
         // RUN
         const R_TEST_TASK: ITaskRunResult = await TASK.run()

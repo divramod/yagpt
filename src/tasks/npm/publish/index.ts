@@ -8,7 +8,7 @@ import {
     ITaskRunSubResult,
     ITaskRunSubResults,
     SuperTask,
-} from '@utils/task/index'
+} from '@utils/dmTpl/task/index'
 
 // INTERFACE for Task.run()
 interface INpmPublishTaskRunSubResults extends ITaskRunSubResults {
