@@ -1,28 +1,20 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { describe, expect, it } from '@utils/nodejs/test'
-import { UDate as Utility } from './'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { UDate as U_INSTANCE, UDateUtility as U_CLASS } from './'
 
 // TESTSUITE
 describe(__filename, async () => {
 
-    it('constructor()', async () => {
+    it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
 
-        try {
-            const U = new Utility()
-        } catch (e) {
-            expect(e.message).to.equal('Error: Instantiation failed: Use UDate.getInstance() instead of new.')
-        }
-
-    })
+    it('constructor()', UTest.utilityTestConstructor(U_CLASS))
 
     it('getDateDiff()', async () => {
 
         const DATE1 = +new Date()
         const DATE2 = +new Date()
         const DIFF = (DATE2 - DATE1)
-        const U = Utility.getInstance()
-        const R = U.getDateDiff(DATE1, DATE2)
-
+        const R = U_INSTANCE.getDateDiff(DATE1, DATE2)
         expect(R).to.equal(DIFF)
 
     })

@@ -5,19 +5,20 @@
 // TYPINGS
 
 // CLASS
-export class UDate {
+export class UDateUtility {
 
-    public static getInstance(): UDate {
-        return UDate.INSTANCE
+    public static getInstance(): UDateUtility {
+        return UDateUtility.INSTANCE
     }
 
-    private static INSTANCE: UDate = new UDate()
+    private static INSTANCE: UDateUtility = new UDateUtility()
+    public name: string = 'UDateUtility'
 
     constructor() {
-        if (UDate.INSTANCE) {
-            throw new Error('Error: Instantiation failed: Use UDate.getInstance() instead of new.')
+        if (UDateUtility.INSTANCE) {
+            throw new Error('Error: Instantiation failed: Use ' + this.name + '.getInstance() instead of new.')
         }
-        UDate.INSTANCE = this
+        UDateUtility.INSTANCE = this
     }
 
     public getDateDiff(DATE1, DATE2) {
@@ -25,3 +26,4 @@ export class UDate {
     }
 
 }
+export const UDate  = UDateUtility.getInstance()

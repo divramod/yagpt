@@ -14,8 +14,6 @@ import {
 export { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
 
 export class SuperTask {
-    public UTEST = UTest.getInstance()
-    public UDATE = UDate.getInstance()
 
     private cwd: string
     private name: string
@@ -89,7 +87,7 @@ export class SuperTask {
             )
             this.logValue(
                 'duration:',
-                this.UDATE.getDateDiff(this.runStartTime, this.runEndTime),
+                UDate.getDateDiff(this.runStartTime, this.runEndTime),
                 this.LOG_VALUE_COLOR_THEME,
             )
             runAfter = true
@@ -138,7 +136,7 @@ export class SuperTask {
                 ].join('')
             }
             console.log(msg) // tslint:disable-line:no-console
-            this.UTEST.userInputCleanup(1)
+            UTest.userInputCleanup(1)
         }
         return this.logging
     }
@@ -176,7 +174,7 @@ export class SuperTask {
                 ].join('')
             }
             console.log(msg) // tslint:disable-line:no-console
-            this.UTEST.userInputCleanup(1)
+            UTest.userInputCleanup(1)
         }
         return this.logging
     }

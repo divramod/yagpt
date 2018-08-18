@@ -5,26 +5,31 @@ const SHELL = require('shelljs')
 
 // TYPINGS
 
-// EXPORT
+// IMPORT
+import { expect } from 'chai'
 import * as MOCHA from 'mocha'
+
+// EXPORT
 export { expect } from 'chai'
 export const describe = MOCHA.describe
 export const it = MOCHA.it
 
 // CLASS
-export class UTest {
+export class UTestUtility {
 
-    public static getInstance(): UTest {
-        return UTest.INSTANCE
+    public static getInstance(): UTestUtility {
+        return UTestUtility.INSTANCE
     }
 
-    private static INSTANCE: UTest = new UTest()
+    private static INSTANCE: UTestUtility = new UTestUtility()
+
+    public name: string = 'UTestUtility'
 
     constructor() {
-        if (UTest.INSTANCE) {
-            throw new Error('Error: Instantiation failed: Use UTest.getInstance() instead of new.')
+        if (UTestUtility.INSTANCE) {
+            throw new Error('Error: Instantiation failed: Use ' + this.name + '.getInstance() instead of new.')
         }
-        UTest.INSTANCE = this
+        UTestUtility.INSTANCE = this
     }
 
     public async userInputCleanup(LINE_COUNT: number) {
@@ -47,4 +52,23 @@ export class UTest {
         return process.env.DMTPL_ENV
     }
 
+    public utilityTestConstructor(U) {
+        return async () => {
+            try {
+                const UInstance = new U()
+            } catch (e) {
+                expect(e.message).to.equal(
+                    'Error: Instantiation failed: Use ' + U.name + '.getInstance() instead of new.',
+                )
+            }
+        }
+    }
+
+    public utilityTestGetInstance(U_CLASS, U_INSTANCE) {
+        return async () => {
+            expect(U_INSTANCE).to.deep.equal(U_CLASS.getInstance())
+        }
+    }
+
 }
+export const UTest = UTestUtility.getInstance()
