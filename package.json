@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "ts-node --require tsconfig-paths/register --require source-map-support/register src/index.ts",
-        "start2": "./node_modules/.bin/ts-node --require tsconfig-paths/register --require ts-node/register --require source-map-support/register src/index.ts",
+        "start:watch": "./node_modules/.bin/nodemon",
         "build": "rimraf dist && tsc",
         "build:watch": "rimraf dist && tsc -w",
         "coverage": "nyc mocha --opts mocha.coverage.opts",
@@ -19,11 +19,7 @@
         "test:programatically:watch": "nodemon --config nodemon.mocha.json",
         "test:programatically": "./node_modules/.bin/ts-node -r tsconfig-paths/register -r source-map-support/register ./src/utils/mocha/run.ts",
         "prod": "node dist/index.js",
-        "start1": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
-        "start:watch": "./node_modules/.bin/nodemon",
         "test": "npm run test:src",
-        "test:dist": "nyc mocha --opts mocha.dist.opts",
-        "test:dist:watch": "mocha --opts mocha.dist.opts --watch",
         "test:src": "nyc mocha --opts mocha.src.opts",
         "test:src:watch": "mocha --opts mocha.src.opts --watch",
         "test:watch": "DMTPL_ENV=testing npm run test:src:watch"

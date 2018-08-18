@@ -5,6 +5,12 @@ const SHELL = require('shelljs')
 
 // TYPINGS
 
+// EXPORT
+import * as MOCHA from 'mocha'
+export { expect } from 'chai'
+export const describe = MOCHA.describe
+export const it = MOCHA.it
+
 // CLASS
 export class UTest {
 
@@ -25,7 +31,7 @@ export class UTest {
         let userInputCleanupRun = false
         if (this.getEnv() === 'testing') {
             let cleanupCommand = 'tput cuu1 && echo "'
-            for (let i = 0; i < 120; i++) {
+            for (let i = 0; i < 80; i++) {
                 cleanupCommand = cleanupCommand + ' '
             }
             cleanupCommand = cleanupCommand + '" && tput cuu1'

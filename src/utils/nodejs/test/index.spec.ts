@@ -1,5 +1,5 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { describe, expect, it } from '@utils/dmTpl/test/export'
+import { describe, expect, it } from '@utils/nodejs/test'
 import { UTest as Utility } from './'
 
 // TESTSUITE
@@ -38,6 +38,7 @@ describe(__filename, async () => {
         const U = Utility.getInstance()
         const R = await U.userInputCleanup(3)
         expect(R).to.equal(false)
+        process.env.DMTPL_ENV = 'testing'
 
     })
 

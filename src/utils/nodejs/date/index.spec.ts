@@ -1,5 +1,5 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { describe, expect, it } from '@utils/dmTpl/test/export'
+import { describe, expect, it } from '@utils/nodejs/test'
 import { UDate as Utility } from './'
 
 // TESTSUITE

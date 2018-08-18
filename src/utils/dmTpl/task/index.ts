@@ -1,7 +1,7 @@
 const MOMENT = require('moment')
 const COLORS = require('colors/safe')
-import { UTest } from '@utils/dmTpl/test'
 import { UDate } from '@utils/nodejs/date'
+import { UTest } from '@utils/nodejs/test'
 
 // TYPINGS
 import {

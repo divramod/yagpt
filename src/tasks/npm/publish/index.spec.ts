@@ -1,6 +1,6 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
-import { ITaskRunResult } from '@utils/dmTpl/task/index'
-import { describe, expect, it } from '@utils/dmTpl/test/export'
+import { ITaskRunResult } from '@utils/dmTpl/task'
+import { describe, expect, it } from '@utils/nodejs/test'
 import { Task } from './'
 
 // TESTSUITE
