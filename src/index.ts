@@ -9,6 +9,7 @@ export async function main() {
         const TASK = new TASK_CLASS(__dirname)
         const R_TASK = TASK.run()
         mainRun =  true
+        console.log('i am running') // tslint:disable-line:no-console
     }
     return mainRun
 }
