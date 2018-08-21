@@ -25,14 +25,15 @@ class Task extends SuperTask implements ITaskClass {
             'someResult1',
             'someResult2',
         ])
+        RESULT_MAIN.results = RESULTS
 
         // PRODUCE SUB RESULT
-        const someResult1: IResultOne = UCommon.getResultObjectAtomic()
+        const someResult1: IResultOne = UCommon.getResultObjectOne()
         someResult1.success = true
         RESULT_MAIN.results.someResult1 = someResult1
 
         // PRODUCE SUB RESULT
-        const someResult2: IResultOne = UCommon.getResultObjectAtomic()
+        const someResult2: IResultOne = UCommon.getResultObjectOne()
         someResult2.success = false
         RESULT_MAIN.results.someResult2 = someResult2
 

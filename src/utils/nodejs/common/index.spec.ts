@@ -18,7 +18,7 @@ describe(__filename, async () => {
             value: undefined,
         }
 
-        const R = U_INSTANCE.getResultObjectAtomic()
+        const R = U_INSTANCE.getResultObjectOne()
         expect(RETURN_OBJECT).to.deep.equal(R)
 
     })
@@ -27,7 +27,7 @@ describe(__filename, async () => {
         const RETURN_OBJECT = {
             error: undefined,
             message: undefined,
-            results: undefined,
+            results: {},
             success: undefined,
             value: undefined,
         }

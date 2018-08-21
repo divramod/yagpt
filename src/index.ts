@@ -7,9 +7,8 @@ export async function main(): Promise<boolean> {
         const TASK_IMPORT = await import(G)
         const TASK_CLASS = TASK_IMPORT.Task
         const TASK = new TASK_CLASS(__dirname)
-        const R_TASK = TASK.run()
+        const R_TASK = TASK.run({projectPath: __dirname})
         mainRun =  true
-        console.log('i am running') // tslint:disable-line:no-console
     }
     return mainRun
 }

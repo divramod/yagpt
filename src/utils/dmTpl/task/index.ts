@@ -59,16 +59,13 @@ export class SuperTask {
     }
 
     public getTaskPath(): string {
-        let taskPath = ''
         const CURRENT_PATH = this.cwd
-        taskPath = [
-            '@',
+        const TASK_PATH = '\@' +
             CURRENT_PATH.substring(
                 CURRENT_PATH.lastIndexOf('src') + 4,
                 CURRENT_PATH.length,
-            ),
-        ].join()
-        return taskPath
+            )
+        return TASK_PATH
     }
 
     public getName(): string {

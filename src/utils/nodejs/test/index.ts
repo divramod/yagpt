@@ -3,6 +3,7 @@
 const PATH = require('path')
 const SHELL = require('shelljs')
 const RIMRAF = require('rimraf')
+const GIT_P = require('simple-git/promise')
 
 // TYPINGS
 import {
@@ -79,10 +80,10 @@ export class UTestUtility {
         }
     }
 
-    public async createTestDirectory(PARAMS: {
+    public async createTestDirectory(
         directoryPath: string,
-        bDeleteIfDirectoryExistant: boolean,
-    }): Promise<IResultMultiple> {
+        bDeleteIfDirectoryExistant: boolean = true,
+    ): Promise<IResultMultiple> {
         // Result Object
         const R = await UCommon.getResultObjectMultiple()
 
@@ -102,7 +103,7 @@ export class UTestUtility {
         ])
 
         // construct path
-        const DIRECTORY_PATH = PATH.resolve(PARAMS.directoryPath)
+        const DIRECTORY_PATH = PATH.resolve(directoryPath)
 
         // check if is in path /tmp/test
         if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
@@ -116,7 +117,7 @@ export class UTestUtility {
             ].join(' ')
         } else {
             RESULTS_OBJECT.aPathInTmpTest.value = true
-            if (PARAMS.bDeleteIfDirectoryExistant) {
+            if (bDeleteIfDirectoryExistant) {
                 RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
                 SHELL.mkdir('-p', DIRECTORY_PATH) // CREATE DIRECTORY
                 R.message = [
@@ -142,6 +143,73 @@ export class UTestUtility {
 
     public getEnv(): string {
         return process.env.DMTPL_ENV
+    }
+
+    public async gitCreateTestRepositoryAtPath(
+        repoPath: string,
+        createDirectoryIfNotExistant: boolean = true,
+        removeDirectoryIfExistant: boolean = true,
+        removeGitRepositoryIfExistant: boolean = true,
+    ): Promise<IResultMultiple> {
+        const RESULT = UCommon.getResultObjectMultiple()
+        const RESULTS: IResults = UCommon.getResultsObject([
+            'createDirectoryIfNotExistant',
+            'removeDirectoryIfExistant',
+            'removeGitRepositoryIfExistant',
+        ])
+
+        // NOT EXISTANT
+        if (!SHELL.test('-d', PATH.resolve(repoPath))) {
+            if (createDirectoryIfNotExistant) {
+                await this.createTestDirectory(repoPath)
+            } else { // EXIT
+                RESULT.success = false
+                RESULT.message = 'Directory ' + repoPath + ' not existant'
+            }
+        } else { // EXISTANT
+            // removeDirectoryIfExistant
+            if (removeDirectoryIfExistant) {
+                SHELL.rm('-rf', PATH.resolve(repoPath))
+                RESULTS.removeDirectoryIfExistant.success = true
+                await this.createTestDirectory(repoPath)
+            } else {
+                // removeGitRepositoryIfExistant
+                if (
+                    SHELL.test('-d', PATH.resolve(repoPath, '.git')) &&
+                    removeGitRepositoryIfExistant
+                ) {
+                    SHELL.rm('-rf', PATH.resolve(repoPath, '.git'))
+                    RESULTS.removeGitRepositoryIfExistant.success = true
+                } else {
+                    RESULT.success = true
+                    RESULT.message = [
+                        'Repository at',
+                        repoPath,
+                        'already existant',
+                    ].join(' ')
+                }
+            }
+        }
+
+        if (RESULT.success === undefined) {
+            const GIT = GIT_P(repoPath)
+            await GIT.init()
+            RESULT.success = true
+            const MESSAGE_ARR_DIRECTORY_CREATED = []
+            if (RESULTS.removeDirectoryIfExistant.success) {
+                MESSAGE_ARR_DIRECTORY_CREATED.push(
+                    'Repository at ' + repoPath + ' removed and created!',
+                )
+            }
+            RESULT.message = [
+                MESSAGE_ARR_DIRECTORY_CREATED.join(' '),
+                'Repository created!',
+            ].join(' ')
+
+        }
+
+        RESULT.results = RESULTS
+        return RESULT
     }
 
 }

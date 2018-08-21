@@ -29,7 +29,7 @@ export class UCommonUtility {
         UCommonUtility.INSTANCE = this
     }
 
-    public getResultObjectAtomic(): IResultOne {
+    public getResultObjectOne(): IResultOne {
         return {
             error: undefined,
             message: undefined,
@@ -42,7 +42,7 @@ export class UCommonUtility {
         return {
             error: undefined,
             message: undefined,
-            results: undefined,
+            results: {},
             success: undefined,
             value: undefined,
         }
@@ -53,7 +53,7 @@ export class UCommonUtility {
     ): IResults | any {
         const resultsObject = {}
         for (const resultString of ATOMIC_RESULT_STRINGS) {
-            const RESULT_OBJECT: IResultOne = this.getResultObjectAtomic()
+            const RESULT_OBJECT: IResultOne = this.getResultObjectOne()
             resultsObject[resultString] = RESULT_OBJECT
         }
         return resultsObject

@@ -34,14 +34,12 @@ export class Task extends SuperTask implements ITaskClass {
         })
     }
 
-    public async run(): Promise<IResultMultiple> {
+    public async run(PARAMS: {
+        projectPath: string,
+    }): Promise<IResultMultiple> {
 
         // SUPER runBefore()
         await super.runBefore()
-
-        // PREPARE RESULTS
-        const someResult1: IResultOne = UCommon.getResultObjectAtomic()
-        someResult1.success = true
 
         // Initialize Results
         const RESULT_MAIN: IResultMultiple = UCommon.getResultObjectMultiple()
@@ -51,12 +49,16 @@ export class Task extends SuperTask implements ITaskClass {
             'cCommitChanges',
         ])
 
-        // prepare Utilities
-        UGit.init(__dirname)
+        // aIsFeatureBranch
+        const aIsFeatureBranch: IResultOne =
+        await UGit.isFeatureBranch(PARAMS.projectPath)
+        RESULT_MAIN.results.aIsFeatureBranch = aIsFeatureBranch
 
-        // SET results
-        RESULT_MAIN.results = {
-            someResult1,
+        if (aIsFeatureBranch.value) {
+            // TODO
+        } else {
+            RESULT_MAIN.success = false
+            RESULT_MAIN.message = 'Not in Feature Branch'
         }
 
         // SUPER runAfter()
