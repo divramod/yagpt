@@ -16,12 +16,16 @@ export class UDateUtility {
 
     constructor() {
         if (UDateUtility.INSTANCE) {
-            throw new Error('Error: Instantiation failed: Use ' + this.name + '.getInstance() instead of new.')
+            throw new Error([
+                'Error: Instantiation failed: Use',
+                this.name,
+                '.getInstance() instead of new.',
+            ].join(' '))
         }
         UDateUtility.INSTANCE = this
     }
 
-    public getDateDiff(DATE1, DATE2) {
+    public getDateDiff(DATE1, DATE2): number {
         return DATE2 - DATE1
     }
 

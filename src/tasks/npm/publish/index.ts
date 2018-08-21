@@ -1,45 +1,61 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
 
+// IMPORT
+import { UCommon } from '@utils/nodejs/common'
+import { UGit } from '@utils/nodejs/git'
+
 // TYPINGS / SuperTask
 import {
     ITaskClass,
     ITaskConstructorParams,
-    ITaskRunResult,
-    ITaskRunSubResult,
-    ITaskRunSubResults,
     SuperTask,
 } from '@utils/dmTpl/task/index'
+import {
+    IResultMultiple,
+    IResultOne,
+    IResults,
+} from '@utils/nodejs/common'
 
 // INTERFACE for Task.run()
-interface INpmPublishTaskRunSubResults extends ITaskRunSubResults {
-    someResult1: ITaskRunSubResult;
+interface INpmPublishTaskRunSubResults extends IResultMultiple {
+    aIsFeatureBranch: IResultOne; // TODO
+    bGetFeatureNameAndIssueNumber: IResultOne; // TODO
+    cCommitChanges: IResultOne; // TODO
 }
 
 // CLASS Task
 export class Task extends SuperTask implements ITaskClass {
 
     constructor(opts: ITaskConstructorParams) {
-        super({ name: 'Npm Publishj', cwd: opts.cwd, logging: opts.logging || false })
+        super({
+            cwd: opts.cwd,
+            logging: opts.logging || false,
+            name: 'Npm Publish',
+        })
     }
 
-    public async run(): Promise<ITaskRunResult> {
+    public async run(): Promise<IResultMultiple> {
 
         // SUPER runBefore()
         await super.runBefore()
 
         // PREPARE RESULTS
-        const someResult1: ITaskRunSubResult = {
-            success: true,
-        }
+        const someResult1: IResultOne = UCommon.getResultObjectAtomic()
+        someResult1.success = true
 
-        // RUN
-        const R: ITaskRunResult = super.getRunReturnObject()
-        const R_SUB: INpmPublishTaskRunSubResults = {
-            someResult1: super.getRunSubResultObject(),
-        }
+        // Initialize Results
+        const RESULT_MAIN: IResultMultiple = UCommon.getResultObjectMultiple()
+        const RESULTS: INpmPublishTaskRunSubResults = UCommon.getResultsObject([
+            'aIsFeatureBranch',
+            'bGetFeatureNameAndIssueNumber',
+            'cCommitChanges',
+        ])
+
+        // prepare Utilities
+        UGit.init(__dirname)
 
         // SET results
-        R.results = {
+        RESULT_MAIN.results = {
             someResult1,
         }
 
@@ -47,7 +63,7 @@ export class Task extends SuperTask implements ITaskClass {
         await super.runAfter()
 
         // RETURN
-        return R
+        return RESULT_MAIN
     }
 
 }

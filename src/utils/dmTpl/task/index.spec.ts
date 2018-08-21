@@ -1,14 +1,12 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
+import {
+    IResultMultiple,
+    IResultOne,
+    IResults,
+    UCommon,
+} from '@utils/nodejs/common'
 import { describe, expect, it } from '@utils/nodejs/test'
-
-import { SuperTask } from './'
-import { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
-
-// TEST RETURN INTERFACE for Task.run()
-export interface ITestTaskRunSubResults extends ITaskRunSubResults {
-    someResult1: ITaskRunSubResult
-    someResult2: ITaskRunSubResult
-}
+import { ITaskClass, ITaskConstructorParams, SuperTask } from './'
 
 // TEST CLASS Task
 class Task extends SuperTask implements ITaskClass {
@@ -17,36 +15,36 @@ class Task extends SuperTask implements ITaskClass {
         super({ name: 'Test', cwd: opts.cwd, logging: opts.logging || false })
     }
 
-    public async run(): Promise<ITaskRunResult> {
+    public async run(): Promise<IResultMultiple> {
         // PREPARE
         await super.runBefore()
 
         // RUN
+        const RESULT_MAIN: IResultMultiple = UCommon.getResultObjectMultiple()
+        const RESULTS: IResults = UCommon.getResultsObject([
+            'someResult1',
+            'someResult2',
+        ])
 
-        const R: ITaskRunResult = super.getRunReturnObject()
-        const R_SUB: ITestTaskRunSubResults = {
-            someResult1: super.getRunSubResultObject(),
-            someResult2: super.getRunSubResultObject(),
-        }
+        // PRODUCE SUB RESULT
+        const someResult1: IResultOne = UCommon.getResultObjectAtomic()
+        someResult1.success = true
+        RESULT_MAIN.results.someResult1 = someResult1
 
-        const someResult1: ITaskRunSubResult = {
-            success: true,
-        }
+        // PRODUCE SUB RESULT
+        const someResult2: IResultOne = UCommon.getResultObjectAtomic()
+        someResult2.success = false
+        RESULT_MAIN.results.someResult2 = someResult2
 
-        const someResult2: ITaskRunSubResult = {
-            success: false,
-        }
-
-        R.results = {
-            someResult1,
-            someResult2,
-        }
+        // PRODUCE RESULT
+        RESULT_MAIN.success = true
+        RESULT_MAIN.message = 'message'
 
         // FINISH
         await super.runAfter()
 
         // RETURN
-        return R
+        return RESULT_MAIN
     }
 
 }
@@ -117,34 +115,6 @@ describe(__filename, async () => {
         const T1 = new Task({ cwd: __dirname, logging: true })
         const R1 = await T1.runAfter()
         expect(R1).to.equal(true)
-
-    })
-
-    it('getRunSubResultObject()', async () => {
-        const RETURN_OBJECT = {
-            error: undefined,
-            msg: undefined,
-            success: undefined,
-            value: undefined,
-        }
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = await T.getRunSubResultObject()
-        expect(RETURN_OBJECT).to.deep.equal(R)
-
-    })
-
-    it('getRunReturnObject()', async () => {
-        const RETURN_OBJECT = {
-            options: undefined,
-            results: undefined,
-            success: undefined,
-            value: undefined,
-        }
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = await T.getRunReturnObject()
-        expect(RETURN_OBJECT).to.deep.equal(R)
 
     })
 

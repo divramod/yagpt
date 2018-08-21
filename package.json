@@ -43,7 +43,7 @@
             "src/**/*.ts"
         ],
         "exclude": [
-            "*.d.ts",
+            "**/*.d.ts",
             "node_modules/**",
             "test-assets/**",
             "src/**/*.spec.ts"

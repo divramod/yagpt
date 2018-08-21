@@ -1,6 +1,6 @@
 import { UTest } from '@utils/nodejs/test'
 
-export async function main() {
+export async function main(): Promise<boolean> {
     let mainRun = false
     if (UTest.getEnv() !== 'testing') {
         const G = './tasks/npm/publish'

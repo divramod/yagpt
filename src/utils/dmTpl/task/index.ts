@@ -5,13 +5,21 @@ import { UTest } from '@utils/nodejs/test'
 
 // TYPINGS
 import {
-    // ISuperTaskClass,
+    IResultMultiple,
+    IResultOne,
+    IResults,
+    UCommon,
+} from '@utils/nodejs/common'
+import {
     ISuperTaskConstructorParams,
     ISuperTaskLogHeaderColorTheme,
     ISuperTaskLogValueColorTheme,
 } from './index.d'
 
-export { ITaskClass, ITaskConstructorParams, ITaskRunResult, ITaskRunSubResult, ITaskRunSubResults } from './index.d'
+export {
+    ITaskClass,
+    ITaskConstructorParams,
+} from './index.d'
 
 export class SuperTask {
 
@@ -35,7 +43,7 @@ export class SuperTask {
         this.name = name
     }
 
-    public printName() {
+    public printName(): boolean {
         let printed = false
         if (this.logging) {
             this.logHeader(
@@ -50,18 +58,24 @@ export class SuperTask {
         return printed
     }
 
-    public getTaskPath() {
+    public getTaskPath(): string {
         let taskPath = ''
         const CURRENT_PATH = this.cwd
-        taskPath = '@' + CURRENT_PATH.substring(CURRENT_PATH.lastIndexOf('src') + 4, CURRENT_PATH.length)
+        taskPath = [
+            '@',
+            CURRENT_PATH.substring(
+                CURRENT_PATH.lastIndexOf('src') + 4,
+                CURRENT_PATH.length,
+            ),
+        ].join()
         return taskPath
     }
 
-    public getName() {
+    public getName(): string {
         return this.name
     }
 
-    public async runBefore() {
+    public async runBefore(): Promise<boolean> {
         let runBefore = false
         if (this.logging) {
             this.runStartTime = MOMENT(new Date())
@@ -76,7 +90,7 @@ export class SuperTask {
         return runBefore
     }
 
-    public async runAfter() {
+    public async runAfter(): Promise<boolean> {
         let runAfter = false
         if (this.logging) {
             this.runEndTime = MOMENT(new Date())
@@ -95,25 +109,7 @@ export class SuperTask {
         return runAfter
     }
 
-    public getRunSubResultObject() {
-        return {
-            error: undefined,
-            msg: undefined,
-            success: undefined,
-            value: undefined,
-        }
-    }
-
-    public getRunReturnObject() {
-        return {
-            options: undefined,
-            results: undefined,
-            success: undefined,
-            value: undefined,
-        }
-    }
-
-    public logValue(DESCRIPTION: string, VALUE: any, THEME?) {
+    public logValue(DESCRIPTION: string, VALUE: any, THEME?): boolean {
         if (this.logging) {
             let msg: string
             let description = DESCRIPTION.toString()
@@ -147,7 +143,7 @@ export class SuperTask {
         OFFSET: number = 0,
         DEVIDER_LENGTH: number = 0,
         THEME?,
-    ) {
+    ): boolean {
         if (this.logging) {
             let msg: string
             let offset: string = ''

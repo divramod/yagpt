@@ -6,25 +6,7 @@ export interface ITaskConstructorParams {
 }
 
 export interface ITaskClass {
-    run();
-}
-
-export interface ITaskRunSubResult {
-    msg?: string | undefined;
-    success: boolean;
-    error?: any;
-    value?: any;
-}
-
-export interface ITaskRunSubResults {
-    [key: string]: ITaskRunSubResult;
-}
-
-export interface ITaskRunResult {
-    results: ITaskRunSubResults;
-    success?: boolean;
-    value?: any;
-    options?: any;
+    run(): Promise<any>;
 }
 
 // SuperTask

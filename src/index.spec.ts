@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// gitlab.com/divramod/dm-tpl/issues/4
 import { describe, expect, it } from '@utils/nodejs/test'
 // import { main } from './'
 
