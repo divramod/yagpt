@@ -14,3 +14,5 @@ export async function main(): Promise<boolean> {
 }
 
 main()
+
+export { describe, expect, it, UTest } from '@utils/nodejs/test'

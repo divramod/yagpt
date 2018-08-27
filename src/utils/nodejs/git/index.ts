@@ -46,7 +46,7 @@ export class UGitUtility {
         const RESULT: IResultOne = UCommon.getResultObjectOne()
 
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const BRANCH_NAME = await this.getBranchName(GIT_REPOSITORY_PATH)
             if (BRANCH_NAME.indexOf('feature/') !== -1) {
@@ -69,12 +69,32 @@ export class UGitUtility {
         // RESULT
         const RESULT: IResultOne = UCommon.getResultObjectOne()
 
-        const GIT = GIT_P(DIRECTORY_PATH)
-        const CWD_BEFORE = process.cwd()
-        process.chdir(DIRECTORY_PATH)
-        const R_CHECK_IS_REPO = await GIT.checkIsRepo()
-        RESULT.value = R_CHECK_IS_REPO
-        process.chdir(CWD_BEFORE)
+        if (SHELL.test('-d', DIRECTORY_PATH)) {
+            const GIT = GIT_P(DIRECTORY_PATH)
+            const CWD_BEFORE = process.cwd()
+            process.chdir(DIRECTORY_PATH)
+            const R_CHECK_IS_REPO = await GIT.checkIsRepo()
+            process.chdir(CWD_BEFORE)
+            if (R_CHECK_IS_REPO) {
+                RESULT.value = true
+                RESULT.message = [
+                    DIRECTORY_PATH,
+                    'is a git repository!',
+                ].join(' ')
+            } else {
+                RESULT.value = false
+                RESULT.message = [
+                    DIRECTORY_PATH,
+                    'is not a git repository!',
+                ].join(' ')
+            }
+        } else {
+            RESULT.value = false
+            RESULT.message = [
+                DIRECTORY_PATH,
+                'not existant!',
+            ].join(' ')
+        }
 
         return RESULT
     }
@@ -82,7 +102,7 @@ export class UGitUtility {
     public async getBranchName(GIT_REPOSITORY_PATH): Promise<string> {
         let result
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             result = await branchName.get({
                 cwd: GIT_REPOSITORY_PATH,
@@ -97,7 +117,7 @@ export class UGitUtility {
     ): Promise<boolean> {
         let result = false
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const GIT = GIT_P(GIT_REPOSITORY_PATH)
             await GIT.raw([
@@ -116,7 +136,7 @@ export class UGitUtility {
     ): Promise<boolean> {
         let result = true
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const GIT = GIT_P(GIT_REPOSITORY_PATH)
             const R = await GIT.status()
@@ -132,7 +152,7 @@ export class UGitUtility {
     ): Promise<IResultMultiple> {
         const RESULT: IResultMultiple = UCommon.getResultObjectMultiple()
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const R_IS_FEATURE_BRANCH =
                 await this.checkIsFeatureBranch(GIT_REPOSITORY_PATH)
@@ -175,7 +195,7 @@ export class UGitUtility {
     ): Promise<IResultMultiple> {
         const RESULT: IResultMultiple = UCommon.getResultObjectMultiple()
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const R_IS_FEATURE_BRANCH =
                 await this.checkIsFeatureBranch(GIT_REPOSITORY_PATH)
@@ -218,7 +238,7 @@ export class UGitUtility {
     ): Promise<IResultOne> {
         const RESULT: IResultOne = UCommon.getResultObjectOne()
         const R_CHECK_IS_REPO =
-            await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
             const GIT = GIT_P(GIT_REPOSITORY_PATH)
             await GIT.raw([

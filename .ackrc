@@ -1,0 +1,4 @@
+--ignore-dir=node_modules
+--ignore-dir=dist
+--ignore-dir=coverage
+--ignore-file=is:package-lock.json

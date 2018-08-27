@@ -96,6 +96,6 @@
     },
     "bin": {
         "yagpt": "./bin/yagpt",
-        "yp": "./bin/yagpt"
+        "yg": "./bin/yagpt"
     }
 }

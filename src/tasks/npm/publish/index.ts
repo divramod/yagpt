@@ -14,7 +14,7 @@ import {
     ITaskClass,
     ITaskConstructorParams,
     SuperTask,
-} from '@utils/yagpt/task/index'
+} from '@utils/nodejs/task/index'
 
 // CLASS Task
 export class Task extends SuperTask implements ITaskClass {
