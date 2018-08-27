@@ -106,7 +106,11 @@ export class SuperTask {
         return runAfter
     }
 
-    public logValue(DESCRIPTION: string, VALUE: any, THEME?): boolean {
+    public logValue(
+        DESCRIPTION: string,
+        VALUE: any,
+        THEME?,
+    ): boolean {
         if (this.logging) {
             let msg: string
             let description = DESCRIPTION.toString()

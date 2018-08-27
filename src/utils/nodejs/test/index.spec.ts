@@ -2,174 +2,308 @@
 
 // REQUIRE
 const RIMRAF = require('rimraf')
+const PATH = require('path')
 
 // IMPORT
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { UTest as U_INSTANCE, UTestUtility as U_CLASS } from './'
+
+// TYPINGS
+import {
+    IResultMultiple,
+    IResultOne,
+    IResults,
+} from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
 
-    it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
-    it('constructor()', UTest.utilityTestConstructor(U_CLASS))
-
-    it('userInputCleanup(): 1 line', async () => {
-        console.log([ // tslint:disable-line:no-console
-            'some very very very very very very long input',
-        ].join())
-        const R = await U_INSTANCE.userInputCleanup(1)
-        expect(R).to.equal(true)
-    })
-
-    it('userInputCleanup(): 3 lines', async () => {
-        process.env.DMTPL_ENV = ''
-        const R = await U_INSTANCE.userInputCleanup(3)
-        expect(R).to.equal(false)
+    beforeEach(async () => {
+        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
         process.env.DMTPL_ENV = 'testing'
     })
 
-    it('getEnv()', async () => {
-        const R = U_INSTANCE.getEnv()
-        expect(R).to.equal('testing')
+    afterEach(async () => {
+        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        process.env.DMTPL_ENV = 'testing'
     })
 
-    it('createTestDirectory(): success false (wrong path)', async () => {
-        const DIRECTORY_PATH = '/bla'
-        const R = await U_INSTANCE.createTestDirectory(DIRECTORY_PATH, true)
-        expect(R.success).to.equal(false)
-        expect(R.message).to.equal([
-            'You can\'t use the directory',
-            DIRECTORY_PATH,
-            'for testing purposes! Please use a subdirectory of \'/tmp/test\'!',
-        ].join(' '))
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+    describe('UTest.class()', async () => {
+
+        it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
+        it('constructor()', UTest.utilityTestConstructor(U_CLASS))
+
     })
 
-    it([
-        'createTestDirectory():',
-        'success true (right path, deleteIfExistant=true)',
-    ].join(' '), async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/test'
-        const R = await U_INSTANCE.createTestDirectory(DIRECTORY_PATH, true)
-        expect(R.success).to.equal(true)
-        expect(R.message).to.equal([
-            'Directory',
-            DIRECTORY_PATH,
-            'removed and created',
-        ].join(' '))
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+    describe('UTest.userInputCleanup()', async () => {
+
+        it([
+            'success',
+            '1 line',
+        ].join(' '), async () => {
+            console.log([ // tslint:disable-line:no-console
+                'some very very very very very very long input',
+            ].join())
+            const R = await U_INSTANCE.userInputCleanup(1)
+            expect(R).to.equal(true)
+        })
+
+        it([
+            'success',
+            '3 lines',
+        ].join(' '), async () => {
+            process.env.DMTPL_ENV = ''
+            const R = await U_INSTANCE.userInputCleanup(3)
+            expect(R).to.equal(false)
+            process.env.DMTPL_ENV = 'testing'
+        })
+
     })
 
-    it([
-        'createTestDirectory():',
-        'success true (right path, deleteIfExistant=false)',
-    ].join(' '), async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/test'
-        const R = await U_INSTANCE.createTestDirectory(DIRECTORY_PATH, false)
-        expect(R.success).to.equal(true)
-        expect(R.message).to.equal([
-            'Directory',
-            DIRECTORY_PATH,
-            'existant and not created',
-        ].join(' '))
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+    describe('UTest.getEnv()', async () => {
+
+        it('success', async () => {
+            const R = U_INSTANCE.getEnv()
+            expect(R).to.equal('testing')
+        })
+
     })
 
-    it('gitCreateTestRepositoryAtPath(): success', async () => {
-        const REPO_PATH = '/tmp/test/nodejs/git'
-        const R_CREATED =
-            await UTest.createTestDirectory(REPO_PATH)
-        expect(R_CREATED.success).to.equal(true)
-        const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(REPO_PATH)
-        expect(R.success).to.equal(true)
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
+    describe('UTest.createTestDirectory()', async () => {
+
+        it([
+            'createTestDirectory():',
+            'failure:',
+            'wrong path,',
+        ].join(' '), async () => {
+            const WRONG_DIRECTORY_PATH = '/bla'
+            const R = await U_INSTANCE.createTestDirectory(
+                WRONG_DIRECTORY_PATH,
+                true,
+            )
+            expect(R.success).to.equal(false)
+            expect(R.message).to.equal([
+                'You can\'t use the directory',
+                WRONG_DIRECTORY_PATH,
+                'for testing purposes!',
+                'Please use a subdirectory of \'/tmp/test\'!',
+            ].join(' '))
+        })
+
+        it([
+            'createTestDirectory():',
+            'success:',
+            'right path,',
+            'deleteIfExistant true',
+        ].join(' '), async () => {
+            const R_PREPARE = await U_INSTANCE.createTestDirectory(TEST_PATH)
+            const R = await U_INSTANCE.createTestDirectory(TEST_PATH, true)
+            expect(R.success).to.equal(true)
+            expect(R.message).to.equal([
+                'Directory',
+                TEST_PATH,
+                'removed and created!',
+            ].join(' '))
+        })
+
+        it([
+            'createTestDirectory():',
+            'success:',
+            'right path,',
+            'deleteIfExistant false',
+        ].join(' '), async () => {
+            const R_PREPARE = await U_INSTANCE.createTestDirectory(TEST_PATH)
+            const R = await U_INSTANCE.createTestDirectory(TEST_PATH, false)
+            expect(R.success).to.equal(false)
+            expect(R.message).to.equal([
+                'Directory',
+                TEST_PATH,
+                'existant and not created!',
+            ].join(' '))
+        })
+
     })
 
-    it([
-        'gitCreateTestRepositoryAtPath():',
-        'success',
-        '(createDirectoryIfNotExistant=true)',
-    ].join(' '), async () => {
+    describe('UTest.gitCreateTestRepositoryAtPath()', async () => {
 
-        const REPO_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-        const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            true,
-        )
-        expect(R.success).to.equal(true)
+        it([
+            'success',
+        ].join(' '), async () => {
 
-        const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            false,
-            true,
-            true,
-        )
-        expect(R1.success).to.equal(true)
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
+            // RUN
+            const R_CREATED =
+                await UTest.createTestDirectory(TEST_PATH)
+
+            // TEST
+            expect(R_CREATED.success).to.equal(true)
+
+            // RUN
+            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(true)
+        })
+
+        it([
+            'success:',
+            'createDirectoryIfNotExistant true',
+        ].join(' '), async () => {
+
+            // RUN
+            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                true,
+            )
+
+            // TEST
+            expect(R.success).to.equal(true)
+
+            // RUN
+            const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                false,
+                true,
+                true,
+            )
+
+            // TEST
+            expect(R1.success).to.equal(true)
+
+        })
+
+        it([
+            'success:',
+            'removeDirectoryIfExistant false',
+        ].join(' '), async () => {
+
+            // RUN
+            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                true,
+            )
+
+            // TEST
+            expect(R.success).to.equal(true)
+
+            // RUN
+            const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                true,
+                false,
+                true,
+            )
+
+            // TEST
+            expect(R1.success).to.equal(true)
+
+        })
+
+        it([
+            'success:',
+            'rGRIE false, rDIE false',
+        ].join(' '), async () => {
+
+            // RUN
+            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                true,
+            )
+
+            // TEST
+            expect(R.success).to.equal(true)
+
+            // RUN
+            const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                true,
+                false,
+                false,
+            )
+
+            // TEST
+            expect(R1.success).to.equal(true)
+
+        })
+
+        it([
+            'failure:',
+            'createDirectoryIfNotExistant false',
+        ].join(' '), async () => {
+
+            // RUN
+            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
+                TEST_PATH,
+                false,
+            )
+
+            // TEST
+            expect(R.success).to.equal(false)
+
+        })
+
     })
 
-    it([
-        'gitCreateTestRepositoryAtPath():',
-        'success',
-        '(removeDirectoryIfExistant=false)',
-    ].join(' '), async () => {
+    describe('UTest.createTestFile()', async () => {
 
-        const REPO_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-        const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            true,
-        )
-        expect(R.success).to.equal(true)
+        it([
+            'success:',
+            'file created',
+        ].join(' '), async () => {
 
-        const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            true,
-            false,
-            true,
-        )
-        expect(R1.success).to.equal(true)
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-    })
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                TEST_PATH,
+                'test.json',
+            )
 
-    it([
-        'gitCreateTestRepositoryAtPath():',
-        'success',
-        '(rGRIE=false, rDIE=false)',
-    ].join(' '), async () => {
+                // RUN
+            const R: IResultOne =
+                await U_INSTANCE.createTestFile(
+                    FILE_PATH,
+                    JSON.stringify({
+                        name: 'test',
+                    }),
+                )
 
-        const REPO_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-        const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            true,
-        )
-        expect(R.success).to.equal(true)
+            // TEST
+            expect(R.success).not.to.equal(undefined)
+            expect(R.message).to.equal([
+                FILE_PATH,
+                'created!',
+            ].join(' '))
+        })
 
-        const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            true,
-            false,
-            false,
-        )
-        expect(R1.success).to.equal(true)
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-    })
+        it([
+            'failure:',
+            'directory not in',
+            TEST_PATH,
+        ].join(' '), async () => {
 
-    it([
-        'gitCreateTestRepositoryAtPath():',
-        'failure',
-        '(createDirectoryIfNotExistant=false)',
-    ].join(' '), async () => {
-        const REPO_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
-        const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-            REPO_PATH,
-            false,
-        )
-        expect(R.success).to.equal(false)
-        RIMRAF.sync(REPO_PATH) // REMOVE DIRECTORY
+            // PREPARE
+            const FILE_PATH = PATH.resolve(
+                process.cwd(),
+                'test.json',
+            )
+
+                // RUN
+            const R: IResultOne =
+                await U_INSTANCE.createTestFile(
+                    FILE_PATH,
+                    JSON.stringify({
+                        name: 'test',
+                    }),
+                )
+
+            // TEST
+            expect(R.success).not.to.equal(undefined)
+            expect(R.message).to.equal([
+                FILE_PATH,
+                'not in',
+                TEST_PATH,
+            ].join(' '))
+        })
+
     })
 
 })

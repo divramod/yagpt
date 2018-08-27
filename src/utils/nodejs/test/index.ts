@@ -1,5 +1,6 @@
 // https://gitlab.com/divramod/dm-tpl/issues/7
 // IMPORT
+const FS = require('fs')
 const PATH = require('path')
 const SHELL = require('shelljs')
 const RIMRAF = require('rimraf')
@@ -14,6 +15,7 @@ import {
 
 // IMPORT
 import { UCommon } from '@utils/nodejs/common'
+import { UPath } from '@utils/nodejs/path'
 import { expect } from 'chai'
 import * as MOCHA from 'mocha'
 
@@ -21,6 +23,7 @@ import * as MOCHA from 'mocha'
 export { expect } from 'chai'
 export const describe = MOCHA.describe
 export const it = MOCHA.it
+export const TEST_PATH = PATH.resolve('/tmp/test/nodejs/git')
 
 // CLASS
 export class UTestUtility {
@@ -44,7 +47,9 @@ export class UTestUtility {
         UTestUtility.INSTANCE = this
     }
 
-    public async userInputCleanup(LINE_COUNT: number): Promise<boolean> {
+    public async userInputCleanup(
+        LINE_COUNT: number,
+    ): Promise<boolean> {
         let userInputCleanupRun = false
         if (this.getEnv() === 'testing') {
             let cleanupCommand = 'tput cuu1 && echo "'
@@ -60,7 +65,9 @@ export class UTestUtility {
         return userInputCleanupRun
     }
 
-    public utilityTestConstructor(U): () => Promise<void> {
+    public utilityTestConstructor(
+        U,
+    ): () => Promise<void> {
         return async () => {
             try {
                 const UInstance = new U()
@@ -74,71 +81,13 @@ export class UTestUtility {
         }
     }
 
-    public utilityTestGetInstance(U_CLASS, U_INSTANCE): () => Promise<void> {
+    public utilityTestGetInstance(
+        U_CLASS,
+        U_INSTANCE,
+    ): () => Promise<void> {
         return async () => {
             expect(U_INSTANCE).to.deep.equal(U_CLASS.getInstance())
         }
-    }
-
-    public async createTestDirectory(
-        directoryPath: string,
-        bDeleteIfDirectoryExistant: boolean = true,
-    ): Promise<IResultMultiple> {
-        // Result Object
-        const R = await UCommon.getResultObjectMultiple()
-
-        // PREPARE INTERFACE
-        interface ICreateTestDirectoryResults extends IResults {
-            aPathInTmpTest: IResultOne;
-            bDirectoryExistant: IResultOne;
-            cDeletedIfDirectoryExistant: IResultOne;
-        }
-
-        // PREPARE RESULT OBJECT
-        const RESULTS_OBJECT: ICreateTestDirectoryResults =
-        UCommon.getResultsObject([
-            'aPathInTmpTest',
-            'bDirectoryExistant',
-            'cDeleteIfDirectoryExistant',
-        ])
-
-        // construct path
-        const DIRECTORY_PATH = PATH.resolve(directoryPath)
-
-        // check if is in path /tmp/test
-        if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
-            RESULTS_OBJECT.aPathInTmpTest.value = false
-            R.success = false
-            R.message = [
-                'You can\'t use the directory',
-                DIRECTORY_PATH,
-                'for testing purposes!',
-                'Please use a subdirectory of \'/tmp/test\'!',
-            ].join(' ')
-        } else {
-            RESULTS_OBJECT.aPathInTmpTest.value = true
-            if (bDeleteIfDirectoryExistant) {
-                RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-                SHELL.mkdir('-p', DIRECTORY_PATH) // CREATE DIRECTORY
-                R.message = [
-                    'Directory',
-                    DIRECTORY_PATH,
-                    'removed and created',
-                ].join(' ')
-            } else {
-                R.message = [
-                    'Directory',
-                    DIRECTORY_PATH,
-                    'existant and not created',
-                ].join(' ')
-            }
-            R.success = true
-        }
-
-        // PREPARE END RESULT
-        R.results = RESULTS_OBJECT
-
-        return R
     }
 
     public getEnv(): string {
@@ -210,6 +159,90 @@ export class UTestUtility {
 
         RESULT.results = RESULTS
         return RESULT
+    }
+
+    public async createTestDirectory(
+        directoryPath: string,
+        bDeleteIfDirectoryExistant: boolean = true,
+    ): Promise<IResultMultiple> {
+        // Result Object
+        const R = await UCommon.getResultObjectMultiple()
+
+        // PREPARE INTERFACE
+        interface ICreateTestDirectoryResults extends IResults {
+            aPathInTmpTest: IResultOne;
+            bDirectoryExistant: IResultOne;
+            cDeletedIfDirectoryExistant: IResultOne;
+        }
+
+        // PREPARE RESULT OBJECT
+        let resultsObject: ICreateTestDirectoryResults =
+        UCommon.getResultsObject([
+            'aPathInTmpTest',
+            'bDirectoryExistant',
+            'cDeletedIfDirectoryExistant',
+        ])
+
+        // construct path
+        const DIRECTORY_PATH = PATH.resolve(directoryPath)
+
+        // check if is in path /tmp/test
+        if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
+            resultsObject.aPathInTmpTest.value = false
+            R.success = false
+            R.message = [
+                'You can\'t use the directory',
+                DIRECTORY_PATH,
+                'for testing purposes!',
+                'Please use a subdirectory of \'/tmp/test\'!',
+            ].join(' ')
+        } else {
+            resultsObject.aPathInTmpTest.value = true
+            const R_CREATE_DIRECTORY = await UPath.createDirectory(
+                directoryPath,
+                bDeleteIfDirectoryExistant,
+            )
+            resultsObject = Object.assign(
+                resultsObject,
+                R_CREATE_DIRECTORY.results,
+            )
+            R.success = R_CREATE_DIRECTORY.success
+            R.message = R_CREATE_DIRECTORY.message
+        }
+
+        // PREPARE END RESULT
+        R.results = resultsObject
+
+        return R
+    }
+
+    public async createTestFile(
+        FILE_PATH,
+        FILE_CONTENT = '',
+        OVERWRITE_IF_EXISTANT = false,
+    ): Promise<IResultOne> {
+        // PREPARE
+        let result: IResultOne = UCommon.getResultObjectOne()
+
+        // RUN
+        if (FILE_PATH.indexOf(TEST_PATH) !== -1) {
+            result = await UPath.createFile(
+                FILE_PATH,
+                FILE_CONTENT,
+                OVERWRITE_IF_EXISTANT,
+            )
+        } else {
+            result.success = false
+            result.message = [
+                FILE_PATH,
+                'not in',
+                TEST_PATH,
+            ].join(' ')
+
+        }
+
+        // RETURN
+        return result
     }
 
 }

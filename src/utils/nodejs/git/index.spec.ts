@@ -1,7 +1,9 @@
 // https://gitlab.com/divramod/dm-tpl/issues/4
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { UGit as U_INSTANCE, UGitUtility as U_CLASS } from './'
+const PATH = require('path')
 const RIMRAF = require('rimraf')
+const SHELL = require('shelljs')
 import {
     IResultMultiple,
     IResultOne,
@@ -11,124 +13,387 @@ import {
 // TESTSUITE
 describe(__filename, async () => {
 
-    it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
+    beforeEach(async () => {
+        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+    })
 
-    it('constructor()', UTest.utilityTestConstructor(U_CLASS))
+    afterEach(async () => {
+        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+    })
 
-    it('init()', async () => {
+    describe('UGit.class()', async () => {
 
-        const R = await U_INSTANCE.init(__dirname)
-        expect(R).to.equal(true)
+        it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
+
+        it('constructor()', UTest.utilityTestConstructor(U_CLASS))
 
     })
 
-    it([
-        'checkIsRepo()',
-        'fail',
-        'no repo at created path',
-    ].join(' '), async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-        await UTest.createTestDirectory(DIRECTORY_PATH)
-        const R: boolean = await U_INSTANCE.checkIsRepo(DIRECTORY_PATH)
-        expect(R).to.equal(false)
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+    describe('UGit.getFeatureName()', async () => {
+
+        it([
+            'failure:',
+            'is not a git repository',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureName(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(undefined)
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'is not a git repository!',
+            ].join(' '))
+
+        })
+
+        it([
+            'failure:',
+            'is not a feature branch',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureName(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(undefined)
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'is not on a feature Branch!',
+            ].join(' '))
+
+        })
+
+        it([
+            'success:',
+            'returns issue number',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await U_INSTANCE.checkoutBranch(
+                TEST_PATH,
+                'feature/004-job-npm-publish',
+            )
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureName(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(true)
+            expect(R.value).to.equal('job-npm-publish')
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'branch name is',
+                'job-npm-publish',
+            ].join(' '))
+
+        })
     })
 
-    it([
-        'checkIsRepo()',
-        'success',
-        'created repo at path',
-    ].join(' '), async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-        await UTest.gitCreateTestRepositoryAtPath(DIRECTORY_PATH)
-        const R: boolean = await U_INSTANCE.checkIsRepo(DIRECTORY_PATH)
-        expect(R).to.equal(true)
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+    describe('UGit.getFeatureIssueNumber()', async () => {
+
+        it([
+            'failure:',
+            'is not a git repository',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(undefined)
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'is not a git repository!',
+            ].join(' '))
+
+        })
+
+        it([
+            'failure:',
+            'is not a feature branch',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(undefined)
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'is not on a feature Branch!',
+            ].join(' '))
+
+        })
+
+        it([
+            'success:',
+            'returns issue number',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await U_INSTANCE.checkoutBranch(
+                TEST_PATH,
+                'feature/004-job-npm-publish',
+            )
+
+            // RUN
+            const R: IResultMultiple =
+                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+
+            // TEST
+            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(4)
+            expect(R.message).to.equal([
+                TEST_PATH,
+                'issue number is',
+                4,
+            ].join(' '))
+
+        })
+
     })
 
-    it('getBranchName(): success at created repo', async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-        await UTest.gitCreateTestRepositoryAtPath(DIRECTORY_PATH)
-        const R = await U_INSTANCE.getBranchName(DIRECTORY_PATH)
-        expect(R).to.equal('master')
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-    })
+    describe('UGit.checkIsClean()', async () => {
 
-    it('getBranchName(): fail no repository', async () => {
-        const DIRECTORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-        await UTest.createTestDirectory(DIRECTORY_PATH)
-        const R = await U_INSTANCE.getBranchName(DIRECTORY_PATH)
-        expect(R).to.equal(undefined)
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-    })
+        // checkIsClean
+        it([
+            'success:',
+            'repo clean',
+        ].join(' '), async () => {
 
-    it([
-        'checkoutBranch():',
-        'success',
-        'at created repo',
-    ].join(' '), async () => {
-        const GIT_REPOSITORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-        await UTest.gitCreateTestRepositoryAtPath(GIT_REPOSITORY_PATH)
-        const R: boolean =
-            await U_INSTANCE.checkoutBranch(GIT_REPOSITORY_PATH, 'feature/123')
-        expect(R).to.equal(true)
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-    })
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
 
-    it([
-        'checkoutBranch():',
-        'fail',
-        'at created dir',
-    ].join(' '), async () => {
-        const GIT_REPOSITORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-        await UTest.createTestDirectory(GIT_REPOSITORY_PATH)
-        const R: boolean =
-            await U_INSTANCE.checkoutBranch(GIT_REPOSITORY_PATH, 'feature/123')
-        expect(R).to.equal(false)
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-    })
+            // RUN
+            const R: boolean = await U_INSTANCE.checkIsClean(TEST_PATH)
 
-    it('isFeatureBranch(): fail not a git repo', async () => {
+            // TEST
+            expect(R).to.equal(true)
+        })
 
-        const DIRECTORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
-        await UTest.createTestDirectory(DIRECTORY_PATH)
+        // checkIsClean
+        it([
+            'failure:',
+            'repo not clean',
+        ].join(' '), async () => {
 
-        const R = await U_INSTANCE.isFeatureBranch(DIRECTORY_PATH)
-        expect(R.value).to.equal(false)
-        RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            SHELL.touch(PATH.resolve(TEST_PATH, 'README.md'))
+
+            // RUN
+            const R: boolean = await U_INSTANCE.checkIsClean(TEST_PATH)
+
+            // TEST
+            expect(R).to.equal(false)
+        })
 
     })
 
-    it('isFeatureBranch(): fail at created repo', async () => {
+    describe('UGit.checkIsRepo()', async () => {
 
-        const GIT_REPOSITORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-        await UTest.gitCreateTestRepositoryAtPath(GIT_REPOSITORY_PATH)
-        const R = await U_INSTANCE.isFeatureBranch(GIT_REPOSITORY_PATH)
-        expect(R.value).to.equal(false)
-        expect(R.message).to.equal('Is not a Feature Branch')
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
+        it([
+            'failure:',
+            'repo not existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R: IResultOne = await U_INSTANCE.checkIsRepo(TEST_PATH)
+
+            // TEST
+            expect(R.value).to.equal(false)
+        })
+
+        it([
+            'success:',
+            'repo existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R: IResultOne = await U_INSTANCE.checkIsRepo(TEST_PATH)
+
+            // TEST
+            expect(R.value).to.equal(true)
+        })
+
     })
 
-    it([
-        'isFeatureBranch()',
-        'success',
-        'at created repo and checked out feature branch',
-    ].join(' '), async () => {
-        const GIT_REPOSITORY_PATH = '/tmp/test/nodejs/git'
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
-        await UTest.gitCreateTestRepositoryAtPath(GIT_REPOSITORY_PATH)
-        await U_INSTANCE.checkoutBranch(GIT_REPOSITORY_PATH, 'feature/123')
-        const R = await U_INSTANCE.isFeatureBranch(GIT_REPOSITORY_PATH)
-        expect(R.value).to.equal(true)
-        RIMRAF.sync(GIT_REPOSITORY_PATH) // REMOVE DIRECTORY
+    describe('UGit.getBranchName()', async () => {
+
+        it([
+            'success:',
+            'repo existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R = await U_INSTANCE.getBranchName(TEST_PATH)
+
+            // TEST
+            expect(R).to.equal('master')
+        })
+
+        it([
+            'success:',
+            'repo not existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R = await U_INSTANCE.getBranchName(TEST_PATH)
+
+            // TEST
+            expect(R).to.equal(undefined)
+        })
+
+    })
+
+    describe('UGit.checkoutBranch()', async () => {
+
+        it([
+            'success:',
+            'repo existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R: boolean =
+                await U_INSTANCE.checkoutBranch(
+                    TEST_PATH,
+                    'feature/123',
+                )
+
+            // TEST
+            expect(R).to.equal(true)
+        })
+
+        it([
+            'failure:',
+            'repo not existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R: boolean =
+                await U_INSTANCE.checkoutBranch(
+                    TEST_PATH,
+                    'feature/123',
+                )
+
+            // TEST
+            expect(R).to.equal(false)
+
+        })
+
+    })
+
+    describe('UGit.checkIsFeatureBranch()', async () => {
+
+        it([
+            'failure:',
+            'repo not existant',
+        ].join(' '), async () => {
+            // PREPARE
+            await UTest.createTestDirectory(TEST_PATH)
+
+            // RUN
+            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+
+            // TEST
+            expect(R.value).to.equal(false)
+        })
+
+        it([
+            'failure:',
+            'not a feature branch',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+
+            // TEST
+            expect(R.value).to.equal(false)
+            expect(R.message).to.equal('Is not a Feature Branch')
+        })
+
+        it([
+            'success:',
+            'repo existant, feature checked out',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await U_INSTANCE.checkoutBranch(TEST_PATH, 'feature/123')
+
+            // RUN
+            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+
+            // TEST
+            expect(R.value).to.equal(true)
+        })
+
+    })
+
+    describe.skip('UGit.gitPushOriginHead()', async () => {
+
+        it([
+            'success:',
+            '',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+
+            // RUN
+            const R = await U_INSTANCE.pushOriginHead(TEST_PATH)
+
+            // TEST
+            expect(0).to.equal(1) // fails
+
+        })
+
     })
 
 })

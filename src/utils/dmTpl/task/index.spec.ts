@@ -128,11 +128,9 @@ describe(__filename, async () => {
         const T1 = new Task({ cwd: __dirname, logging: true })
         const R1 = T1.logValue('', '')
         expect(R1).to.equal(true)
-
     })
 
     it('logHeader()', async () => {
-
         const T = new Task({ cwd: __dirname, logging: false })
         const R = T.logHeader('', '')
         expect(R).to.equal(false)
@@ -140,7 +138,6 @@ describe(__filename, async () => {
         const T1 = new Task({ cwd: __dirname, logging: true })
         const R1 = T1.logHeader('', '')
         expect(R1).to.equal(true)
-
     })
 
 })

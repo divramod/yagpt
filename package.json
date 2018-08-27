@@ -63,6 +63,7 @@
         "chokidar": "^2.0.4",
         "chokidar-cli": "^1.2.0",
         "dotenv-cli": "^1.4.0",
+        "expect": "^23.5.0",
         "istanbul": "^0.4.5",
         "mocha": "^5.2.0",
         "mocha-clean": "^1.0.0",

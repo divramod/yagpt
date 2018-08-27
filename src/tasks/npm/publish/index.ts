@@ -16,13 +16,6 @@ import {
     IResults,
 } from '@utils/nodejs/common'
 
-// INTERFACE for Task.run()
-interface INpmPublishTaskRunSubResults extends IResultMultiple {
-    aIsFeatureBranch: IResultOne; // TODO
-    bGetFeatureNameAndIssueNumber: IResultOne; // TODO
-    cCommitChanges: IResultOne; // TODO
-}
-
 // CLASS Task
 export class Task extends SuperTask implements ITaskClass {
 
@@ -41,31 +34,98 @@ export class Task extends SuperTask implements ITaskClass {
         // SUPER runBefore()
         await super.runBefore()
 
+        // DESTRUCT PRAMS
+        const { projectPath } = PARAMS
+
+        // INTERFACE for Task.run()
+        interface INpmPublishTaskRunSubResults extends IResults {
+            isGitRepository: IResultOne;
+            isFeatureBranch: IResultOne;
+        }
+
         // Initialize Results
-        const RESULT_MAIN: IResultMultiple = UCommon.getResultObjectMultiple()
-        const RESULTS: INpmPublishTaskRunSubResults = UCommon.getResultsObject([
-            'aIsFeatureBranch',
-            'bGetFeatureNameAndIssueNumber',
-            'cCommitChanges',
+        const RM: IResultMultiple = UCommon.getResultObjectMultiple()
+        const RE: INpmPublishTaskRunSubResults = UCommon.getResultsObject([
+            'isGitRepository',
+            'isFeatureBranch',
+            'isClean',
+            'getFeatureName',
+            'getFeatureIssueNumber',
         ])
 
-        // aIsFeatureBranch
-        const aIsFeatureBranch: IResultOne =
-        await UGit.isFeatureBranch(PARAMS.projectPath)
-        RESULT_MAIN.results.aIsFeatureBranch = aIsFeatureBranch
+        // INIT PROCEED
+        let proceed = true
 
-        if (aIsFeatureBranch.value) {
-            // TODO
-        } else {
-            RESULT_MAIN.success = false
-            RESULT_MAIN.message = 'Not in Feature Branch'
+        // isGitRepository
+        if (proceed) {
+            if (await UGit.checkIsRepo(projectPath)) {
+                RM.success = RE.isGitRepository.value = proceed = true
+                RM.message = RE.isGitRepository.message = [
+                    projectPath,
+                    ' is a git repository!',
+                ].join(' ')
+            } else {
+                RM.success = RE.isGitRepository.value = proceed = false
+                RM.message = RE.isGitRepository.message = [
+                    projectPath,
+                    ' is not a git repository!',
+                ].join(' ')
+            }
         }
+
+        // checkIsFeatureBranch
+        if (proceed) {
+            if (await UGit.checkIsFeatureBranch(projectPath)) {
+                RM.success = RE.isFeatureBranch.value = proceed = true
+                RM.message = RE.isFeatureBranch.message = [
+                    projectPath,
+                    ' is a feature branch!',
+                ].join(' ')
+            } else {
+                RM.success = RE.isFeatureBranch.value = proceed = false
+                RM.message = RE.isFeatureBranch.message = [
+                    projectPath,
+                    ' is not a feature branch!',
+                ].join(' ')
+            }
+        }
+
+        // isClean
+        if (proceed) {
+            if (await UGit.checkIsClean(projectPath)) {
+                RM.success = RE.isClean.value = proceed = true
+                RM.message = RE.isClean.message = [
+                    projectPath,
+                    ' is clean!',
+                ].join(' ')
+            } else {
+                RM.success = RE.isClean.value = proceed = false
+                RM.message = RE.isClean.message = [
+                    projectPath,
+                    ' is not clean!',
+                ].join(' ')
+            }
+        }
+
+        // get feature name and issue number
+        const FEATURE_NAME = RE.getFeatureName.value =
+            await UGit.getFeatureName(projectPath)
+        const ISSUE_NUMBER = RE.getFeatureIssueNumber.value =
+            await UGit.getFeatureIssueNumber(projectPath)
+
+        // gitPushOriginHead
+        if (proceed) {
+            //
+        }
+
+        // SET RM RE
+        RM.results = RE
 
         // SUPER runAfter()
         await super.runAfter()
 
         // RETURN
-        return RESULT_MAIN
+        return RM
     }
 
 }
