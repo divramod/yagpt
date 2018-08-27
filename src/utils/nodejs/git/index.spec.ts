@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// https://gitlab.com/divramod/yagpt/issues/4
 import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { UGit as U_INSTANCE, UGitUtility as U_CLASS } from './'
 const PATH = require('path')

@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// https://gitlab.com/divramod/yagpt/issues/4
 // IMPORT
 import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { UJson as U_INSTANCE, UJsonUtility as U_CLASS } from './'
@@ -48,7 +48,7 @@ describe(__filename, async () => {
                 await U_INSTANCE.getKeyValueFromFile(
                     PATH.resolve(
                         process.cwd(),
-                        'dm-tpl.config.json',
+                        'yagpt.config.json',
                     ),
                     'name',
                 )

@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// https://gitlab.com/divramod/yagpt/issues/4
 // IMPORT
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UCommon as U_INSTANCE, UCommonUtility as U_CLASS } from './'

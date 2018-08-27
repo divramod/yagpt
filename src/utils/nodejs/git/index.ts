@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// https://gitlab.com/divramod/yagpt/issues/4
 
 // IMPORT
 const GIT_P = require('simple-git/promise')

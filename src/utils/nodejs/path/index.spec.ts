@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
+// https://gitlab.com/divramod/yagpt/issues/4
 // IMPORT
 import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { UPath as U_INSTANCE, UPathUtility as U_CLASS } from './'

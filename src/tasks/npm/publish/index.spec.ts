@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/7
+// https://gitlab.com/divramod/yagpt/issues/7
 import { UGit } from '@utils/nodejs/git'
 import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
 import { Task } from './'

@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/7
+// https://gitlab.com/divramod/yagpt/issues/7
 // IMPORT
 const FS = require('fs')
 const PATH = require('path')

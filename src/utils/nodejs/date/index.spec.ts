@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/7
+// https://gitlab.com/divramod/yagpt/issues/7
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UDate as U_INSTANCE, UDateUtility as U_CLASS } from './'
 

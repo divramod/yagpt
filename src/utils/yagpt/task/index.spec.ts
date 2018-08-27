@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/7
+// https://gitlab.com/divramod/yagpt/issues/7
 import {
     IResultMultiple,
     IResultOne,
@@ -84,7 +84,7 @@ describe(__filename, async () => {
 
         const T = new Task({ cwd: __dirname, logging: false })
         const R = T.getTaskPath()
-        expect(R).to.equal('@utils/dmTpl/task')
+        expect(R).to.equal('@utils/yagpt/task')
 
     })
 

@@ -1,4 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/7
+// https://gitlab.com/divramod/yagpt/issues/7
 
 // IMPORT
 import { UCommon } from '@utils/nodejs/common'
@@ -6,15 +6,15 @@ import { UGit } from '@utils/nodejs/git'
 
 // TYPINGS / SuperTask
 import {
-    ITaskClass,
-    ITaskConstructorParams,
-    SuperTask,
-} from '@utils/dmTpl/task/index'
-import {
     IResultMultiple,
     IResultOne,
     IResults,
 } from '@utils/nodejs/common'
+import {
+    ITaskClass,
+    ITaskConstructorParams,
+    SuperTask,
+} from '@utils/yagpt/task/index'
 
 // CLASS Task
 export class Task extends SuperTask implements ITaskClass {
