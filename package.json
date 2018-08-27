@@ -1,6 +1,6 @@
 {
     "name": "dm-tpl",
-    "version": "0.0.19",
+    "version": "0.0.11",
     "description": "A tmplate manager for projects",
     "main": "index.js",
     "scripts": {
