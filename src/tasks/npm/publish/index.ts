@@ -285,9 +285,6 @@ export class Task extends SuperTask implements ITaskClass {
             SHELL.exec('npm publish', { silent: false })
             SHELL.cd(PATH_BEFORE)
 
-            console.log( // tslint:disable-line:no-console
-                'after publish',
-            )
             // push tags
             await GIT.raw([
                 'push',
