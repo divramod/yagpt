@@ -154,6 +154,12 @@ export class Task extends SuperTask implements ITaskClass {
         }
 
         if (proceed) {
+            // TODO: unlink
+            // TODO: copy current directory to another place
+            // TODO: change projectPath to that place
+            // do the work
+            // TODO: update master, develop, feature in current path
+
             const GIT = GIT_P(projectPath)
 
             // merge (git fetch origin develop)

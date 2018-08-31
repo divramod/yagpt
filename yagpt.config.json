@@ -1,5 +1,5 @@
 {
-    "name": "test",
+    "name": "yagpt",
     "testing": {
         "path": "/tmp/test/yagpt",
         "npm": {
