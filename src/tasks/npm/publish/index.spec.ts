@@ -1,6 +1,13 @@
 // https://gitlab.com/divramod/yagpt/issues/7
 import { UGit } from '@utils/nodejs/git'
-import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
+import {
+    describe,
+    expect,
+    it,
+    TEST_NPM_REPOSITORY,
+    TEST_PATH,
+    UTest,
+} from '@utils/nodejs/test'
 import { Task } from './'
 
 // REQUIRE
@@ -14,7 +21,7 @@ import {
 } from '@utils/nodejs/common'
 
 // TESTSUITE
-describe.skip(__filename, async () => {
+describe(__filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
@@ -24,7 +31,7 @@ describe.skip(__filename, async () => {
         RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
     })
 
-    it([
+    it.only([
         'run()',
         'success:',
         'all conditions fulfilled',
@@ -34,13 +41,17 @@ describe.skip(__filename, async () => {
         const TASK = new Task({ cwd: __dirname, logging: false })
 
         // PREPARE Repository
-        await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
-        const R_CHECKOUT_BRANCH: boolean =
-            await UGit.checkoutBranch(TEST_PATH, 'feature/123')
+        // RIMRAF.sync(TEST_NPM_REPOSITORY.path) // REMOVE DIRECTORY
+        await UTest.prepareNpmRepository()
+        await UGit.removeAllBranchesExceptMaster(TEST_NPM_REPOSITORY.path)
+        await UGit.checkoutBranch(
+            TEST_NPM_REPOSITORY.path,
+            'feature/123-test-feature',
+        )
 
         // RUN
         const R: IResultMultiple = await TASK.run({
-            projectPath: TEST_PATH,
+            projectPath: TEST_NPM_REPOSITORY.path,
         })
 
         // isGitRepository
@@ -49,12 +60,18 @@ describe.skip(__filename, async () => {
 
         // checkIsFeatureBranch
         const R_IS_FEATURE_BRANCH =
-            await UGit.checkIsFeatureBranch(TEST_PATH)
+            await UGit.checkIsFeatureBranch(TEST_NPM_REPOSITORY.path)
         expect(R.results.isFeatureBranch.value).not.to.be.undefined
         expect(R.results.isFeatureBranch.value).to.equal(true)
 
         // isClean
         expect(R.results.isClean.value).not.to.be.undefined
-    })
+        expect(R.results.isClean.value).to.equal(true)
+
+        // isDevelopMergable
+        expect(R.results.isDevelopMergable.value).not.to.be.undefined
+        expect(R.results.isDevelopMergable.value).to.equal(true)
+
+    }).timeout(60000)
 
 })

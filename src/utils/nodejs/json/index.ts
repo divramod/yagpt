@@ -34,10 +34,10 @@ export class UJsonUtility {
         UJsonUtility.INSTANCE = this
     }
 
-    public async getKeyValueFromFile(
+    public getKeyValueFromFile(
         FILE_PATH,
         KEY_NAME,
-    ): Promise<IResultOne> {
+    ): IResultOne {
         // PREPARE
         const RESULT: IResultOne = UCommon.getResultObjectOne()
 

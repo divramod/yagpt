@@ -3,6 +3,13 @@
 // IMPORT
 import { UCommon } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
+import { UJson } from '@utils/nodejs/json'
+
+// REQUIRE
+const GIT_P = require('simple-git/promise')
+const SEMVER = require('semver')
+const SHELL = require('shelljs')
+const PATH = require('path')
 
 // TYPINGS / SuperTask
 import {
@@ -51,6 +58,7 @@ export class Task extends SuperTask implements ITaskClass {
             'isClean',
             'getFeatureName',
             'getFeatureIssueNumber',
+            'isDevelopMergable',
         ])
 
         // INIT PROCEED
@@ -58,7 +66,9 @@ export class Task extends SuperTask implements ITaskClass {
 
         // isGitRepository
         if (proceed) {
-            if (await UGit.checkIsRepo(projectPath)) {
+            const CHECK_IS_REPO =
+                await UGit.checkIsRepo(projectPath)
+            if (CHECK_IS_REPO.value) {
                 RM.success = RE.isGitRepository.value = proceed = true
                 RM.message = RE.isGitRepository.message = [
                     projectPath,
@@ -75,7 +85,9 @@ export class Task extends SuperTask implements ITaskClass {
 
         // checkIsFeatureBranch
         if (proceed) {
-            if (await UGit.checkIsFeatureBranch(projectPath)) {
+            const CHECK_IS_FEATURE_BRANCH =
+                await UGit.checkIsFeatureBranch(projectPath)
+            if (CHECK_IS_FEATURE_BRANCH.value) {
                 RM.success = RE.isFeatureBranch.value = proceed = true
                 RM.message = RE.isFeatureBranch.message = [
                     projectPath,
@@ -92,7 +104,9 @@ export class Task extends SuperTask implements ITaskClass {
 
         // isClean
         if (proceed) {
-            if (await UGit.checkIsClean(projectPath)) {
+            const CHECK_IS_CLEAN =
+                await UGit.checkIsClean(projectPath)
+            if (CHECK_IS_CLEAN) {
                 RM.success = RE.isClean.value = proceed = true
                 RM.message = RE.isClean.message = [
                     projectPath,
@@ -108,14 +122,188 @@ export class Task extends SuperTask implements ITaskClass {
         }
 
         // get feature name and issue number
-        const FEATURE_NAME = RE.getFeatureName.value =
-            await UGit.getFeatureName(projectPath)
-        const ISSUE_NUMBER = RE.getFeatureIssueNumber.value =
-            await UGit.getFeatureIssueNumber(projectPath)
+        const R_FEATURE_NAME = RE.getFeatureName.value =
+        await UGit.getFeatureName(projectPath)
+        const FEATURE_NAME = R_FEATURE_NAME.value
+        const R_ISSUE_NUMBER = RE.getFeatureIssueNumber.value =
+        await UGit.getFeatureIssueNumber(projectPath)
+        const ISSUE_NUMBER = R_ISSUE_NUMBER.value
 
-        // gitPushOriginHead
+        // isDevelopMergable
         if (proceed) {
-            //
+
+            const CHECK_IS_DEVELOP_MERGABLE =
+                await UGit.checkIsMergable(
+                    'develop',
+                    projectPath,
+                )
+            if (CHECK_IS_DEVELOP_MERGABLE.value === true) {
+                RM.success = RE.isDevelopMergable.value = proceed = true
+                RM.message = RE.isDevelopMergable.message = [
+                    'Develop mergable!',
+                ].join(' ')
+            } else {
+                RM.success = RE.isDevelopMergable.value = proceed = false
+                RM.message = RE.isDevelopMergable.message = [
+                    'Develop not mergable!',
+                ].join(' ')
+            }
+        }
+
+        if (proceed) {
+            const GIT = GIT_P(projectPath)
+
+            // merge (git fetch origin develop)
+            await GIT.raw([
+                'fetch',
+                'origin',
+                'develop',
+            ])
+            // merge (git merge -m "test" origin/develop)
+            await GIT.raw([
+                'merge',
+                '-m',
+                'MERGE DEVELOP"',
+                'origin/develop',
+            ])
+            // checkout develop
+            await GIT.raw([
+                'checkout',
+                'develop',
+            ])
+            // merge feature
+            const FEATURE_FULL_NAME = [
+                'feature/',
+                ISSUE_NUMBER,
+                '-',
+                FEATURE_NAME,
+            ].join('')
+            await GIT.raw([
+                'merge',
+                FEATURE_FULL_NAME,
+            ])
+            // push -u origin HEAD
+            await GIT.raw([
+                'push',
+                '-u',
+                'origin',
+                'HEAD',
+            ])
+
+            // TODO git checkout release/0.1.1
+            const R_CURRENT_VERSION_NUMBER = UJson.getKeyValueFromFile(
+                PATH.resolve(projectPath, 'package.json'),
+                'version',
+            )
+            const CURRENT_VERSION_NUMBER = R_CURRENT_VERSION_NUMBER.value
+            const NEXT_VERSION_NUMBER =
+                SEMVER.inc(CURRENT_VERSION_NUMBER, 'patch')
+            const FULL_RELEASE_NAME = 'release/' + NEXT_VERSION_NUMBER
+            await GIT.raw([
+                'checkout',
+                '-b',
+                FULL_RELEASE_NAME,
+            ])
+
+            // bump version number in package.json
+            const PATH_BEFORE = process.cwd()
+            SHELL.cd(projectPath)
+            SHELL.exec('npm version patch', { silent: true })
+            SHELL.cd(PATH_BEFORE)
+
+            // git add -A
+            await GIT.raw([
+                'add',
+                '-A',
+            ])
+
+            // git commit -m "RELEASE 0.1.1"
+            const FULL_RELEASE_MESSAGE = [
+                '-m',
+                '"RELEASE ' + NEXT_VERSION_NUMBER + '"',
+            ].join(' ')
+            await GIT.raw([
+                'commit',
+                FULL_RELEASE_MESSAGE,
+            ])
+
+            // push -u origin HEAD
+            // await GIT.raw([
+            // 'push',
+            // '-u',
+            // 'origin',
+            // 'HEAD',
+            // ])
+
+            // checkout develop
+            await GIT.raw([
+                'checkout',
+                'develop',
+            ])
+
+            // merge release into develop
+            await GIT.raw([
+                'merge',
+                FULL_RELEASE_NAME,
+            ])
+
+            // push -u origin HEAD
+            await GIT.raw([
+                'push',
+                '-u',
+                'origin',
+                'HEAD',
+            ])
+
+            // checkout master
+            await GIT.raw([
+                'checkout',
+                'master',
+            ])
+
+            // merge release into develop
+            await GIT.raw([
+                'merge',
+                FULL_RELEASE_NAME,
+            ])
+
+            // push -u origin HEAD
+            await GIT.raw([
+                'push',
+                '-u',
+                'origin',
+                'HEAD',
+            ])
+
+            // publish
+            SHELL.cd(projectPath)
+            SHELL.exec('npm publish', { silent: true })
+            SHELL.cd(PATH_BEFORE)
+
+            // push tags
+            await GIT.raw([
+                'push',
+                '--tags',
+            ])
+
+            // push -u origin HEAD
+            await GIT.raw([
+                'branch',
+                '-D',
+                FULL_RELEASE_NAME,
+            ])
+
+            // checkout feature
+            await GIT.raw([
+                'checkout',
+                FEATURE_FULL_NAME,
+            ])
+
+            // merge develop into feature
+            await GIT.raw([
+                'merge',
+                'develop',
+            ])
         }
 
         // SET RM RE

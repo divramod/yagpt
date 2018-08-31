@@ -1,13 +1,14 @@
 {
     "name": "test",
     "testing": {
+        "path": "/tmp/test/yagpt",
         "npm": {
-            "name": "dm-test"
-        },
-        "git": {
-            "https": "https://github.com/divramod/dm-test.git",
-            "ssh": "git@github.com:divramod/dm-test.git"
-        },
-        "path": "/tmp/test/dm-tpl"
+            "name": "yagpt-test",
+            "git": {
+                "https": "https://gitlab.com/divramod/yagpt-test.git",
+                "ssh": "git@gitlab.com:divramod/yagpt-test.git"
+            },
+            "path": "/tmp/test/yagpt-test"
+        }
     }
 }

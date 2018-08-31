@@ -111,6 +111,35 @@ export class UGitUtility {
         return result
     }
 
+    public async removeAllBranchesExceptMaster(
+        GIT_REPOSITORY_PATH,
+    ): Promise<boolean> {
+        let result = false
+        const R_CHECK_IS_REPO =
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        if (R_CHECK_IS_REPO.value) {
+            const GIT = GIT_P(GIT_REPOSITORY_PATH)
+            const CMD = [
+                'git checkout master',
+                '|',
+                'git branch',
+                '|',
+                'grep -v "master\\|develop"',
+                '|',
+                'awk \'{print substr($0,2);}\'',
+                '|',
+                'xargs git branch -D',
+            ].join(' ')
+            const PATH_BEFORE = SHELL.pwd().stdout
+            SHELL.cd(PATH.resolve(GIT_REPOSITORY_PATH))
+            const TEST = SHELL.exec(CMD, { silent: true }).stdout
+            SHELL.cd(PATH_BEFORE)
+            result = true
+        }
+
+        return result
+    }
+
     public async checkoutBranch(
         GIT_REPOSITORY_PATH,
         BRANCH_NAME,
@@ -123,6 +152,25 @@ export class UGitUtility {
             await GIT.raw([
                 'checkout',
                 '-b',
+                BRANCH_NAME,
+            ])
+            result = true
+        }
+
+        return result
+    }
+
+    public async checkout(
+        GIT_REPOSITORY_PATH,
+        BRANCH_NAME,
+    ): Promise<boolean> {
+        let result = false
+        const R_CHECK_IS_REPO =
+        await this.checkIsRepo(GIT_REPOSITORY_PATH)
+        if (R_CHECK_IS_REPO.value) {
+            const GIT = GIT_P(GIT_REPOSITORY_PATH)
+            await GIT.raw([
+                'checkout',
                 BRANCH_NAME,
             ])
             result = true
@@ -248,6 +296,53 @@ export class UGitUtility {
             ])
 
         }
+
+        return RESULT
+    }
+
+    public async checkIsMergable(
+        BRANCH_NAME: string,
+        GIT_REPOSITORY_PATH,
+    ): Promise<IResultOne> {
+        const GIT = GIT_P(GIT_REPOSITORY_PATH)
+
+        // RESULT
+        const RESULT: IResultOne = UCommon.getResultObjectOne()
+
+        const R_FETCH = await GIT.raw([
+            'fetch',
+            'origin',
+            BRANCH_NAME,
+        ])
+        const PATH_BEFORE = process.cwd()
+        SHELL.cd(GIT_REPOSITORY_PATH)
+        const BRANCH_FULL_NAME  = 'origin/' + BRANCH_NAME
+        const R_MERGABLE = await GIT.raw([
+            'merge',
+            '--no-commit',
+            '--no-ff',
+            BRANCH_FULL_NAME,
+        ])
+
+        if (
+            R_MERGABLE === null ||
+            R_MERGABLE.indexOf('Already up-to-date.') > -1
+        ) {
+            RESULT.success = true
+            RESULT.message = 'mergable'
+            RESULT.value = true
+        } else {
+            RESULT.message = 'not mergable'
+            RESULT.value = false
+
+        }
+        const R_RESET_HARD = await GIT.raw([
+            'reset',
+            '--hard',
+            'ORIG_HEAD',
+        ])
+
+        SHELL.cd(PATH_BEFORE)
 
         return RESULT
     }

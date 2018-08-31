@@ -89,7 +89,7 @@
         "global": "^4.3.2",
         "inquirer": "^6.0.0",
         "moment": "^2.22.2",
-        "semver": "^5.5.0",
+        "semver": "^5.5.1",
         "shelljs": "^0.8.2",
         "simple-git": "^1.96.0",
         "terminal-link": "^1.1.0"

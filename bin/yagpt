@@ -1,2 +1,3 @@
 #! /bin/bash
-node node_modules/yagpt/dist/index.js
+# node node_modules/yagpt/dist/index.js
+pwd
