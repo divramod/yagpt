@@ -194,9 +194,6 @@ export class Task extends SuperTask implements ITaskClass {
             ])
 
             // TODO git checkout release/0.1.1
-            console.log( // tslint:disable-line:no-console
-                'here',
-            )
             const R_CURRENT_VERSION_NUMBER = UJson.getKeyValueFromFile(
                 PATH.resolve(projectPath, 'package.json'),
                 'version',
@@ -213,9 +210,15 @@ export class Task extends SuperTask implements ITaskClass {
 
             // bump version number in package.json
             const PATH_BEFORE = process.cwd()
+            console.log( // tslint:disable-line:no-console
+                'before',
+            )
             SHELL.cd(projectPath)
             SHELL.exec('npm version patch', { silent: true })
             SHELL.cd(PATH_BEFORE)
+            console.log( // tslint:disable-line:no-console
+                'after',
+            )
 
             // git add -A
             await GIT.raw([
@@ -232,14 +235,6 @@ export class Task extends SuperTask implements ITaskClass {
                 'commit',
                 FULL_RELEASE_MESSAGE,
             ])
-
-            // push -u origin HEAD
-            // await GIT.raw([
-            // 'push',
-            // '-u',
-            // 'origin',
-            // 'HEAD',
-            // ])
 
             // checkout develop
             await GIT.raw([
