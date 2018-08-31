@@ -282,8 +282,7 @@ export class Task extends SuperTask implements ITaskClass {
                 projectPath,
             )
             SHELL.cd(projectPath)
-            // SHELL.exec('npm publish', { silent: false })
-            SHELL.exec('ls -lisa')
+            SHELL.exec('npm publish', { silent: false })
             SHELL.cd(PATH_BEFORE)
 
             console.log( // tslint:disable-line:no-console
