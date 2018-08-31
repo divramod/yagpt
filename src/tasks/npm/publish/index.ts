@@ -194,6 +194,9 @@ export class Task extends SuperTask implements ITaskClass {
             ])
 
             // TODO git checkout release/0.1.1
+            console.log( // tslint:disable-line:no-console
+                'here',
+            )
             const R_CURRENT_VERSION_NUMBER = UJson.getKeyValueFromFile(
                 PATH.resolve(projectPath, 'package.json'),
                 'version',
