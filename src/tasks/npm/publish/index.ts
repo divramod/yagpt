@@ -210,15 +210,9 @@ export class Task extends SuperTask implements ITaskClass {
 
             // bump version number in package.json
             const PATH_BEFORE = process.cwd()
-            console.log( // tslint:disable-line:no-console
-                'before',
-            )
             SHELL.cd(projectPath)
             SHELL.exec('npm version patch', { silent: true })
             SHELL.cd(PATH_BEFORE)
-            console.log( // tslint:disable-line:no-console
-                'after',
-            )
 
             // git add -A
             await GIT.raw([
