@@ -37,6 +37,9 @@ export class Task extends SuperTask implements ITaskClass {
     public async run(PARAMS: {
         projectPath: string,
     }): Promise<IResultMultiple> {
+        console.log( // tslint:disable-line:no-console
+            'running',
+        )
 
         // SUPER runBefore()
         await super.runBefore()
