@@ -97,6 +97,6 @@
     },
     "bin": {
         "yagpt": "./bin/yagpt-src",
-        "yg": "./bin/yagpt-src"
+        "ya": "./bin/yagpt-src"
     }
 }
