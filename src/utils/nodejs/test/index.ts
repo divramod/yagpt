@@ -26,10 +26,12 @@ export { expect } from 'chai'
 export const describe = MOCHA.describe
 export const it = MOCHA.it
 
+// TESTING
+const YG_CONFIG_PATH = PATH.resolve(
+    require('global-modules-path').getPath('yagpt'),
+    'yagpt.config.json')
 const R_GET_KEY_VALUE_FROM_FILE = UJson.getKeyValueFromFile(
-    PATH.resolve(
-        process.cwd(),
-        'yagpt.config.json'),
+    YG_CONFIG_PATH,
     'testing',
 )
 export const TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.value.path)

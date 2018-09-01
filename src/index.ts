@@ -1,11 +1,9 @@
 import { UTest } from '@utils/nodejs/test'
+const pathToPackage = require('global-modules-path').getPath('yagpt')
 
 export async function main(): Promise<boolean> {
     let mainRun = false
     if (UTest.getEnv() !== 'testing') {
-        console.log( // tslint:disable-line:no-console
-            'in',
-        )
         const G = './tasks/npm/publish'
         const TASK_IMPORT = await import(G)
         const TASK_CLASS = TASK_IMPORT.Task
@@ -19,7 +17,6 @@ export async function main(): Promise<boolean> {
     }
     return mainRun
 }
-
 main()
 
 export { describe, expect, it, UTest } from '@utils/nodejs/test'

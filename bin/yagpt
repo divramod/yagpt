@@ -1,3 +1,0 @@
-#! /bin/bash
-# node node_modules/yagpt/dist/index.js
-./node_modules/.bin/ts-node -r tsconfig-paths/register ./src/index.ts
