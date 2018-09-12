@@ -1,5 +1,5 @@
 // https://gitlab.com/divramod/yagpt/issues/4
-import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UGit as U_INSTANCE, UGitUtility as U_CLASS } from './'
 const PATH = require('path')
 const RIMRAF = require('rimraf')
@@ -14,11 +14,11 @@ import {
 describe(__filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     describe('UGit.class()', async () => {
@@ -37,17 +37,17 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            // await UTest.createTestDirectory(TEST_PATH)
+            // await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureName(TEST_PATH)
+                await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'is not a git repository!',
             ].join(' '))
 
@@ -59,17 +59,17 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureName(TEST_PATH)
+                await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'is not on a feature Branch!',
             ].join(' '))
 
@@ -81,21 +81,21 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
             await U_INSTANCE.checkoutBranch(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'feature/004-job-npm-publish',
             )
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureName(TEST_PATH)
+                await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(true)
             expect(R.value).to.equal('job-npm-publish')
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'branch name is',
                 'job-npm-publish',
             ].join(' '))
@@ -111,17 +111,17 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+                await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'is not a git repository!',
             ].join(' '))
 
@@ -133,17 +133,17 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+                await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'is not on a feature Branch!',
             ].join(' '))
 
@@ -155,21 +155,21 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
             await U_INSTANCE.checkoutBranch(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'feature/004-job-npm-publish',
             )
 
             // RUN
             const R: IResultMultiple =
-                await U_INSTANCE.getFeatureIssueNumber(TEST_PATH)
+                await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(true)
             expect(R.value).to.equal(4)
             expect(R.message).to.equal([
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'issue number is',
                 4,
             ].join(' '))
@@ -187,10 +187,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: boolean = await U_INSTANCE.checkIsClean(TEST_PATH)
+            const R: boolean = await U_INSTANCE.checkIsClean(UTest.TEST_PATH)
 
             // TEST
             expect(R).to.equal(true)
@@ -203,11 +203,11 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
-            SHELL.touch(PATH.resolve(TEST_PATH, 'README.md'))
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
+            SHELL.touch(PATH.resolve(UTest.TEST_PATH, 'README.md'))
 
             // RUN
-            const R: boolean = await U_INSTANCE.checkIsClean(TEST_PATH)
+            const R: boolean = await U_INSTANCE.checkIsClean(UTest.TEST_PATH)
 
             // TEST
             expect(R).to.equal(false)
@@ -223,10 +223,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.checkIsRepo(TEST_PATH)
+            const R: IResultOne = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(false)
@@ -238,10 +238,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.checkIsRepo(TEST_PATH)
+            const R: IResultOne = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(true)
@@ -257,10 +257,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R = await U_INSTANCE.getBranchName(TEST_PATH)
+            const R = await U_INSTANCE.getBranchName(UTest.TEST_PATH)
 
             // TEST
             expect(R).to.equal('master')
@@ -272,10 +272,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R = await U_INSTANCE.getBranchName(TEST_PATH)
+            const R = await U_INSTANCE.getBranchName(UTest.TEST_PATH)
 
             // TEST
             expect(R).to.equal(undefined)
@@ -291,12 +291,12 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
             const R: boolean =
                 await U_INSTANCE.checkoutBranch(
-                    TEST_PATH,
+                    UTest.TEST_PATH,
                     'feature/123',
                 )
 
@@ -310,12 +310,12 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
             const R: boolean =
                 await U_INSTANCE.checkoutBranch(
-                    TEST_PATH,
+                    UTest.TEST_PATH,
                     'feature/123',
                 )
 
@@ -333,10 +333,10 @@ describe(__filename, async () => {
             'repo not existant',
         ].join(' '), async () => {
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+            const R = await U_INSTANCE.checkIsFeatureBranch(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(false)
@@ -348,10 +348,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+            const R = await U_INSTANCE.checkIsFeatureBranch(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(false)
@@ -364,11 +364,11 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
-            await U_INSTANCE.checkoutBranch(TEST_PATH, 'feature/123')
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
+            await U_INSTANCE.checkoutBranch(UTest.TEST_PATH, 'feature/123')
 
             // RUN
-            const R = await U_INSTANCE.checkIsFeatureBranch(TEST_PATH)
+            const R = await U_INSTANCE.checkIsFeatureBranch(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(true)
@@ -384,10 +384,10 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(TEST_PATH)
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R = await U_INSTANCE.pushOriginHead(TEST_PATH)
+            const R = await U_INSTANCE.pushOriginHead(UTest.TEST_PATH)
 
             // TEST
             expect(0).to.equal(1) // fails

@@ -3,9 +3,10 @@
 // REQUIRE
 const RIMRAF = require('rimraf')
 const PATH = require('path')
+const SHELL = require('shelljs')
 
 // IMPORT
-import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UTest as U_INSTANCE, UTestUtility as U_CLASS } from './'
 
 // TYPINGS
@@ -19,12 +20,12 @@ import {
 describe(__filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
         process.env.DMTPL_ENV = 'testing'
     })
 
     afterEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
         process.env.DMTPL_ENV = 'testing'
     })
 
@@ -96,12 +97,14 @@ describe(__filename, async () => {
             'right path,',
             'deleteIfExistant true',
         ].join(' '), async () => {
-            const R_PREPARE = await U_INSTANCE.createTestDirectory(TEST_PATH)
-            const R = await U_INSTANCE.createTestDirectory(TEST_PATH, true)
+            const R_PREPARE =
+                await U_INSTANCE.createTestDirectory(UTest.TEST_PATH)
+            const R =
+                await U_INSTANCE.createTestDirectory(UTest.TEST_PATH, true)
             expect(R.success).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'removed and created!',
             ].join(' '))
         })
@@ -112,12 +115,14 @@ describe(__filename, async () => {
             'right path,',
             'deleteIfExistant false',
         ].join(' '), async () => {
-            const R_PREPARE = await U_INSTANCE.createTestDirectory(TEST_PATH)
-            const R = await U_INSTANCE.createTestDirectory(TEST_PATH, false)
+            const R_PREPARE =
+                await U_INSTANCE.createTestDirectory(UTest.TEST_PATH)
+            const R =
+                await U_INSTANCE.createTestDirectory(UTest.TEST_PATH, false)
             expect(R.success).to.equal(false)
             expect(R.message).to.equal([
                 'Directory',
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'existant and not created!',
             ].join(' '))
         })
@@ -132,13 +137,14 @@ describe(__filename, async () => {
 
             // RUN
             const R_CREATED =
-                await UTest.createTestDirectory(TEST_PATH)
+                await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // TEST
             expect(R_CREATED.success).to.equal(true)
 
             // RUN
-            const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(TEST_PATH)
+            const R =
+                await U_INSTANCE.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // TEST
             expect(R.success).to.equal(true)
@@ -151,7 +157,7 @@ describe(__filename, async () => {
 
             // RUN
             const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
             )
 
@@ -160,7 +166,7 @@ describe(__filename, async () => {
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 false,
                 true,
                 true,
@@ -178,7 +184,7 @@ describe(__filename, async () => {
 
             // RUN
             const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
             )
 
@@ -187,7 +193,7 @@ describe(__filename, async () => {
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
                 false,
                 true,
@@ -205,7 +211,7 @@ describe(__filename, async () => {
 
             // RUN
             const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
             )
 
@@ -214,7 +220,7 @@ describe(__filename, async () => {
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
                 false,
                 false,
@@ -232,7 +238,7 @@ describe(__filename, async () => {
 
             // RUN
             const R = await U_INSTANCE.gitCreateTestRepositoryAtPath(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 false,
             )
 
@@ -251,9 +257,9 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await UTest.createTestDirectory(TEST_PATH)
+            await UTest.createTestDirectory(UTest.TEST_PATH)
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
 
@@ -275,9 +281,70 @@ describe(__filename, async () => {
         })
 
         it([
+            'success:',
+            'file created',
+            'FILE_CONTENT = \'\'',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(UTest.TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                UTest.TEST_PATH,
+                'test.json',
+            )
+
+            // RUN
+            const R: IResultOne =
+                await U_INSTANCE.createTestFile(
+                    FILE_PATH,
+                )
+
+            // TEST
+            expect(R.success).not.to.equal(undefined)
+            expect(R.message).to.equal([
+                FILE_PATH,
+                'created!',
+            ].join(' '))
+        })
+
+        it([
+            'success:',
+            'file created',
+            'OVERWRITE_IF_EXISTANT = true',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(UTest.TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                UTest.TEST_PATH,
+                'test.json',
+            )
+            const R_PREPARE_FILE: IResultOne =
+                await U_INSTANCE.createTestFile(
+                    FILE_PATH,
+                    'test',
+                )
+
+            // RUN
+            const R: IResultOne =
+                await U_INSTANCE.createTestFile(
+                    FILE_PATH,
+                    'test',
+                    true,
+                )
+
+            // TEST
+            expect(R.success).not.to.equal(undefined)
+            expect(R.message).to.equal([
+                FILE_PATH,
+                'overwritten!',
+            ].join(' '))
+        })
+
+        it([
             'failure:',
             'directory not in',
-            TEST_PATH,
+            UTest.TEST_PATH,
         ].join(' '), async () => {
 
             // PREPARE
@@ -300,8 +367,177 @@ describe(__filename, async () => {
             expect(R.message).to.equal([
                 FILE_PATH,
                 'not in',
-                TEST_PATH,
+                UTest.TEST_PATH,
             ].join(' '))
+        })
+
+    })
+
+    describe('UTest.prepareNpmRepository()', async () => {
+
+        beforeEach(async () => {
+            RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
+            process.env.DMTPL_ENV = 'testing'
+        })
+
+        it([
+            'success:',
+            'package cloned!',
+        ].join(' '), async () => {
+
+            // PREPARE
+            RIMRAF.sync(UTest.NPM_REPOSITORY.path_backup)
+            RIMRAF.sync(UTest.NPM_REPOSITORY.path)
+
+            // RUN
+            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+
+            // RESTORE BACKUP COPY
+            await SHELL.cp(
+                '-Rf',
+                UTest.NPM_REPOSITORY.path,
+                UTest.NPM_REPOSITORY.path_backup,
+            )
+
+            // TEST
+            expect(R.success).to.equal(true)
+            expect(R.message).to.equal( [
+                UTest.NPM_REPOSITORY.path,
+                'cloned!',
+            ].join(' ') )
+
+        }).timeout(60000)
+
+        it([
+            'success:',
+            'package copied!',
+        ].join(' '), async () => {
+
+            // PREPARE
+            RIMRAF.sync(UTest.NPM_REPOSITORY.path)
+
+            // RUN
+            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+
+            // RESTORE BACKUP COPY
+            await SHELL.cp(
+                '-Rf',
+                UTest.NPM_REPOSITORY.path,
+                UTest.NPM_REPOSITORY.path_backup,
+            )
+
+            // TEST
+            expect(R.success).to.equal(true)
+            expect(R.message).to.equal( [
+                UTest.NPM_REPOSITORY.path,
+                'copied!',
+            ].join(' ') )
+
+        }).timeout(60000)
+
+        it([
+            'success:',
+            'package already existant!',
+        ].join(' '), async () => {
+
+            // PREPARE
+            const R_PREPARE: IResultOne =
+                await U_INSTANCE.prepareNpmRepository()
+
+            // RUN
+            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.message).to.equal( [
+                UTest.NPM_REPOSITORY.path,
+                'already existant!',
+            ].join(' ') )
+
+        }).timeout(60000)
+
+    })
+
+    describe('UTest.gitCleanRepository()', async () => {
+
+        it([
+            'success:',
+            'cleaned unclean repository',
+        ].join(' '), async () => {
+
+            // PREPARE
+            // create repo
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
+            // make repo unclean
+            await SHELL.touch(
+                PATH.resolve(
+                    UTest.TEST_PATH,
+                    'make-unclean.ts',
+                ),
+            )
+
+            // RUN
+            const R: IResultOne =
+                await U_INSTANCE.gitCleanRepository(
+                    UTest.TEST_PATH,
+                    'testing',
+                )
+
+            // TEST
+            expect(R.success).to.equal(true)
+            expect(R.message).to.equal( [
+                UTest.TEST_PATH,
+                'repository cleaned!',
+            ].join(' ') )
+
+        })
+
+        it([
+            'error:',
+            'repository already clean',
+        ].join(' '), async () => {
+
+            // PREPARE
+            // create repo
+            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
+
+            // RUN
+            const R: IResultOne =
+                await U_INSTANCE.gitCleanRepository(
+                    UTest.TEST_PATH,
+                    'testing',
+                )
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.message).to.equal( [
+                UTest.TEST_PATH,
+                'repository already clean!',
+            ].join(' ') )
+
+        })
+
+        it([
+            'error:',
+            'repository not existant',
+        ].join(' '), async () => {
+
+            // PREPARE
+
+            // RUN
+            const R: IResultOne =
+                await U_INSTANCE.gitCleanRepository(
+                    UTest.TEST_PATH,
+                    'testing',
+                )
+
+            // TEST
+            expect(R.success).to.equal(false)
+            expect(R.message).to.equal( [
+                UTest.TEST_PATH,
+                'not existant!',
+            ].join(' ') )
+
         })
 
     })

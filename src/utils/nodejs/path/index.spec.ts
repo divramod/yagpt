@@ -1,6 +1,6 @@
 // https://gitlab.com/divramod/yagpt/issues/4
 // IMPORT
-import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UPath as U_INSTANCE, UPathUtility as U_CLASS } from './'
 
 // REQUIRE
@@ -19,11 +19,11 @@ import {
 describe(__filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     describe('UPath.class()', async () => {
@@ -44,14 +44,14 @@ describe(__filename, async () => {
 
             // RUN
             const R: IResultOne = await U_INSTANCE.createDirectory(
-                TEST_PATH,
+                UTest.TEST_PATH,
             )
 
             // TEST
             expect(R.success).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'created!',
             ].join(' '))
 
@@ -66,10 +66,10 @@ describe(__filename, async () => {
 
             // RUN
             const R_PREPARE: IResultOne = await U_INSTANCE.createDirectory(
-                TEST_PATH,
+                UTest.TEST_PATH,
             )
             const R: IResultOne = await U_INSTANCE.createDirectory(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 true,
             )
 
@@ -77,7 +77,7 @@ describe(__filename, async () => {
             expect(R.success).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'removed and created!',
             ].join(' '))
 
@@ -92,10 +92,10 @@ describe(__filename, async () => {
 
             // RUN
             const R_PREPARE: IResultOne = await U_INSTANCE.createDirectory(
-                TEST_PATH,
+                UTest.TEST_PATH,
             )
             const R: IResultOne = await U_INSTANCE.createDirectory(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 false,
             )
 
@@ -103,7 +103,7 @@ describe(__filename, async () => {
             expect(R.success).to.equal(false)
             expect(R.message).to.equal([
                 'Directory',
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'existant and not created!',
             ].join(' '))
 
@@ -119,9 +119,9 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await U_INSTANCE.createDirectory(TEST_PATH)
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
 
@@ -149,9 +149,9 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await U_INSTANCE.createDirectory(TEST_PATH)
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
 
@@ -175,9 +175,9 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await U_INSTANCE.createDirectory(TEST_PATH)
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
             const R_PREPARE: IResultOne =
@@ -212,9 +212,9 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            await U_INSTANCE.createDirectory(TEST_PATH)
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
             const R_PREPARE: IResultOne =
@@ -249,7 +249,7 @@ describe(__filename, async () => {
 
             // PREPARE
             const FILE_PATH = PATH.resolve(
-                TEST_PATH,
+                UTest.TEST_PATH,
                 'test.json',
             )
 

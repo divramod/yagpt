@@ -26,20 +26,6 @@ export { expect } from 'chai'
 export const describe = MOCHA.describe
 export const it = MOCHA.it
 
-// TESTING
-const YG_CONFIG_PATH = PATH.resolve(
-    require('global-modules-path').getPath('yagpt'),
-    'yagpt.config.json')
-const R_GET_KEY_VALUE_FROM_FILE = UJson.getKeyValueFromFile(
-    YG_CONFIG_PATH,
-    'testing',
-)
-export const TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.value.path)
-export const TEST_NPM_REPOSITORY = R_GET_KEY_VALUE_FROM_FILE.value.npm
-export const TEST_PATH_NPM = PATH.resolve(
-    R_GET_KEY_VALUE_FROM_FILE.value.npm.path,
-)
-
 // CLASS
 export class UTestUtility {
 
@@ -50,6 +36,8 @@ export class UTestUtility {
     private static INSTANCE: UTestUtility = new UTestUtility()
 
     public name: string = 'UTestUtility'
+    public NPM_REPOSITORY: any
+    public TEST_PATH: any
 
     constructor() {
         if (UTestUtility.INSTANCE) {
@@ -59,6 +47,8 @@ export class UTestUtility {
                 '.getInstance() instead of new.',
             ].join(' '))
         }
+        this.setConstants()
+
         UTestUtility.INSTANCE = this
     }
 
@@ -240,7 +230,7 @@ export class UTestUtility {
         let result: IResultOne = UCommon.getResultObjectOne()
 
         // RUN
-        if (FILE_PATH.indexOf(TEST_PATH) !== -1) {
+        if (FILE_PATH.indexOf(this.TEST_PATH) !== -1) {
             result = await UPath.createFile(
                 FILE_PATH,
                 FILE_CONTENT,
@@ -251,7 +241,7 @@ export class UTestUtility {
             result.message = [
                 FILE_PATH,
                 'not in',
-                TEST_PATH,
+                this.TEST_PATH,
             ].join(' ')
 
         }
@@ -260,6 +250,10 @@ export class UTestUtility {
         return result
     }
 
+    /**
+     * Copies
+     *
+     */
     public async prepareNpmRepository(): Promise<IResultOne> {
         // PREPARE
         const RESULT: IResultOne = {
@@ -268,64 +262,126 @@ export class UTestUtility {
             success: undefined,
             value: undefined,
         }
-        const R = await UGit.checkIsClean(TEST_NPM_REPOSITORY.path)
-        if (R !== false) {
+        // RUN
+        if (SHELL.test('-d', this.NPM_REPOSITORY.path)) {
+            RESULT.success = false
+            RESULT.message = [
+                this.NPM_REPOSITORY.path,
+                'already existant!',
+            ].join(' ')
+        } else {
+            if (SHELL.test('-d', this.NPM_REPOSITORY.path_backup)) {
+                SHELL.cp(
+                    '-Rf',
+                    this.NPM_REPOSITORY.path_backup,
+                    this.NPM_REPOSITORY.path,
+                )
+                RESULT.success = true
+                RESULT.message = [
+                    this.NPM_REPOSITORY.path,
+                    'copied!',
+                ].join(' ')
+            } else {
+                const CMD_CLONE = [
+                    'git clone',
+                    this.NPM_REPOSITORY.git.ssh,
+                    this.NPM_REPOSITORY.path,
+                ].join(' ')
+                const CMD_FETCH = [
+                    'git fetch origin develop',
+                    '&&',
+                    'git checkout -b develop origin/develop',
+                ].join(' ')
+                const CMD_CHECKOUT = [
+                    'git branch',
+                    '&&',
+                    'git checkout master',
+                ].join(' ')
+                const PATH_BEFORE = SHELL.pwd().stdout
+                await SHELL.exec(CMD_CLONE, { silent: true })
+                SHELL.cd(PATH.resolve(this.NPM_REPOSITORY.path))
+                await SHELL.exec(CMD_FETCH, { silent: true })
+                await SHELL.exec(CMD_CHECKOUT, { silent: true })
+                SHELL.cd(PATH_BEFORE)
+                RESULT.success = true
+                RESULT.message = [
+                    this.NPM_REPOSITORY.path,
+                    'cloned!',
+                ].join(' ')
+            }
+        }
 
-            const PATH_BEFORE = process.cwd()
-            SHELL.cd(TEST_NPM_REPOSITORY.path)
-            // SHELL.exec('git add -A', {silent: true})
-            const GIT = GIT_P(TEST_NPM_REPOSITORY.path)
-            await GIT.raw([
-                'add',
-                '-A',
-            ])
-            // SHELL.exec('git commit -m "update"', {silent: true})
-            await GIT.raw([
-                'commit',
-                '-m',
-                'update',
-            ])
-            SHELL.cd(PATH_BEFORE)
+        // RETURN
+        return RESULT
+    }
+
+    public async gitCleanRepository(
+        REPOSITORY_PATH,
+        COMMIT_MESSAGE,
+    ): Promise<IResultOne> {
+
+        // PREPARE
+        const RESULT: IResultOne = {
+            error: undefined,
+            message: undefined,
+            success: undefined,
+            value: undefined,
         }
 
         // RUN
-        if (SHELL.test('-d', TEST_NPM_REPOSITORY.path)) {
+        if (SHELL.test('-d', REPOSITORY_PATH)) {
+            // COMMIT CHANGES WHEN EXISTANT
+            const R_CHECK_IS_CLEAN =
+                await UGit.checkIsClean(REPOSITORY_PATH)
+            if (R_CHECK_IS_CLEAN === true) {
+                RESULT.success = false
+                RESULT.message = [
+                    REPOSITORY_PATH,
+                    'repository already clean!',
+                ].join(' ')
+            } else {
+                const PATH_BEFORE = process.cwd()
+                SHELL.cd(this.NPM_REPOSITORY.path)
+                const GIT = GIT_P(REPOSITORY_PATH)
+                await GIT.raw([
+                    'add',
+                    '-A',
+                ])
+                await GIT.raw([
+                    'commit',
+                    '-m',
+                    COMMIT_MESSAGE,
+                ])
+                SHELL.cd(PATH_BEFORE)
+                RESULT.success = true
+                RESULT.message = [
+                    REPOSITORY_PATH,
+                    'repository cleaned!',
+                ].join(' ')
+            }
+        } else {
             RESULT.success = false
             RESULT.message = [
-                TEST_NPM_REPOSITORY.path,
-                'exitant!',
-            ].join(' ')
-        } else {
-            const CMD_CLONE = [
-                'git clone',
-                TEST_NPM_REPOSITORY.git.ssh,
-                TEST_NPM_REPOSITORY.path,
-            ].join(' ')
-            const CMD_FETCH = [
-                'git fetch origin develop',
-                '&&',
-                'git checkout -b develop origin/develop',
-            ].join(' ')
-            const CMD_CHECKOUT = [
-                'git branch',
-                '&&',
-                'git checkout master',
-            ].join(' ')
-            const PATH_BEFORE = SHELL.pwd().stdout
-            await SHELL.exec(CMD_CLONE, { silent: true })
-            SHELL.cd(PATH.resolve(TEST_NPM_REPOSITORY.path))
-            await SHELL.exec(CMD_FETCH, { silent: true })
-            await SHELL.exec(CMD_CHECKOUT, { silent: true })
-            SHELL.cd(PATH_BEFORE)
-            RESULT.success = true
-            RESULT.message = [
-                TEST_NPM_REPOSITORY.path,
-                'cloned!',
+                REPOSITORY_PATH,
+                'not existant!',
             ].join(' ')
         }
 
         // RETURN
         return RESULT
+    }
+
+    private setConstants(): void {
+        // TESTING
+        const YG_CONFIG_PATH = PATH.resolve(
+            require('global-modules-path').getPath('yagpt'),
+            'yagpt.config.json')
+        const R_GET_KEY_VALUE_FROM_FILE = UJson.getKeyValueFromFile(
+            YG_CONFIG_PATH,
+            'testing',
+        )
+        this.TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.value.path)
+        this.NPM_REPOSITORY = R_GET_KEY_VALUE_FROM_FILE.value.npm
     }
 
 }

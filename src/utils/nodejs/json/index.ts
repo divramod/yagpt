@@ -54,8 +54,7 @@ export class UJsonUtility {
                 RESULT.message = [
                     KEY_NAME,
                     'not existant in',
-                    FILE_PATH,
-                    '!',
+                    FILE_PATH + '!',
                 ].join(' ')
             }
 

@@ -6,7 +6,7 @@ import {
     UCommon,
 } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
-import { describe, expect, it, TEST_PATH, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { ITaskClass, ITaskConstructorParams, SuperTask } from './'
 
 // REQUIRE
@@ -58,11 +58,11 @@ class Task extends SuperTask implements ITaskClass {
 describe(__filename, async () => {
 
     beforeEach(async () => {
-        await RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        await RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        await RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        await RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     it('run()', async () => {

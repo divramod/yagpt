@@ -277,10 +277,6 @@ export class Task extends SuperTask implements ITaskClass {
             ])
 
             // publish
-            console.log( // tslint:disable-line:no-console
-                'projectPath',
-                projectPath,
-            )
             SHELL.cd(projectPath)
             SHELL.exec('npm publish', { silent: false })
             SHELL.cd(PATH_BEFORE)
@@ -309,6 +305,19 @@ export class Task extends SuperTask implements ITaskClass {
                 'merge',
                 'develop',
             ])
+
+            // push -u origin HEAD
+            await GIT.raw([
+                'push',
+                '-u',
+                'origin',
+                'HEAD',
+            ])
+
+            // unlink
+            // SHELL.cd(projectPath)
+            // SHELL.exec('sudo npm rm --global ', { silent: false })
+            // SHELL.cd(PATH_BEFORE)
         }
 
         // SET RM RE

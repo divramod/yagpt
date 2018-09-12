@@ -4,8 +4,6 @@ import {
     describe,
     expect,
     it,
-    TEST_NPM_REPOSITORY,
-    TEST_PATH,
     UTest,
 } from '@utils/nodejs/test'
 import { Task } from './'
@@ -21,17 +19,17 @@ import {
 } from '@utils/nodejs/common'
 
 // TESTSUITE
-describe(__filename, async () => {
+describe.skip(__filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        RIMRAF.sync(TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
-    it.only([
+    it.skip([
         'run()',
         'success:',
         'all conditions fulfilled',
@@ -41,17 +39,17 @@ describe(__filename, async () => {
         const TASK = new Task({ cwd: __dirname, logging: false })
 
         // PREPARE Repository
-        // RIMRAF.sync(TEST_NPM_REPOSITORY.path) // REMOVE DIRECTORY
-        await UTest.prepareNpmRepository()
-        await UGit.removeAllBranchesExceptMaster(TEST_NPM_REPOSITORY.path)
+        // RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
+        await UTest.npmPrepareRepository()
+        await UGit.removeAllBranchesExceptMaster(UTest.NPM_REPOSITORY.path)
         await UGit.checkoutBranch(
-            TEST_NPM_REPOSITORY.path,
+            UTest.NPM_REPOSITORY.path,
             'feature/123-test-feature',
         )
 
         // RUN
         const R: IResultMultiple = await TASK.run({
-            projectPath: TEST_NPM_REPOSITORY.path,
+            projectPath: UTest.NPM_REPOSITORY.path,
         })
 
         // isGitRepository
@@ -60,7 +58,7 @@ describe(__filename, async () => {
 
         // checkIsFeatureBranch
         const R_IS_FEATURE_BRANCH =
-            await UGit.checkIsFeatureBranch(TEST_NPM_REPOSITORY.path)
+            await UGit.checkIsFeatureBranch(UTest.NPM_REPOSITORY.path)
         expect(R.results.isFeatureBranch.value).not.to.be.undefined
         expect(R.results.isFeatureBranch.value).to.equal(true)
 
