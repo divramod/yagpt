@@ -40,7 +40,7 @@ describe.skip(__filename, async () => {
 
         // PREPARE Repository
         // RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
-        await UTest.npmPrepareRepository()
+        await UTest.prepareNpmRepository()
         await UGit.removeAllBranchesExceptMaster(UTest.NPM_REPOSITORY.path)
         await UGit.checkoutBranch(
             UTest.NPM_REPOSITORY.path,
