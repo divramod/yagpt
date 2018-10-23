@@ -10,11 +10,7 @@ import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UTest as U_INSTANCE, UTestUtility as U_CLASS } from './'
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
@@ -82,7 +78,7 @@ describe(__filename, async () => {
                 WRONG_DIRECTORY_PATH,
                 true,
             )
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal([
                 'You can\'t use the directory',
                 WRONG_DIRECTORY_PATH,
@@ -101,7 +97,7 @@ describe(__filename, async () => {
                 await U_INSTANCE.createTestDirectory(UTest.TEST_PATH)
             const R =
                 await U_INSTANCE.createTestDirectory(UTest.TEST_PATH, true)
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
                 UTest.TEST_PATH,
@@ -119,7 +115,7 @@ describe(__filename, async () => {
                 await U_INSTANCE.createTestDirectory(UTest.TEST_PATH)
             const R =
                 await U_INSTANCE.createTestDirectory(UTest.TEST_PATH, false)
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal([
                 'Directory',
                 UTest.TEST_PATH,
@@ -140,14 +136,14 @@ describe(__filename, async () => {
                 await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // TEST
-            expect(R_CREATED.success).to.equal(true)
+            expect(R_CREATED.value).to.equal(true)
 
             // RUN
             const R =
                 await U_INSTANCE.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
         })
 
         it([
@@ -162,7 +158,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
@@ -173,7 +169,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R1.success).to.equal(true)
+            expect(R1.value).to.equal(true)
 
         })
 
@@ -189,7 +185,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
@@ -200,7 +196,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R1.success).to.equal(true)
+            expect(R1.value).to.equal(true)
 
         })
 
@@ -216,7 +212,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
 
             // RUN
             const R1 = await U_INSTANCE.gitCreateTestRepositoryAtPath(
@@ -227,7 +223,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R1.success).to.equal(true)
+            expect(R1.value).to.equal(true)
 
         })
 
@@ -243,7 +239,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
 
         })
 
@@ -264,7 +260,7 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createTestFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -273,7 +269,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'created!',
@@ -294,13 +290,13 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createTestFile(
                     FILE_PATH,
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'created!',
@@ -319,14 +315,14 @@ describe(__filename, async () => {
                 UTest.TEST_PATH,
                 'test.json',
             )
-            const R_PREPARE_FILE: IResultOne =
+            const R_PREPARE_FILE: IResult =
                 await U_INSTANCE.createTestFile(
                     FILE_PATH,
                     'test',
                 )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createTestFile(
                     FILE_PATH,
                     'test',
@@ -334,7 +330,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'overwritten!',
@@ -354,7 +350,7 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createTestFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -363,7 +359,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'not in',
@@ -390,7 +386,7 @@ describe(__filename, async () => {
             RIMRAF.sync(UTest.NPM_REPOSITORY.path)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+            const R: IResult = await U_INSTANCE.prepareNpmRepository()
 
             // RESTORE BACKUP COPY
             await SHELL.cp(
@@ -400,7 +396,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal( [
                 UTest.NPM_REPOSITORY.path,
                 'cloned!',
@@ -417,7 +413,7 @@ describe(__filename, async () => {
             RIMRAF.sync(UTest.NPM_REPOSITORY.path)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+            const R: IResult = await U_INSTANCE.prepareNpmRepository()
 
             // RESTORE BACKUP COPY
             await SHELL.cp(
@@ -427,7 +423,7 @@ describe(__filename, async () => {
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal( [
                 UTest.NPM_REPOSITORY.path,
                 'copied!',
@@ -441,14 +437,14 @@ describe(__filename, async () => {
         ].join(' '), async () => {
 
             // PREPARE
-            const R_PREPARE: IResultOne =
+            const R_PREPARE: IResult =
                 await U_INSTANCE.prepareNpmRepository()
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.prepareNpmRepository()
+            const R: IResult = await U_INSTANCE.prepareNpmRepository()
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal( [
                 UTest.NPM_REPOSITORY.path,
                 'already existant!',
@@ -477,14 +473,14 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.gitCleanRepository(
                     UTest.TEST_PATH,
                     'testing',
                 )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal( [
                 UTest.TEST_PATH,
                 'repository cleaned!',
@@ -502,14 +498,14 @@ describe(__filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.gitCleanRepository(
                     UTest.TEST_PATH,
                     'testing',
                 )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal( [
                 UTest.TEST_PATH,
                 'repository already clean!',
@@ -525,14 +521,14 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.gitCleanRepository(
                     UTest.TEST_PATH,
                     'testing',
                 )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal( [
                 UTest.TEST_PATH,
                 'not existant!',

@@ -9,11 +9,7 @@ const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
@@ -43,12 +39,12 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.createDirectory(
+            const R: IResult = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
                 UTest.TEST_PATH,
@@ -65,16 +61,16 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R_PREPARE: IResultOne = await U_INSTANCE.createDirectory(
+            const R_PREPARE: IResult = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
             )
-            const R: IResultOne = await U_INSTANCE.createDirectory(
+            const R: IResult = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
                 true,
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal([
                 'Directory',
                 UTest.TEST_PATH,
@@ -91,16 +87,16 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R_PREPARE: IResultOne = await U_INSTANCE.createDirectory(
+            const R_PREPARE: IResult = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
             )
-            const R: IResultOne = await U_INSTANCE.createDirectory(
+            const R: IResult = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
                 false,
             )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal([
                 'Directory',
                 UTest.TEST_PATH,
@@ -126,7 +122,7 @@ describe(__filename, async () => {
             )
 
                 // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -135,7 +131,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'created!',
@@ -156,13 +152,13 @@ describe(__filename, async () => {
             )
 
                 // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'created!',
@@ -180,7 +176,7 @@ describe(__filename, async () => {
                 UTest.TEST_PATH,
                 'test.json',
             )
-            const R_PREPARE: IResultOne =
+            const R_PREPARE: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -189,7 +185,7 @@ describe(__filename, async () => {
                 )
 
                 // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -199,7 +195,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'overwritten!',
@@ -217,7 +213,7 @@ describe(__filename, async () => {
                 UTest.TEST_PATH,
                 'test.json',
             )
-            const R_PREPARE: IResultOne =
+            const R_PREPARE: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -226,7 +222,7 @@ describe(__filename, async () => {
                 )
 
                 // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -235,7 +231,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 FILE_PATH,
                 'existant!',
@@ -254,7 +250,7 @@ describe(__filename, async () => {
             )
 
                 // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.createFile(
                     FILE_PATH,
                     JSON.stringify({
@@ -263,7 +259,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).not.to.equal(undefined)
+            expect(R.value).not.to.equal(undefined)
             expect(R.message).to.equal([
                 'Directory',
                 PATH.dirname(FILE_PATH),

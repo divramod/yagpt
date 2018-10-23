@@ -1,19 +1,15 @@
-
-export interface IResults {
+// result()
+export interface IResult {
+    error: undefined | any
+    message: undefined | string
+    subresults?: undefined | ISubresults
+    value: undefined | any
+}
+export interface ISubresults {
     [key: string]: IResultOne;
 }
-
 export interface IResultOne {
     error: undefined | any;
     message: undefined | any;
-    success: undefined | boolean;
-    value: undefined | any;
-}
-
-export interface IResultMultiple {
-    error: undefined | any;
-    results: undefined | IResults;
-    success: undefined | boolean;
-    message: undefined | string;
     value: undefined | any;
 }

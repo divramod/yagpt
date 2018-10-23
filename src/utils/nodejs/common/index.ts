@@ -1,7 +1,7 @@
 // https://gitlab.com/divramod/yagpt/issues/4
 
 // IMPORT
-import { IResultMultiple, IResultOne, IResults } from './index.d'
+import { IResult, ISubresults } from './index.d'
 
 // EXPORT
 export * from './index.d'
@@ -29,31 +29,29 @@ export class UCommonUtility {
         UCommonUtility.INSTANCE = this
     }
 
-    public getResultObjectOne(): IResultOne {
+    public getResultObjectOne(): IResult {
         return {
             error: undefined,
             message: undefined,
-            success: undefined,
             value: undefined,
         }
     }
 
-    public getResultObjectMultiple(): IResultMultiple {
+    public getResultObjectMultiple(): IResult {
         return {
             error: undefined,
             message: undefined,
-            results: {},
-            success: undefined,
+            subresults: {},
             value: undefined,
         }
     }
 
     public getResultsObject(
         ATOMIC_RESULT_STRINGS,
-    ): IResults | any {
+    ): ISubresults | any {
         const resultsObject = {}
         for (const resultString of ATOMIC_RESULT_STRINGS) {
-            const RESULT_OBJECT: IResultOne = this.getResultObjectOne()
+            const RESULT_OBJECT: IResult = this.getResultObjectOne()
             resultsObject[resultString] = RESULT_OBJECT
         }
         return resultsObject

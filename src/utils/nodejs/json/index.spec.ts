@@ -9,11 +9,7 @@ const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
@@ -44,7 +40,7 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.getKeyValueFromFile(
                     PATH.resolve(
                         process.cwd(),
@@ -71,14 +67,14 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.getKeyValueFromFile(
                     FILE_PATH,
                     'blubbi',
                 )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal( [
                 'blubbi',
                 'not existant in',
@@ -95,7 +91,7 @@ describe(__filename, async () => {
             // PREPARE
 
             // RUN
-            const R: IResultOne =
+            const R: IResult =
                 await U_INSTANCE.getKeyValueFromFile(
                     PATH.resolve(
                         process.cwd(),
@@ -105,7 +101,7 @@ describe(__filename, async () => {
                 )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal([
                 PATH.resolve(
                     process.cwd(),

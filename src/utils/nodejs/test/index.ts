@@ -7,11 +7,7 @@ const RIMRAF = require('rimraf')
 const GIT_P = require('simple-git/promise')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult, ISubresults } from '@utils/nodejs/common'
 
 // IMPORT
 import { UCommon } from '@utils/nodejs/common'
@@ -104,9 +100,9 @@ export class UTestUtility {
         createDirectoryIfNotExistant: boolean = true,
         removeDirectoryIfExistant: boolean = true,
         removeGitRepositoryIfExistant: boolean = true,
-    ): Promise<IResultMultiple> {
+    ): Promise<IResult> {
         const RESULT = UCommon.getResultObjectMultiple()
-        const RESULTS: IResults = UCommon.getResultsObject([
+        const RESULTS: ISubresults = UCommon.getResultsObject([
             'createDirectoryIfNotExistant',
             'removeDirectoryIfExistant',
             'removeGitRepositoryIfExistant',
@@ -117,14 +113,14 @@ export class UTestUtility {
             if (createDirectoryIfNotExistant) {
                 await this.createTestDirectory(repoPath)
             } else { // EXIT
-                RESULT.success = false
+                RESULT.value = false
                 RESULT.message = 'Directory ' + repoPath + ' not existant'
             }
         } else { // EXISTANT
             // removeDirectoryIfExistant
             if (removeDirectoryIfExistant) {
                 SHELL.rm('-rf', PATH.resolve(repoPath))
-                RESULTS.removeDirectoryIfExistant.success = true
+                RESULTS.removeDirectoryIfExistant.value = true
                 await this.createTestDirectory(repoPath)
             } else {
                 // removeGitRepositoryIfExistant
@@ -133,9 +129,9 @@ export class UTestUtility {
                     removeGitRepositoryIfExistant
                 ) {
                     SHELL.rm('-rf', PATH.resolve(repoPath, '.git'))
-                    RESULTS.removeGitRepositoryIfExistant.success = true
+                    RESULTS.removeGitRepositoryIfExistant.value = true
                 } else {
-                    RESULT.success = true
+                    RESULT.value = true
                     RESULT.message = [
                         'Repository at',
                         repoPath,
@@ -145,12 +141,12 @@ export class UTestUtility {
             }
         }
 
-        if (RESULT.success === undefined) {
+        if (RESULT.value === undefined) {
             const GIT = GIT_P(repoPath)
             await GIT.init()
-            RESULT.success = true
+            RESULT.value = true
             const MESSAGE_ARR_DIRECTORY_CREATED = []
-            if (RESULTS.removeDirectoryIfExistant.success) {
+            if (RESULTS.removeDirectoryIfExistant.value) {
                 MESSAGE_ARR_DIRECTORY_CREATED.push(
                     'Repository at ' + repoPath + ' removed and created!',
                 )
@@ -162,22 +158,22 @@ export class UTestUtility {
 
         }
 
-        RESULT.results = RESULTS
+        RESULT.subresults = RESULTS
         return RESULT
     }
 
     public async createTestDirectory(
         directoryPath: string,
         bDeleteIfDirectoryExistant: boolean = true,
-    ): Promise<IResultMultiple> {
+    ): Promise<IResult> {
         // Result Object
         const R = await UCommon.getResultObjectMultiple()
 
         // PREPARE INTERFACE
-        interface ICreateTestDirectoryResults extends IResults {
-            aPathInTmpTest: IResultOne;
-            bDirectoryExistant: IResultOne;
-            cDeletedIfDirectoryExistant: IResultOne;
+        interface ICreateTestDirectoryResults extends ISubresults {
+            aPathInTmpTest: IResult;
+            bDirectoryExistant: IResult;
+            cDeletedIfDirectoryExistant: IResult;
         }
 
         // PREPARE RESULT OBJECT
@@ -194,7 +190,7 @@ export class UTestUtility {
         // check if is in path /tmp/test
         if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
             resultsObject.aPathInTmpTest.value = false
-            R.success = false
+            R.value = false
             R.message = [
                 'You can\'t use the directory',
                 DIRECTORY_PATH,
@@ -209,14 +205,14 @@ export class UTestUtility {
             )
             resultsObject = Object.assign(
                 resultsObject,
-                R_CREATE_DIRECTORY.results,
+                R_CREATE_DIRECTORY.subresults,
             )
-            R.success = R_CREATE_DIRECTORY.success
+            R.value = R_CREATE_DIRECTORY.value
             R.message = R_CREATE_DIRECTORY.message
         }
 
         // PREPARE END RESULT
-        R.results = resultsObject
+        R.subresults = resultsObject
 
         return R
     }
@@ -225,9 +221,9 @@ export class UTestUtility {
         FILE_PATH,
         FILE_CONTENT = '',
         OVERWRITE_IF_EXISTANT = false,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
         // PREPARE
-        let result: IResultOne = UCommon.getResultObjectOne()
+        let result: IResult = UCommon.getResultObjectOne()
 
         // RUN
         if (FILE_PATH.indexOf(this.TEST_PATH) !== -1) {
@@ -237,7 +233,7 @@ export class UTestUtility {
                 OVERWRITE_IF_EXISTANT,
             )
         } else {
-            result.success = false
+            result.value = false
             result.message = [
                 FILE_PATH,
                 'not in',
@@ -254,17 +250,16 @@ export class UTestUtility {
      * Copies
      *
      */
-    public async prepareNpmRepository(): Promise<IResultOne> {
+    public async prepareNpmRepository(): Promise<IResult> {
         // PREPARE
-        const RESULT: IResultOne = {
+        const RESULT: IResult = {
             error: undefined,
             message: undefined,
-            success: undefined,
             value: undefined,
         }
         // RUN
         if (SHELL.test('-d', this.NPM_REPOSITORY.path)) {
-            RESULT.success = false
+            RESULT.value = false
             RESULT.message = [
                 this.NPM_REPOSITORY.path,
                 'already existant!',
@@ -276,7 +271,7 @@ export class UTestUtility {
                     this.NPM_REPOSITORY.path_backup,
                     this.NPM_REPOSITORY.path,
                 )
-                RESULT.success = true
+                RESULT.value = true
                 RESULT.message = [
                     this.NPM_REPOSITORY.path,
                     'copied!',
@@ -303,7 +298,7 @@ export class UTestUtility {
                 await SHELL.exec(CMD_FETCH, { silent: true })
                 await SHELL.exec(CMD_CHECKOUT, { silent: true })
                 SHELL.cd(PATH_BEFORE)
-                RESULT.success = true
+                RESULT.value = true
                 RESULT.message = [
                     this.NPM_REPOSITORY.path,
                     'cloned!',
@@ -318,13 +313,12 @@ export class UTestUtility {
     public async gitCleanRepository(
         REPOSITORY_PATH,
         COMMIT_MESSAGE,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
 
         // PREPARE
-        const RESULT: IResultOne = {
+        const RESULT: IResult = {
             error: undefined,
             message: undefined,
-            success: undefined,
             value: undefined,
         }
 
@@ -334,7 +328,7 @@ export class UTestUtility {
             const R_CHECK_IS_CLEAN =
                 await UGit.checkIsClean(REPOSITORY_PATH)
             if (R_CHECK_IS_CLEAN === true) {
-                RESULT.success = false
+                RESULT.value = false
                 RESULT.message = [
                     REPOSITORY_PATH,
                     'repository already clean!',
@@ -353,14 +347,14 @@ export class UTestUtility {
                     COMMIT_MESSAGE,
                 ])
                 SHELL.cd(PATH_BEFORE)
-                RESULT.success = true
+                RESULT.value = true
                 RESULT.message = [
                     REPOSITORY_PATH,
                     'repository cleaned!',
                 ].join(' ')
             }
         } else {
-            RESULT.success = false
+            RESULT.value = false
             RESULT.message = [
                 REPOSITORY_PATH,
                 'not existant!',

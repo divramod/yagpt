@@ -10,11 +10,7 @@ const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // CLASS
 export class UPathUtility {
@@ -40,9 +36,9 @@ export class UPathUtility {
     public async createDirectory(
         directoryPath: string,
         bDeleteIfDirectoryExistant: boolean = false,
-    ): Promise<IResultMultiple> {
+    ): Promise<IResult> {
         // PREPARE
-        const RESULT: IResultMultiple = UCommon.getResultObjectMultiple()
+        const RESULT: IResult = UCommon.getResultObjectMultiple()
         const DIRECTORY_PATH = PATH.resolve(directoryPath)
 
         // PREPARE RESULT OBJECT
@@ -58,7 +54,7 @@ export class UPathUtility {
             if (bDeleteIfDirectoryExistant) {
                 RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
                 SHELL.mkdir('-p', DIRECTORY_PATH) // CREATE DIRECTORY
-                RESULT.success = RESULTS_OBJECT.bDirectoryExistant.value = true
+                RESULT.value = RESULTS_OBJECT.bDirectoryExistant.value = true
                 RESULT.message =
                     RESULTS_OBJECT.bDirectoryExistant.message =
                     [
@@ -67,7 +63,7 @@ export class UPathUtility {
                         'removed and created!',
                     ].join(' ')
             } else {
-                RESULT.success = RESULTS_OBJECT.bDirectoryExistant.value = false
+                RESULT.value = RESULTS_OBJECT.bDirectoryExistant.value = false
                 RESULT.message =
                     RESULTS_OBJECT.bDirectoryExistant.message =
                     [
@@ -79,7 +75,7 @@ export class UPathUtility {
         } else {
             RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
             SHELL.mkdir('-p', DIRECTORY_PATH) // CREATE DIRECTORY
-            RESULT.success = RESULTS_OBJECT.bDirectoryExistant.value = true
+            RESULT.value = RESULTS_OBJECT.bDirectoryExistant.value = true
             RESULT.message =
                 RESULTS_OBJECT.bDirectoryExistant.message =
                 [
@@ -97,9 +93,9 @@ export class UPathUtility {
         FILE_PATH,
         FILE_CONTENT = '',
         OVERWRITE_IF_EXISTANT = false,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
         // PREPARE
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = UCommon.getResultObjectOne()
 
         // RUN
         const FILE_DIRECTORY_PATH = PATH.dirname(FILE_PATH)
@@ -112,7 +108,7 @@ export class UPathUtility {
             if (FILE_EXSITANT) {
                 if (!OVERWRITE_IF_EXISTANT) {
                     writeFile = false
-                    RESULT.success = false
+                    RESULT.value = false
                     RESULT.message = [
                         FILE_PATH,
                         'existant!',
@@ -121,7 +117,7 @@ export class UPathUtility {
             }
             if (writeFile) {
                 FS.writeFileSync(FILE_PATH, FILE_CONTENT)
-                RESULT.success = true
+                RESULT.value = true
             }
             if (writeFile && FILE_EXSITANT) {
                 RESULT.message = [
@@ -138,7 +134,7 @@ export class UPathUtility {
             // SHELL.exec('ls -lisa ' + FILE_DIRECTORY_PATH)
             // SHELL.exec('cat ' + FILE_PATH)
         } else {
-            RESULT.success = false
+            RESULT.value = false
             RESULT.message = [
                 'Directory',
                 FILE_DIRECTORY_PATH,

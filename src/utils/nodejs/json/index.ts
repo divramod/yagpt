@@ -7,11 +7,7 @@ const PATH = require('path')
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // CLASS
 export class UJsonUtility {
@@ -37,9 +33,9 @@ export class UJsonUtility {
     public getKeyValueFromFile(
         FILE_PATH,
         KEY_NAME,
-    ): IResultOne {
+    ): IResult {
         // PREPARE
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = UCommon.getResultObjectOne()
 
         // RUN
         const FILE_EXSITANT = SHELL.test('-f', PATH.resolve(FILE_PATH))
@@ -47,10 +43,10 @@ export class UJsonUtility {
             delete require.cache[FILE_PATH]
             const FILE = require(FILE_PATH)
             if (FILE[KEY_NAME]) {
-                RESULT.success = true
+                RESULT.value = true
                 RESULT.value = FILE[KEY_NAME]
             } else {
-                RESULT.success = false
+                RESULT.value = false
                 RESULT.message = [
                     KEY_NAME,
                     'not existant in',
@@ -59,7 +55,7 @@ export class UJsonUtility {
             }
 
         } else {
-            RESULT.success = false
+            RESULT.value = false
             RESULT.message = [
                 FILE_PATH,
                 'not existant!',

@@ -4,21 +4,17 @@ import { UGit as U_INSTANCE, UGitUtility as U_CLASS } from './'
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
-describe(__filename, async () => {
+describe.only(__filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        // RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        // RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
     describe('UGit.class()', async () => {
@@ -27,6 +23,59 @@ describe(__filename, async () => {
 
         it('constructor()', UTest.utilityTestConstructor(U_CLASS))
 
+    })
+
+    describe('UGit.removeAllBranchesExceptMasterAndDevelop()', async () => {
+
+        it([
+            'success:',
+            'is a git repository and only master/develop are left',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.prepareNpmRepository()
+            await U_INSTANCE.checkoutBranch(
+                UTest.NPM_REPOSITORY.path,
+                'feature/001-test',
+            )
+            await U_INSTANCE.checkout(
+                UTest.NPM_REPOSITORY.path,
+                'master',
+            )
+
+            // RUN
+            const R: boolean | string =
+                await U_INSTANCE.removeAllBranchesExceptMasterAndDevelop(
+                    UTest.NPM_REPOSITORY.path,
+                )
+
+            // TEST
+            expect(R).to.equal(true)
+
+        })
+
+        it([
+            'failure:',
+            'is not a git repository',
+        ].join(' '), async () => {
+
+            // PREPARE
+            await UTest.createTestDirectory(UTest.TEST_PATH)
+
+            // RUN
+            const R: boolean | string =
+                await U_INSTANCE.removeAllBranchesExceptMasterAndDevelop(
+                    UTest.TEST_PATH,
+                )
+
+            // TEST
+            expect(R).to.equal([
+                'error:',
+                UTest.TEST_PATH,
+                'is not a Git Repository!',
+            ].join(' '))
+
+        })
     })
 
     describe('UGit.getFeatureName()', async () => {
@@ -40,11 +89,10 @@ describe(__filename, async () => {
             // await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -62,11 +110,10 @@ describe(__filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -88,11 +135,10 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureName(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(true)
             expect(R.value).to.equal('job-npm-publish')
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -114,11 +160,10 @@ describe(__filename, async () => {
             await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -136,11 +181,10 @@ describe(__filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(false)
             expect(R.value).to.equal(undefined)
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -162,11 +206,10 @@ describe(__filename, async () => {
             )
 
             // RUN
-            const R: IResultMultiple =
+            const R: IResult =
                 await U_INSTANCE.getFeatureIssueNumber(UTest.TEST_PATH)
 
             // TEST
-            expect(R.success).to.equal(true)
             expect(R.value).to.equal(4)
             expect(R.message).to.equal([
                 UTest.TEST_PATH,
@@ -226,7 +269,7 @@ describe(__filename, async () => {
             await UTest.createTestDirectory(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
+            const R: IResult = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(false)
@@ -241,7 +284,7 @@ describe(__filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
+            const R: IResult = await U_INSTANCE.checkIsRepo(UTest.TEST_PATH)
 
             // TEST
             expect(R.value).to.equal(true)
@@ -372,26 +415,6 @@ describe(__filename, async () => {
 
             // TEST
             expect(R.value).to.equal(true)
-        })
-
-    })
-
-    describe.skip('UGit.gitPushOriginHead()', async () => {
-
-        it([
-            'success:',
-            '',
-        ].join(' '), async () => {
-
-            // PREPARE
-            await UTest.gitCreateTestRepositoryAtPath(UTest.TEST_PATH)
-
-            // RUN
-            const R = await U_INSTANCE.pushOriginHead(UTest.TEST_PATH)
-
-            // TEST
-            expect(0).to.equal(1) // fails
-
         })
 
     })

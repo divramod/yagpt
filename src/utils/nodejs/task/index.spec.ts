@@ -1,10 +1,5 @@
 // https://gitlab.com/divramod/yagpt/issues/7
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-    UCommon,
-} from '@utils/nodejs/common'
+import { IResult, ISubresults, UCommon } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { ITaskClass, ITaskConstructorParams, SuperTask } from './'
@@ -20,30 +15,30 @@ class Task extends SuperTask implements ITaskClass {
         super({ name: 'Test', cwd: opts.cwd, logging: opts.logging || false })
     }
 
-    public async run(): Promise<IResultMultiple> {
+    public async run(): Promise<IResult> {
         // PREPARE
         await super.runBefore()
 
         // RUN
-        const RESULT_MAIN: IResultMultiple = UCommon.getResultObjectMultiple()
-        const RESULTS: IResults = UCommon.getResultsObject([
+        const RESULT_MAIN: IResult = UCommon.getResultObjectMultiple()
+        const RESULTS: ISubresults = UCommon.getResultsObject([
             'someResult1',
             'someResult2',
         ])
-        RESULT_MAIN.results = RESULTS
+        RESULT_MAIN.subresults = RESULTS
 
         // PRODUCE SUB RESULT
-        const someResult1: IResultOne = UCommon.getResultObjectOne()
-        someResult1.success = true
-        RESULT_MAIN.results.someResult1 = someResult1
+        const someResult1: IResult = UCommon.getResultObjectOne()
+        someResult1.value = true
+        RESULT_MAIN.subresults.someResult1 = someResult1
 
         // PRODUCE SUB RESULT
-        const someResult2: IResultOne = UCommon.getResultObjectOne()
-        someResult2.success = false
-        RESULT_MAIN.results.someResult2 = someResult2
+        const someResult2: IResult = UCommon.getResultObjectOne()
+        someResult2.value = false
+        RESULT_MAIN.subresults.someResult2 = someResult2
 
         // PRODUCE RESULT
-        RESULT_MAIN.success = true
+        RESULT_MAIN.value = true
         RESULT_MAIN.message = 'message'
 
         // FINISH
@@ -69,8 +64,8 @@ describe(__filename, async () => {
 
         const T = new Task({ cwd: __dirname, logging: false })
         const R = await T.run()
-        expect(R.results.someResult1.success).to.equal(true)
-        expect(R.results.someResult2.success).to.equal(false)
+        expect(R.subresults.someResult1.value).to.equal(true)
+        expect(R.subresults.someResult2.value).to.equal(false)
 
     })
 

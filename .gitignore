@@ -2,6 +2,7 @@ dist
 package-lock.json
 yarn.lock
 node_modules
+documentation
 .nyc_output
 coverage
 .idea

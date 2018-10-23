@@ -14,11 +14,7 @@ const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
@@ -52,17 +48,17 @@ describe(__filename, async () => {
 
             // PREPARE
             RIMRAF.sync(UTest.NPM_REPOSITORY.path)
-            const R_PREPARE_NPM_REPOSITORY: IResultOne =
+            const R_PREPARE_NPM_REPOSITORY: IResult =
                 await UTest.prepareNpmRepository()
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.relink(
+            const R: IResult = await U_INSTANCE.relink(
                 UTest.NPM_REPOSITORY.path,
                 UTest.NPM_REPOSITORY.name,
             )
 
             // TEST
-            expect(R.success).to.equal(true)
+            expect(R.value).to.equal(true)
             expect(R.message).to.equal( [
                 UTest.NPM_REPOSITORY.path,
                 'relinked!',
@@ -79,13 +75,13 @@ describe(__filename, async () => {
             RIMRAF.sync(UTest.NPM_REPOSITORY.path)
 
             // RUN
-            const R: IResultOne = await U_INSTANCE.relink(
+            const R: IResult = await U_INSTANCE.relink(
                 UTest.NPM_REPOSITORY.path,
                 UTest.NPM_REPOSITORY.name,
             )
 
             // TEST
-            expect(R.success).to.equal(false)
+            expect(R.value).to.equal(false)
             expect(R.message).to.equal( [
                 UTest.NPM_REPOSITORY.path,
                 'not relinked (not existant)!',

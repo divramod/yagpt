@@ -65,8 +65,8 @@ describe(__filename, async () => {
         }
 
         const R = U_INSTANCE.getResultObjectMultiple()
-        R.results = U_INSTANCE.getResultsObject(ATOMIC_RESULT_STRINGS)
-        expect(R.results).to.deep.equal(MULTIPLE_RESULT_OBJECT.results)
+        R.subresults = U_INSTANCE.getResultsObject(ATOMIC_RESULT_STRINGS)
+        expect(R.subresults).to.deep.equal(MULTIPLE_RESULT_OBJECT.results)
 
     })
 })

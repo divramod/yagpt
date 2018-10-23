@@ -7,11 +7,7 @@ import { UCommon } from '@utils/nodejs/common'
 const SHELL = require('shelljs')
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // CLASS
 export class UNpmUtility {
@@ -40,10 +36,10 @@ export class UNpmUtility {
     public async relink(
         PACKAGE_PATH,
         PACKAGE_NAME,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
 
         // PREPARE
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = UCommon.getResultObjectOne()
 
         // RUN
         if (SHELL.test('-d', PACKAGE_PATH)) {
@@ -66,13 +62,13 @@ export class UNpmUtility {
                 PACKAGE_PATH,
                 'relinked!',
             ].join(' ')
-            RESULT.success = true
+            RESULT.value = true
         } else {
             RESULT.message = [
                 PACKAGE_PATH,
                 'not relinked (not existant)!',
             ].join(' ')
-            RESULT.success = false
+            RESULT.value = false
         }
 
         // RETURN

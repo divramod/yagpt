@@ -1,4 +1,4 @@
-import { IResultMultiple } from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // Task
 // ========================================================
@@ -8,7 +8,7 @@ export interface ITaskConstructorParams {
 }
 
 export interface ITaskClass {
-    run(PARAMS: any): Promise<IResultMultiple>;
+    run(PARAMS: any): Promise<IResult>;
 }
 
 // SuperTask

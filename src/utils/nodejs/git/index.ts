@@ -5,17 +5,14 @@ const GIT_P = require('simple-git/promise')
 const branchName = require('branch-name')
 const SHELL = require('shelljs')
 const PATH = require('path')
+const _ = require('underscore')
 
 // IMPORT
 import { UCommon } from '@utils/nodejs/common'
 import { UTest } from '@utils/nodejs/test'
 
 // TYPINGS
-import {
-    IResultMultiple,
-    IResultOne,
-    IResults,
-} from '@utils/nodejs/common'
+import { IResult } from '@utils/nodejs/common'
 
 // CLASS
 export class UGitUtility {
@@ -40,10 +37,14 @@ export class UGitUtility {
 
     public async checkIsFeatureBranch(
         GIT_REPOSITORY_PATH: string,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
 
         // RESULT
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = {
+            error: undefined,
+            message: undefined,
+            value: undefined,
+        }
 
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
@@ -65,9 +66,9 @@ export class UGitUtility {
 
     public async checkIsRepo(
         DIRECTORY_PATH,
-    ): Promise<IResultOne> {
+    ): Promise<IResult> {
         // RESULT
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = UCommon.getResultObjectOne()
 
         if (SHELL.test('-d', DIRECTORY_PATH)) {
             const GIT = GIT_P(DIRECTORY_PATH)
@@ -111,39 +112,53 @@ export class UGitUtility {
         return result
     }
 
-    public async removeAllBranchesExceptMaster(
-        GIT_REPOSITORY_PATH,
-    ): Promise<boolean> {
-        let result = false
-        const R_CHECK_IS_REPO =
-        await this.checkIsRepo(GIT_REPOSITORY_PATH)
+    /**
+     * Removes all local branches from a git repository except master and
+     * develop (default) or a passed string array with branch names.
+     * @maintainer Arvid Petermann
+     * @param gitRepositoryPath  Path of the repository from which the
+     *  branches will be deleted.
+     * @param excludedBranches  Branches to exclude from deletion.
+     * @returns
+     *      1. (suc) boolean: true
+     *      2. (err) string: "error: `gitRepositoryPath` is not a Git
+     *                        Repository!"
+     */
+    public async removeAllBranchesExceptMasterAndDevelop(
+        gitRepositoryPath: string,
+        excludedBranches: string[] = [
+            'master',
+            'develop',
+        ],
+    ): Promise<boolean | string> {
+        let result
+        const R_CHECK_IS_REPO = await this.checkIsRepo(gitRepositoryPath)
         if (R_CHECK_IS_REPO.value) {
-            const GIT = GIT_P(GIT_REPOSITORY_PATH)
-            const CMD = [
-                'git checkout master',
-                '|',
-                'git branch',
-                '|',
-                'grep -v "master\\|develop"',
-                '|',
-                'awk \'{print substr($0,2);}\'',
-                '|',
-                'xargs git branch -D',
-            ].join(' ')
-            const PATH_BEFORE = SHELL.pwd().stdout
-            SHELL.cd(PATH.resolve(GIT_REPOSITORY_PATH))
-            const TEST = SHELL.exec(CMD, { silent: true }).stdout
-            SHELL.cd(PATH_BEFORE)
+            const GIT = GIT_P(gitRepositoryPath)
+            const BRANCHES_BEFORE_DELETE = await GIT.branch()
+            const CURRENT_BRANCH = BRANCHES_BEFORE_DELETE.current
+            _.each(BRANCHES_BEFORE_DELETE.branches, async (branch) => {
+                if (!_.contains(excludedBranches, branch.name)) {
+                    if (branch.name.indexOf('remotes') !== 0) {
+                        await GIT.deleteLocalBranch(branch.name)
+                    }
+                }
+            })
             result = true
+        } else {
+            result = [
+                'error:',
+                gitRepositoryPath,
+                'is not a Git Repository!',
+            ].join(' ')
         }
-
         return result
     }
 
     public async checkoutBranch(
         GIT_REPOSITORY_PATH,
         BRANCH_NAME,
-    ): Promise<boolean> {
+    ): Promise < boolean > {
         let result = false
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
@@ -163,7 +178,7 @@ export class UGitUtility {
     public async checkout(
         GIT_REPOSITORY_PATH,
         BRANCH_NAME,
-    ): Promise<boolean> {
+    ): Promise < boolean > {
         let result = false
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
@@ -181,7 +196,7 @@ export class UGitUtility {
 
     public async checkIsClean(
         GIT_REPOSITORY_PATH,
-    ): Promise<boolean> {
+    ): Promise < boolean > {
         let result = true
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
@@ -195,10 +210,17 @@ export class UGitUtility {
         return result
     }
 
+    /**
+     *  params:
+     *      GIT_REPOSITORY_PATH: path of the repository
+     *  return: Promise<IResult>
+     *      value: Feature Name | undefined
+     *      message: ...
+     */
     public async getFeatureName(
         GIT_REPOSITORY_PATH,
-    ): Promise<IResultMultiple> {
-        const RESULT: IResultMultiple = UCommon.getResultObjectMultiple()
+    ): Promise < IResult > {
+        const RESULT: IResult = UCommon.getResultObjectMultiple()
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
@@ -215,21 +237,18 @@ export class UGitUtility {
                         FEATURE_BRANCH_NAME.length,
                     )
                 RESULT.value = FEATURE_NAME
-                RESULT.success = true
                 RESULT.message = [
                     GIT_REPOSITORY_PATH,
                     'branch name is',
                     FEATURE_NAME,
                 ].join(' ')
             } else {
-                RESULT.success = false
                 RESULT.message = [
                     GIT_REPOSITORY_PATH,
                     'is not on a feature Branch!',
                 ].join(' ')
             }
         } else {
-            RESULT.success = false
             RESULT.message = [
                 GIT_REPOSITORY_PATH,
                 'is not a git repository!',
@@ -238,10 +257,17 @@ export class UGitUtility {
         return RESULT
     }
 
+    /**
+     * params:
+     *      GIT_REPOSITORY_PATH: path of the Repository
+     * return: Promise<IResult>
+     *      value: Feature Issue Number | undefined
+     *      message: Success Message
+     */
     public async getFeatureIssueNumber(
         GIT_REPOSITORY_PATH,
-    ): Promise<IResultMultiple> {
-        const RESULT: IResultMultiple = UCommon.getResultObjectMultiple()
+    ): Promise < IResult > {
+        const RESULT: IResult = UCommon.getResultObjectMultiple()
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
@@ -258,21 +284,18 @@ export class UGitUtility {
                         FEATURE_BRANCH_NAME.indexOf('-'),
                     ))
                 RESULT.value = ISSUE_NUMBER
-                RESULT.success = true
                 RESULT.message = [
                     GIT_REPOSITORY_PATH,
                     'issue number is',
                     ISSUE_NUMBER,
                 ].join(' ')
             } else {
-                RESULT.success = false
                 RESULT.message = [
                     GIT_REPOSITORY_PATH,
                     'is not on a feature Branch!',
                 ].join(' ')
             }
         } else {
-            RESULT.success = false
             RESULT.message = [
                 GIT_REPOSITORY_PATH,
                 'is not a git repository!',
@@ -283,8 +306,8 @@ export class UGitUtility {
 
     public async pushOriginHead(
         GIT_REPOSITORY_PATH,
-    ): Promise<IResultOne> {
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+    ): Promise < IResult > {
+        const RESULT: IResult = UCommon.getResultObjectOne()
         const R_CHECK_IS_REPO =
         await this.checkIsRepo(GIT_REPOSITORY_PATH)
         if (R_CHECK_IS_REPO.value) {
@@ -303,11 +326,11 @@ export class UGitUtility {
     public async checkIsMergable(
         BRANCH_NAME: string,
         GIT_REPOSITORY_PATH,
-    ): Promise<IResultOne> {
+    ): Promise < IResult > {
         const GIT = GIT_P(GIT_REPOSITORY_PATH)
 
         // RESULT
-        const RESULT: IResultOne = UCommon.getResultObjectOne()
+        const RESULT: IResult = UCommon.getResultObjectOne()
 
         const R_FETCH = await GIT.raw([
             'fetch',
@@ -328,7 +351,7 @@ export class UGitUtility {
             R_MERGABLE === null ||
             R_MERGABLE.indexOf('Already up-to-date.') > -1
         ) {
-            RESULT.success = true
+            RESULT.value = true
             RESULT.message = 'mergable'
             RESULT.value = true
         } else {
