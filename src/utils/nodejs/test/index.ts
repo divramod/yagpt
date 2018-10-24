@@ -144,6 +144,10 @@ export class UTestUtility {
         if (RESULT.value === undefined) {
             const GIT = GIT_P(repoPath)
             await GIT.init()
+            const README_PATH = PATH.resolve(repoPath, 'README.md')
+            SHELL.touch(README_PATH)
+            await GIT.add(README_PATH)
+            await GIT.commit('init')
             RESULT.value = true
             const MESSAGE_ARR_DIRECTORY_CREATED = []
             if (RESULTS.removeDirectoryIfExistant.value) {

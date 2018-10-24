@@ -76,7 +76,7 @@ export class Task extends SuperTask implements ITaskClass {
         if (proceed) {
             const CHECK_IS_REPO =
                 await UGit.checkIsRepo(PROJECT_PATH)
-            if (CHECK_IS_REPO.value) {
+            if (CHECK_IS_REPO === true) {
                 R.value = R.subresults.isGitRepository.value = proceed = true
                 R.message = R.subresults.isGitRepository.message = [
                     PROJECT_PATH,
@@ -95,7 +95,7 @@ export class Task extends SuperTask implements ITaskClass {
         if (proceed) {
             const CHECK_IS_FEATURE_BRANCH =
                 await UGit.checkIsFeatureBranch(PROJECT_PATH)
-            if (CHECK_IS_FEATURE_BRANCH.value) {
+            if (CHECK_IS_FEATURE_BRANCH === true) {
                 R.value = R.subresults.isFeatureBranch.value = proceed = true
                 R.message = R.subresults.isFeatureBranch.message = [
                     PROJECT_PATH,
@@ -133,10 +133,10 @@ export class Task extends SuperTask implements ITaskClass {
         if (proceed) {
             const CHECK_IS_DEVELOP_MERGABLE =
                 await UGit.checkIsMergable(
-                    'develop',
                     PROJECT_PATH,
+                    'develop',
                 )
-            if (CHECK_IS_DEVELOP_MERGABLE.value === true) {
+            if (CHECK_IS_DEVELOP_MERGABLE === true) {
                 R.value = R.subresults.isDevelopMergable.value = proceed = true
                 R.message = R.subresults.isDevelopMergable.message = [
                     'Develop mergable!',
@@ -173,12 +173,10 @@ export class Task extends SuperTask implements ITaskClass {
         }
 
         // get feature name and issue number
-        const R_FEATURE_NAME =
+        const FEATURE_NAME =
             await UGit.getFeatureName(PROJECT_PATH)
-        const FEATURE_NAME = R_FEATURE_NAME.value
-        const R_ISSUE_NUMBER =
+        const ISSUE_NUMBER =
             await UGit.getFeatureIssueNumber(PROJECT_PATH)
-        const ISSUE_NUMBER = R_ISSUE_NUMBER.value
 
         // TODO: unlink
         // TODO: copy current directory to another place

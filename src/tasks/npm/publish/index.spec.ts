@@ -37,8 +37,8 @@ describe(__filename, async () => {
         // PREPARE Repository
         // RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
         await UTest.prepareNpmRepository()
-        await UGit.removeAllBranchesExceptMasterAndDevelop(UTest.NPM_REPOSITORY.path)
-        await UGit.checkoutBranch(
+        await UGit.removeAllBranchesExcept(UTest.NPM_REPOSITORY.path)
+        await UGit.checkoutNewBranch(
             UTest.NPM_REPOSITORY.path,
             'feature/123-test-feature',
         )
@@ -65,48 +65,5 @@ describe(__filename, async () => {
         expect(R.subresults.isDevelopMergable.value).to.equal(true)
 
     }).timeout(60000)
-
-    // it.skip([
-        // 'run()',
-        // 'success:',
-        // 'all conditions fulfilled',
-    // ].join(' '), async () => {
-
-        // // PREPARE TASK
-        // const TASK = new Task({ cwd: __dirname, logging: false })
-
-        // // PREPARE Repository
-        // // RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
-        // await UTest.prepareNpmRepository()
-        // await UGit.removeAllBranchesExceptMasterAndDevelop(UTest.NPM_REPOSITORY.path)
-        // await UGit.checkoutBranch(
-            // UTest.NPM_REPOSITORY.path,
-            // 'feature/123-test-feature',
-        // )
-
-        // // RUN
-        // const R: IResultMultiple = await TASK.run({
-            // projectPath: UTest.NPM_REPOSITORY.path,
-        // })
-
-        // // isGitRepository
-        // expect(R.results.isGitRepository.value).not.to.be.undefined
-        // expect(R.results.isGitRepository.value).to.equal(true)
-
-        // // checkIsFeatureBranch
-        // const R_IS_FEATURE_BRANCH =
-            // await UGit.checkIsFeatureBranch(UTest.NPM_REPOSITORY.path)
-        // expect(R.results.isFeatureBranch.value).not.to.be.undefined
-        // expect(R.results.isFeatureBranch.value).to.equal(true)
-
-        // // isClean
-        // expect(R.results.isClean.value).not.to.be.undefined
-        // expect(R.results.isClean.value).to.equal(true)
-
-        // // isDevelopMergable
-        // expect(R.results.isDevelopMergable.value).not.to.be.undefined
-        // expect(R.results.isDevelopMergable.value).to.equal(true)
-
-    // }).timeout(60000)
 
 })
