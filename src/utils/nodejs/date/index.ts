@@ -1,33 +1,18 @@
-// https://gitlab.com/divramod/yagpt/issues/7
-
-// IMPORT
-
-// TYPINGS
-
-// CLASS
 export class UDateUtility {
 
-    public static getInstance(): UDateUtility {
-        return UDateUtility.INSTANCE
-    }
-
-    private static INSTANCE: UDateUtility = new UDateUtility()
-    public name: string = 'UDateUtility'
-
-    constructor() {
-        if (UDateUtility.INSTANCE) {
-            throw new Error([
-                'Error: Instantiation failed: Use',
-                this.name,
-                '.getInstance() instead of new.',
-            ].join(' '))
-        }
-        UDateUtility.INSTANCE = this
-    }
-
-    public getDateDiff(DATE1, DATE2): number {
-        return DATE2 - DATE1
+    /**
+     * Receives two Dates and gives back the date difference.
+     * @param dateBegin  The beginning date.
+     * @param dateEnd  The end date.
+     */
+    // TODO
+    // - automatically detect which is the beginning and which is the end date.
+    public getDateDiff(
+        dateBegin,
+        dateEnd,
+    ): number {
+        return dateEnd - dateBegin
     }
 
 }
-export const UDate  = UDateUtility.getInstance()
+export const UDate  = new UDateUtility()

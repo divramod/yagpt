@@ -5,7 +5,7 @@ const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
-describe.only('UJson:' + __filename, async () => {
+describe('UJson:' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
