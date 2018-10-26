@@ -7,7 +7,7 @@ const SHELL = require('shelljs')
 import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
-describe.only('UGit: ' + __filename, async () => {
+describe('UGit: ' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
