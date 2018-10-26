@@ -1,26 +1,14 @@
 const SHELL = require('shelljs')
 export class UNpmUtility {
 
-    public static getInstance(): UNpmUtility {
-        return UNpmUtility.INSTANCE
-    }
-
-    private static INSTANCE: UNpmUtility = new UNpmUtility()
-    public name: string = 'UNpmUtility'
-
-    constructor() {
-        if (UNpmUtility.INSTANCE) {
-            throw new Error([
-                'Error: Instantiation failed: Use',
-                this.name,
-                '.getInstance() instead of new.',
-            ].join(' '))
-        }
-        UNpmUtility.INSTANCE = this
-    }
-
     /**
-     * TODO: get package name
+     * Relinks a npm package globally.
+     * https://docs.npmjs.com/cli/link
+     * @param packagePath The local path of the package.
+     * @param packageName  The name of the package
+     * @returns
+     *      1. boolean=true: if everything went fine
+     *      2. string=ERROR: `packagePath` not existant!
      */
     public async relink(
         packagePath,
@@ -46,12 +34,14 @@ export class UNpmUtility {
             result = true
         } else {
             result = [
+                'ERROR:',
                 packagePath,
-                'not relinked (not existant)!',
+                'not existant!',
             ].join(' ')
         }
         return result
     }
 
 }
-export const UNpm = UNpmUtility.getInstance()
+
+export const UNpm = new UNpmUtility()

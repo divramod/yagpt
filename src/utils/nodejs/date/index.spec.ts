@@ -1,7 +1,7 @@
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UDate as U_INSTANCE, UDateUtility as U_CLASS } from './'
 
-describe.only('yaDate: ' + __filename, async () => {
+describe('yaDate: ' + __filename, async () => {
 
     it('getDateDiff()', async () => {
         const DATE1 = +new Date()
