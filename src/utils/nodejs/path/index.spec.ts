@@ -1,15 +1,10 @@
-// https://gitlab.com/divramod/yagpt/issues/4
-// IMPORT
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UPath as U_INSTANCE, UPathUtility as U_CLASS } from './'
-
-// REQUIRE
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
-// TESTSUITE
-describe(__filename, async () => {
+describe('yaPath: ' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
@@ -19,19 +14,12 @@ describe(__filename, async () => {
         RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
     })
 
-    describe('UPath.class()', async () => {
-
-        it('getInstance()', UTest.utilityTestGetInstance(U_CLASS, U_INSTANCE))
-
-        it('constructor()', UTest.utilityTestConstructor(U_CLASS))
-
-    })
-
-    describe('UPath.createDirectory()', async () => {
+    describe('createDirectory()', async () => {
 
         it([
-            'success',
+            '1. boolean=true when not existant',
         ].join(' '), async () => {
+            RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
             const R = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
             )
@@ -39,10 +27,10 @@ describe(__filename, async () => {
         })
 
         it([
-            'success:',
-            'bDeleteIfDirectoryExistant true',
+            '2. boolean=true',
+            'when existant and `deleteDirectoryIfExistant`=true',
         ].join(' '), async () => {
-            const R_PREPARE = await U_INSTANCE.createDirectory(
+            await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
             )
             const R = await U_INSTANCE.createDirectory(
@@ -53,8 +41,8 @@ describe(__filename, async () => {
         })
 
         it([
-            'success:',
-            'bDeleteIfDirectoryExistant false',
+            '3. string=ERROR:',
+            'when existant and `deleteDirectoryIfExistant`=false',
         ].join(' '), async () => {
             const R_PREPARE = await U_INSTANCE.createDirectory(
                 UTest.TEST_PATH,
@@ -71,13 +59,76 @@ describe(__filename, async () => {
         })
     })
 
-    describe('UPath.createFile()', async () => {
+    describe('createFile()', async () => {
 
         it([
-            'success:',
-            'file created',
+            '1. boolean=true When file not existant.',
         ].join(' '), async () => {
             await U_INSTANCE.createDirectory(UTest.TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                UTest.TEST_PATH,
+                'sometest.json',
+            )
+            const R = await U_INSTANCE.createFile(
+                FILE_PATH,
+            )
+            expect(R).to.equal(true)
+        })
+
+        it([
+            '2. boolean=ture When file existant and `overwriteIfExistant`=true',
+        ].join(' '), async () => {
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                UTest.TEST_PATH,
+                'test.json',
+            )
+            await U_INSTANCE.createFile(
+                FILE_PATH,
+                JSON.stringify({
+                    name: 'test',
+                }),
+            )
+            const R = await U_INSTANCE.createFile(
+                FILE_PATH,
+                JSON.stringify({
+                    name: 'test',
+                }),
+                true,
+            )
+            expect(R).to.equal(true)
+        })
+
+        it([
+            '3. string=ERROR:',
+            'When file existant and `overwriteIfExistant`=false',
+        ].join(' '), async () => {
+            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
+            const FILE_PATH = PATH.resolve(
+                UTest.TEST_PATH,
+                'test.json',
+            )
+            await U_INSTANCE.createFile(
+                FILE_PATH,
+                JSON.stringify({
+                    name: 'test',
+                }),
+            )
+            const R = await U_INSTANCE.createFile(
+                FILE_PATH,
+                JSON.stringify({
+                    name: 'test',
+                }),
+            )
+            expect(R).to.equal([
+                FILE_PATH,
+                'existant!',
+            ].join(' '))
+        })
+
+        it([
+            '4. string=ERROR: When directory not existant',
+        ].join(' '), async () => {
             const FILE_PATH = PATH.resolve(
                 UTest.TEST_PATH,
                 'test.json',
@@ -88,92 +139,8 @@ describe(__filename, async () => {
                     name: 'test',
                 }),
             )
-            expect(R).to.equal(true)
-        })
-
-        it([
-            'success:',
-            'file created,',
-            'content default',
-        ].join(' '), async () => {
-            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
-            const FILE_PATH = PATH.resolve(
-                UTest.TEST_PATH,
-                'test.json',
-            )
-            const R = await U_INSTANCE.createFile(
-                    FILE_PATH,
-                )
-            expect(R).to.equal(true)
-        })
-
-        it([
-            'success:',
-            'file existant, overwrite true',
-        ].join(' '), async () => {
-            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
-            const FILE_PATH = PATH.resolve(
-                UTest.TEST_PATH,
-                'test.json',
-            )
-            await U_INSTANCE.createFile(
-                    FILE_PATH,
-                    JSON.stringify({
-                        name: 'test',
-                    }),
-                )
-            const R = await U_INSTANCE.createFile(
-                    FILE_PATH,
-                    JSON.stringify({
-                        name: 'test',
-                    }),
-                    true,
-                )
-            expect(R).to.equal(true)
-        })
-
-        it([
-            'failure:',
-            'file existant, overwrite false',
-        ].join(' '), async () => {
-            await U_INSTANCE.createDirectory(UTest.TEST_PATH)
-            const FILE_PATH = PATH.resolve(
-                UTest.TEST_PATH,
-                'test.json',
-            )
-            await U_INSTANCE.createFile(
-                    FILE_PATH,
-                    JSON.stringify({
-                        name: 'test',
-                    }),
-                )
-            const R = await U_INSTANCE.createFile(
-                    FILE_PATH,
-                    JSON.stringify({
-                        name: 'test',
-                    }),
-                )
             expect(R).to.equal([
-                FILE_PATH,
-                'existant!',
-            ].join(' '))
-        })
-
-        it([
-            'failure:',
-            'directory not existant',
-        ].join(' '), async () => {
-            const FILE_PATH = PATH.resolve(
-                UTest.TEST_PATH,
-                'test.json',
-            )
-            const R = await U_INSTANCE.createFile(
-                    FILE_PATH,
-                    JSON.stringify({
-                        name: 'test',
-                    }),
-                )
-            expect(R).to.equal([
+                'ERROR:',
                 'Directory',
                 PATH.dirname(FILE_PATH),
                 'not existant!',

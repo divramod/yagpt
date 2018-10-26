@@ -1,6 +1,3 @@
-// https://gitlab.com/divramod/yagpt/issues/4
-
-// REQUIRE
 const FS = require('fs')
 const PATH = require('path')
 const RIMRAF = require('rimraf')
@@ -8,27 +5,15 @@ const SHELL = require('shelljs')
 
 export class UPathUtility {
 
-    public static getInstance(): UPathUtility {
-        return UPathUtility.INSTANCE
-    }
-
-    private static INSTANCE: UPathUtility = new UPathUtility()
-    public name: string = 'UPathUtility'
-
-    constructor() {
-        if (UPathUtility.INSTANCE) {
-            throw new Error([
-                'Error: Instantiation failed: Use',
-                this.name,
-                '.getInstance() instead of new.',
-            ].join(' '))
-        }
-        UPathUtility.INSTANCE = this
-    }
-
-    // TODO
-    // - docs
-    // - tests
+    /**
+     * Creates a Directory at a given path.
+     * @param directoryPath  The path of the directory to create.
+     * @param deleteDirectoryIfExistant  If to delete the directory if existant
+     * @returns
+     *      1. boolean=true when not existant
+     *      2. boolean=true when existant and `deleteDirectoryIfExistant`=true
+     *      3. string=ERROR: when existant and `deleteDirectoryIfExistant`=false
+     */
     public async createDirectory(
         directoryPath: string,
         deleteDirectoryIfExistant: boolean = false,
@@ -49,17 +34,23 @@ export class UPathUtility {
                 ].join(' ')
             }
         } else {
-            RIMRAF.sync(DIRECTORY_PATH) // REMOVE DIRECTORY
             SHELL.mkdir('-p', DIRECTORY_PATH) // CREATE DIRECTORY
-            result = [
-                'Directory',
-                DIRECTORY_PATH,
-                'created!',
-            ].join(' ')
+            result = true
         }
         return result
     }
 
+    /**
+     * Creates a file with the given content.
+     * @param filePath  The path of the file to create.
+     * @param fileContent  The content of the file to create.
+     * @param overwriteIfExistant  Overwrite the file when existant.
+     * @returns
+     *      1. boolean=true When file not existant.
+     *      2. boolean=ture When file existant and `overwriteIfExistant`=true
+     *      3. string=ERROR: When file existant and `overwriteIfExistant`=false
+     *      4. string=ERROR: When directory not existant
+     */
     public async createFile(
         filePath: string,
         fileContent: string = '',
@@ -74,7 +65,7 @@ export class UPathUtility {
                 SHELL.test('-f', filePath)
             let writeFile = true
             if (FILE_EXSITANT) {
-                if (!overwriteIfExistant) {
+                if (overwriteIfExistant === false) {
                     writeFile = false
                     result = [
                         filePath,
@@ -87,19 +78,16 @@ export class UPathUtility {
                 result = true
             }
             if (writeFile && FILE_EXSITANT) {
-                result = [
-                    filePath,
-                    'overwritten!',
-                ].join(' ')
+                // TODO
+                result = true
             }
             if (writeFile && !FILE_EXSITANT) {
-                result = [
-                    filePath,
-                    'created!',
-                ].join(' ')
+                // TODO
+                result = true
             }
         } else {
             result = [
+                'ERROR:',
                 'Directory',
                 FILE_DIRECTORY_PATH,
                 'not existant!',
@@ -109,4 +97,5 @@ export class UPathUtility {
     }
 
 }
-export const UPath = UPathUtility.getInstance()
+
+export const UPath = new UPathUtility()
