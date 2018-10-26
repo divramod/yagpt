@@ -8,11 +8,7 @@ const PATH = require('path')
 const _ = require('underscore')
 
 // IMPORT
-import { UCommon } from '@utils/nodejs/common'
 import { UTest } from '@utils/nodejs/test'
-
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
 
 // CLASS
 export class UGitUtility {

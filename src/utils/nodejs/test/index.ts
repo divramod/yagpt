@@ -6,11 +6,7 @@ const SHELL = require('shelljs')
 const RIMRAF = require('rimraf')
 const GIT_P = require('simple-git/promise')
 
-// TYPINGS
-import { IResult, ISubresults } from '@utils/nodejs/common'
-
 // IMPORT
-import { UCommon } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
 import { UPath } from '@utils/nodejs/path'
@@ -32,7 +28,7 @@ export class UTestUtility {
     private static INSTANCE: UTestUtility = new UTestUtility()
 
     public name: string = 'UTestUtility'
-    public NPM_REPOSITORY: any
+    public npmPackage: any
     public TEST_PATH: any
 
     constructor() {
@@ -44,10 +40,10 @@ export class UTestUtility {
             ].join(' '))
         }
         this.setConstants()
-
         UTestUtility.INSTANCE = this
     }
 
+    // TODO
     public async userInputCleanup(
         LINE_COUNT: number,
     ): Promise<boolean> {
@@ -66,6 +62,7 @@ export class UTestUtility {
         return userInputCleanupRun
     }
 
+    // TODO
     public utilityTestConstructor(
         U,
     ): () => Promise<void> {
@@ -82,6 +79,7 @@ export class UTestUtility {
         }
     }
 
+    // TODO
     public utilityTestGetInstance(
         U_CLASS,
         U_INSTANCE,
@@ -91,61 +89,43 @@ export class UTestUtility {
         }
     }
 
+    // TODO
     public getEnv(): string {
         return process.env.DMTPL_ENV
     }
 
+    /**
+     * Creates a git repository at a given path.
+     * @param gitRepositoryPath  The path of the repository.
+     * @param removeDirectoryIfExistant  Remove the directory if existant.
+     * @returns
+     *      1. boolean true: if directory not existant
+     *      2. boolean true: if directory existant and removeDirectoryIfExistant
+     *                       true
+     *      3. string ERROR: if directory existant and if
+     *                       removeDirectoryIfExistant=false
+     */
     public async gitCreateTestRepositoryAtPath(
         gitRepositoryPath: string,
-        createDirectoryIfNotExistant: boolean = true,
-        removeDirectoryIfExistant: boolean = true,
-        removeGitRepositoryIfExistant: boolean = true,
-    ): Promise<IResult> {
-        const RESULT = UCommon.getResultObjectMultiple()
-        const RESULTS: ISubresults = UCommon.getResultsObject([
-            'createDirectoryIfNotExistant',
-            'removeDirectoryIfExistant',
-            'removeGitRepositoryIfExistant',
-        ])
-
-        // NOT EXISTANT
+        removeDirectoryIfExistant: boolean = false,
+    ): Promise<string | boolean> {
+        let result
+        result = true
+        let createGitRepository = false
         if (!SHELL.test('-d', PATH.resolve(gitRepositoryPath))) {
-            if (createDirectoryIfNotExistant) {
-                await this.createTestDirectory(gitRepositoryPath)
-            } else { // EXIT
-                RESULT.value = false
-                RESULT.message = [
-                    'Directory',
-                    gitRepositoryPath,
-                    'not existant',
-                ].join(' ')
-            }
-        } else { // EXISTANT
-            // removeDirectoryIfExistant
-            if (removeDirectoryIfExistant) {
+            await this.createTestDirectory(gitRepositoryPath)
+            createGitRepository = true
+        } else {
+            if (removeDirectoryIfExistant === true) {
                 SHELL.rm('-rf', PATH.resolve(gitRepositoryPath))
-                RESULTS.removeDirectoryIfExistant.value = true
                 await this.createTestDirectory(gitRepositoryPath)
+                createGitRepository = true
             } else {
-                // removeGitRepositoryIfExistant
-                if (
-                    SHELL.test('-d', PATH.resolve(gitRepositoryPath, '.git')) &&
-                    removeGitRepositoryIfExistant
-                ) {
-                    SHELL.rm('-rf', PATH.resolve(gitRepositoryPath, '.git'))
-                    RESULTS.removeGitRepositoryIfExistant.value = true
-                } else {
-                    RESULT.value = true
-                    RESULT.message = [
-                        'Repository at',
-                        gitRepositoryPath,
-                        'already existant',
-                    ].join(' ')
-                }
+                result = 'ERROR: directory existant!'
             }
         }
 
-        if (RESULT.value === undefined) {
+        if (createGitRepository === true) {
             const GIT = GIT_P(gitRepositoryPath)
             await GIT.init()
             const README_PATH = PATH.resolve(gitRepositoryPath, 'README.md')
@@ -157,227 +137,175 @@ export class UTestUtility {
             SHELL.ShellString('\nLine 5').toEnd(README_PATH)
             await GIT.add(README_PATH)
             await GIT.commit('init')
-            RESULT.value = true
-            const MESSAGE_ARR_DIRECTORY_CREATED = []
-            if (RESULTS.removeDirectoryIfExistant.value) {
-                MESSAGE_ARR_DIRECTORY_CREATED.push([
-                    'Repository at',
-                    gitRepositoryPath,
-                    'removed and created!',
-                ].join(' '))
-            }
-            RESULT.message = [
-                MESSAGE_ARR_DIRECTORY_CREATED.join(' '),
-                'Repository created!',
-            ].join(' ')
         }
-        RESULT.subresults = RESULTS
-        return RESULT
+        return result
     }
 
+    /**
+     * Creates a directory in path /tmp/test.
+     * @param directoryPath  The path of the directory to create.
+     * @param deleteDirectoryIfExistant  If to delete the directory when
+     *   existant.
+     * @returns
+     *      1. boolean true: if directory not existant
+     *      2. boolean true: if directory existant and
+     *         deleteDirectoryIfExistant=true
+     *      3. string ERROR: if directory existant and
+     *      4. string ERROR: if directory is not in path /tmp/test
+     */
     public async createTestDirectory(
         directoryPath: string,
-        bDeleteIfDirectoryExistant: boolean = true,
-    ): Promise<IResult> {
-        // Result Object
-        const R = await UCommon.getResultObjectMultiple()
-
-        // PREPARE INTERFACE
-        interface ICreateTestDirectoryResults extends ISubresults {
-            aPathInTmpTest: IResult;
-            bDirectoryExistant: IResult;
-            cDeletedIfDirectoryExistant: IResult;
-        }
-
-        // PREPARE RESULT OBJECT
-        let resultsObject: ICreateTestDirectoryResults =
-        UCommon.getResultsObject([
-            'aPathInTmpTest',
-            'bDirectoryExistant',
-            'cDeletedIfDirectoryExistant',
-        ])
-
-        // construct path
+        deleteDirectoryIfExistant: boolean = false,
+    ): Promise<string | boolean> {
         const DIRECTORY_PATH = PATH.resolve(directoryPath)
-
-        // check if is in path /tmp/test
+        let result
         if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
-            resultsObject.aPathInTmpTest.value = false
-            R.value = false
-            R.message = [
+            result = [
+                'ERROR:',
                 'You can\'t use the directory',
                 DIRECTORY_PATH,
                 'for testing purposes!',
                 'Please use a subdirectory of \'/tmp/test\'!',
             ].join(' ')
         } else {
-            resultsObject.aPathInTmpTest.value = true
+
             const R_CREATE_DIRECTORY = await UPath.createDirectory(
                 directoryPath,
-                bDeleteIfDirectoryExistant,
+                deleteDirectoryIfExistant,
             )
-            resultsObject = Object.assign(
-                resultsObject,
-                R_CREATE_DIRECTORY.subresults,
-            )
-            R.value = R_CREATE_DIRECTORY.value
-            R.message = R_CREATE_DIRECTORY.message
+            result = R_CREATE_DIRECTORY
         }
-
-        // PREPARE END RESULT
-        R.subresults = resultsObject
-
-        return R
-    }
-
-    public async createTestFile(
-        FILE_PATH,
-        FILE_CONTENT = '',
-        OVERWRITE_IF_EXISTANT = false,
-    ): Promise<IResult> {
-        // PREPARE
-        let result: IResult = UCommon.getResultObjectOne()
-
-        // RUN
-        if (FILE_PATH.indexOf(this.TEST_PATH) !== -1) {
-            result = await UPath.createFile(
-                FILE_PATH,
-                FILE_CONTENT,
-                OVERWRITE_IF_EXISTANT,
-            )
-        } else {
-            result.value = false
-            result.message = [
-                FILE_PATH,
-                'not in',
-                this.TEST_PATH,
-            ].join(' ')
-
-        }
-
-        // RETURN
         return result
     }
 
     /**
-     * Copies
-     *
+     * Creates a test file in directory /tmp/test.
+     * @param filePath  The path of the test File.
+     * @param fileContent  The content of the test File.
+     * @param overwriteIfExistant  Overwrite the file if existant.
+     * @returns
+     *      1. boolean true: if file not existant
+     *      2. boolean true: if file existant and overwriteIfExistant=true
+     *      3. string ERROR: if file existant and overwriteIfExistant=false
      */
-    public async prepareNpmRepository(): Promise<IResult> {
-        // PREPARE
-        const RESULT: IResult = {
-            error: undefined,
-            message: undefined,
-            value: undefined,
-        }
+    public async createTestFile(
+        filePath,
+        fileContent = '',
+        overwriteIfExistant = false,
+    ): Promise<string | boolean> {
+        let result
+
         // RUN
-        if (SHELL.test('-d', this.NPM_REPOSITORY.path)) {
-            RESULT.value = false
-            RESULT.message = [
-                this.NPM_REPOSITORY.path,
-                'already existant!',
-            ].join(' ')
+        if (filePath.indexOf(this.TEST_PATH) !== -1) {
+            result = await UPath.createFile(
+                filePath,
+                fileContent,
+                overwriteIfExistant,
+            )
         } else {
-            if (SHELL.test('-d', this.NPM_REPOSITORY.path_backup)) {
+            result = [
+                filePath,
+                'not in',
+                this.TEST_PATH,
+                'Please use a subdirectory of \'/tmp/test\'!',
+            ].join(' ')
+        }
+        return result
+    }
+
+    /**
+     * Prepares a NPM repository for testing purposes.
+     * @param npmPackagePath  The path where to prepare the npm package.
+     * @param overwriteIfExistant  Overwrite the path if existant.
+     * @returns
+     *      1. boolean=true: if directory not existant
+     *      2. boolean=true: if directory existant and overwriteIfExistant=true
+     *      3. string ERROR: if directory existant and overwriteIfExistant=false
+     */
+    // TODO
+    // - use copy if existant because it is faster
+    // - tests
+    public async prepareNpmRepository(
+        npmPackagePath: string = this.npmPackage.path,
+        overwriteIfExistant: boolean = false,
+    ): Promise<string | boolean> {
+        let result
+        if (SHELL.test('-d', npmPackagePath)) {
+            if (overwriteIfExistant === false) {
+                result = [
+                    'ERROR:',
+                    npmPackagePath,
+                    'existant!',
+                ].join(' ')
+            } else {
+                result = await this.copyOrClone(
+                    this.npmPackage.git.ssh,
+                    this.npmPackage.path,
+                    this.npmPackage.backupPath,
+                    true,
+                )
+            }
+        } else {
+            result = await this.copyOrClone(
+                this.npmPackage.git.ssh,
+                this.npmPackage.path,
+                this.npmPackage.backupPath,
+            )
+        }
+        return result
+    }
+
+    /**
+     * Copies a directory to a given path. If the source path to copy from is
+     * not existant, it will clone a git repository from the given repository-
+     * url.
+     * @param repositoryUrl:  The url of the repository.
+     * @param targetPath  The path where to copy/clone to.
+     * @param copyFromPath  The path where to copy from.
+     * @returns
+     *      1. boolean=true: when successful
+     *      2. ???
+     */
+    // TODO tests
+    public async copyOrClone(
+        repositoryUrl: string,
+        targetPath: string,
+        copyFromPath: string,
+        overwriteIfExistant: boolean = false,
+    ): Promise<string | boolean> {
+        let result
+        result = false
+        let run = true
+        if (SHELL.test('-d', targetPath) && overwriteIfExistant === false) {
+            run = false
+            result = [
+                'ERROR: Diretory',
+                targetPath,
+                'is existant!',
+            ].join(' ')
+        }
+        if (run === true) {
+            if (SHELL.test('-d', copyFromPath)) {
                 SHELL.cp(
                     '-Rf',
-                    this.NPM_REPOSITORY.path_backup,
-                    this.NPM_REPOSITORY.path,
+                    copyFromPath,
+                    targetPath,
                 )
-                RESULT.value = true
-                RESULT.message = [
-                    this.NPM_REPOSITORY.path,
-                    'copied!',
-                ].join(' ')
+                result = true
             } else {
-                const CMD_CLONE = [
-                    'git clone',
-                    this.NPM_REPOSITORY.git.ssh,
-                    this.NPM_REPOSITORY.path,
-                ].join(' ')
-                const CMD_FETCH = [
-                    'git fetch origin develop',
-                    '&&',
-                    'git checkout -b develop origin/develop',
-                ].join(' ')
-                const CMD_CHECKOUT = [
-                    'git branch',
-                    '&&',
-                    'git checkout master',
-                ].join(' ')
-                const PATH_BEFORE = SHELL.pwd().stdout
-                await SHELL.exec(CMD_CLONE, { silent: true })
-                SHELL.cd(PATH.resolve(this.NPM_REPOSITORY.path))
-                await SHELL.exec(CMD_FETCH, { silent: true })
-                await SHELL.exec(CMD_CHECKOUT, { silent: true })
-                SHELL.cd(PATH_BEFORE)
-                RESULT.value = true
-                RESULT.message = [
-                    this.NPM_REPOSITORY.path,
-                    'cloned!',
-                ].join(' ')
+                const GIT = GIT_P()
+                const R_CLONE = GIT.clone(
+                    repositoryUrl,
+                    targetPath,
+                )
+                result = true
             }
         }
-
-        // RETURN
-        return RESULT
+        return result
     }
 
-    public async gitCleanRepository(
-        REPOSITORY_PATH,
-        COMMIT_MESSAGE,
-    ): Promise<IResult> {
-
-        // PREPARE
-        const RESULT: IResult = {
-            error: undefined,
-            message: undefined,
-            value: undefined,
-        }
-
-        // RUN
-        if (SHELL.test('-d', REPOSITORY_PATH)) {
-            // COMMIT CHANGES WHEN EXISTANT
-            const R_CHECK_IS_CLEAN =
-                await UGit.checkIsClean(REPOSITORY_PATH)
-            if (R_CHECK_IS_CLEAN === true) {
-                RESULT.value = false
-                RESULT.message = [
-                    REPOSITORY_PATH,
-                    'repository already clean!',
-                ].join(' ')
-            } else {
-                const PATH_BEFORE = process.cwd()
-                SHELL.cd(this.NPM_REPOSITORY.path)
-                const GIT = GIT_P(REPOSITORY_PATH)
-                await GIT.raw([
-                    'add',
-                    '-A',
-                ])
-                await GIT.raw([
-                    'commit',
-                    '-m',
-                    COMMIT_MESSAGE,
-                ])
-                SHELL.cd(PATH_BEFORE)
-                RESULT.value = true
-                RESULT.message = [
-                    REPOSITORY_PATH,
-                    'repository cleaned!',
-                ].join(' ')
-            }
-        } else {
-            RESULT.value = false
-            RESULT.message = [
-                REPOSITORY_PATH,
-                'not existant!',
-            ].join(' ')
-        }
-
-        // RETURN
-        return RESULT
-    }
-
+    // TODO documentation
+    // TODO tests
     private setConstants(): void {
         // TESTING
         const YG_CONFIG_PATH = PATH.resolve(
@@ -387,8 +315,8 @@ export class UTestUtility {
             YG_CONFIG_PATH,
             'testing',
         )
-        this.TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.value.path)
-        this.NPM_REPOSITORY = R_GET_KEY_VALUE_FROM_FILE.value.npm
+        this.TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.path)
+        this.npmPackage = R_GET_KEY_VALUE_FROM_FILE.npm
     }
 
 }

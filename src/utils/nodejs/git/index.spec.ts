@@ -1,10 +1,8 @@
-// https://gitlab.com/divramod/yagpt/issues/4
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UGit as U_INSTANCE, UGitUtility as U_CLASS } from './'
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
-import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe('UGit: ' + __filename, async () => {

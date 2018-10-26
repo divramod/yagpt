@@ -1,15 +1,4 @@
-// https://gitlab.com/divramod/dm-tpl/issues/4
-
-// IMPORT
-import { UCommon } from '@utils/nodejs/common'
-
-// REQUIRE
 const SHELL = require('shelljs')
-
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
-
-// CLASS
 export class UNpmUtility {
 
     public static getInstance(): UNpmUtility {
@@ -34,21 +23,17 @@ export class UNpmUtility {
      * TODO: get package name
      */
     public async relink(
-        PACKAGE_PATH,
-        PACKAGE_NAME,
-    ): Promise<IResult> {
-
-        // PREPARE
-        const RESULT: IResult = UCommon.getResultObjectOne()
-
-        // RUN
-        if (SHELL.test('-d', PACKAGE_PATH)) {
+        packagePath,
+        packageName,
+    ): Promise<string | boolean> {
+        let result
+        if (SHELL.test('-d', packagePath)) {
             const PATH_BEFORE = process.cwd()
-            SHELL.cd(PACKAGE_PATH)
+            SHELL.cd(packagePath)
             SHELL.exec([
                 'sudo',
                 'npm rm --global',
-                PACKAGE_NAME,
+                packageName,
             ].join(' '), {
                 silent: true,
             } )
@@ -58,21 +43,14 @@ export class UNpmUtility {
                 silent: true,
             } )
             SHELL.cd(PATH_BEFORE)
-            RESULT.message = [
-                PACKAGE_PATH,
-                'relinked!',
-            ].join(' ')
-            RESULT.value = true
+            result = true
         } else {
-            RESULT.message = [
-                PACKAGE_PATH,
+            result = [
+                packagePath,
                 'not relinked (not existant)!',
             ].join(' ')
-            RESULT.value = false
         }
-
-        // RETURN
-        return RESULT
+        return result
     }
 
 }

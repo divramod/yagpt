@@ -2,7 +2,7 @@
 import { describe, expect, it } from '@utils/nodejs/test'
 // import { main } from './'
 
-describe(__filename, async () => {
+describe.skip(__filename, async () => {
 
     it('main() env="testing"', async () => {
         const RE = require('./')

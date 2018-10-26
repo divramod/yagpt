@@ -7,14 +7,9 @@ import {
     UTest,
 } from '@utils/nodejs/test'
 import { UNpm as U_INSTANCE, UNpmUtility as U_CLASS } from './'
-
-// REQUIRE
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
-
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
 
 // TESTSUITE
 describe(__filename, async () => {
@@ -45,48 +40,29 @@ describe(__filename, async () => {
             'success:',
             'package existant!',
         ].join(' '), async () => {
-
-            // PREPARE
-            RIMRAF.sync(UTest.NPM_REPOSITORY.path)
-            const R_PREPARE_NPM_REPOSITORY: IResult =
+            RIMRAF.sync(UTest.npmPackage.path)
+            const R_PREPARE_NPM_REPOSITORY =
                 await UTest.prepareNpmRepository()
-
-            // RUN
-            const R: IResult = await U_INSTANCE.relink(
-                UTest.NPM_REPOSITORY.path,
-                UTest.NPM_REPOSITORY.name,
+            const R = await U_INSTANCE.relink(
+                UTest.npmPackage.path,
+                UTest.npmPackage.name,
             )
-
-            // TEST
-            expect(R.value).to.equal(true)
-            expect(R.message).to.equal( [
-                UTest.NPM_REPOSITORY.path,
-                'relinked!',
-            ].join(' ') )
-
+            expect(R).to.equal(true)
         }).timeout(20000)
 
         it([
             'error:',
             'package not existant on file system',
         ].join(' '), async () => {
-
-            // PREPARE
-            RIMRAF.sync(UTest.NPM_REPOSITORY.path)
-
-            // RUN
-            const R: IResult = await U_INSTANCE.relink(
-                UTest.NPM_REPOSITORY.path,
-                UTest.NPM_REPOSITORY.name,
+            RIMRAF.sync(UTest.npmPackage.path)
+            const R = await U_INSTANCE.relink(
+                UTest.npmPackage.path,
+                UTest.npmPackage.name,
             )
-
-            // TEST
-            expect(R.value).to.equal(false)
-            expect(R.message).to.equal( [
-                UTest.NPM_REPOSITORY.path,
+            expect(R).to.equal( [
+                UTest.npmPackage.path,
                 'not relinked (not existant)!',
             ].join(' ') )
-
         })
 
     }).timeout(10000)

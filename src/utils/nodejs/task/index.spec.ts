@@ -1,5 +1,3 @@
-// https://gitlab.com/divramod/yagpt/issues/7
-import { IResult, ISubresults, UCommon } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { ITaskClass, ITaskConstructorParams, SuperTask } from './'
@@ -15,26 +13,30 @@ class Task extends SuperTask implements ITaskClass {
         super({ name: 'Test', cwd: opts.cwd, logging: opts.logging || false })
     }
 
-    public async run(): Promise<IResult> {
+    public async run(): Promise<any> {
         // PREPARE
         await super.runBefore()
 
         // RUN
-        const RESULT_MAIN: IResult = UCommon.getResultObjectMultiple()
-        const RESULTS: ISubresults = UCommon.getResultsObject([
-            'someResult1',
-            'someResult2',
-        ])
-        RESULT_MAIN.subresults = RESULTS
+        const RESULT_MAIN = {
+            message: undefined,
+            subresults: {
+                someResult1: undefined,
+                someResult2: undefined,
+            },
+            value: undefined,
+        }
 
         // PRODUCE SUB RESULT
-        const someResult1: IResult = UCommon.getResultObjectOne()
-        someResult1.value = true
+        const someResult1 = {
+            value: true,
+        }
         RESULT_MAIN.subresults.someResult1 = someResult1
 
         // PRODUCE SUB RESULT
-        const someResult2: IResult = UCommon.getResultObjectOne()
-        someResult2.value = false
+        const someResult2 = {
+            value: true,
+        }
         RESULT_MAIN.subresults.someResult2 = someResult2
 
         // PRODUCE RESULT

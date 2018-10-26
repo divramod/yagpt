@@ -1,20 +1,9 @@
-// https://gitlab.com/divramod/yagpt/issues/7
-
-// IMPORT
-import { UCommon } from '@utils/nodejs/common'
 import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
-
-// REQUIRE
 const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')
 const PATH = require('path')
-
-// TYPINGS / SuperTask
-import {
-    IResult,
-} from '@utils/nodejs/common'
 import {
     ITaskClass,
     ITaskConstructorParams,
@@ -34,12 +23,12 @@ export class Task extends SuperTask implements ITaskClass {
 
     public async isRunnable(PARAMS: {
         PROJECT_PATH: string,
-    }): Promise<IResult> {
+    }): Promise<any> {
         // DESTRUCT PRAMS
         const { PROJECT_PATH } = PARAMS
 
         // Prepare Result
-        const R: IResult = {
+        const R = {
             error: undefined,
             message: undefined,
             subresults: {
@@ -155,7 +144,7 @@ export class Task extends SuperTask implements ITaskClass {
 
     public async run(PARAMS: {
         PROJECT_PATH: string,
-    }): Promise<IResult> {
+    }): Promise<any> {
 
         // SUPER runBefore()
         await super.runBefore()
@@ -164,7 +153,7 @@ export class Task extends SuperTask implements ITaskClass {
         const { PROJECT_PATH } = PARAMS
 
         // PREPARE RESULT
-        const R: IResult = {
+        const R = {
             error: undefined,
             message: undefined,
             subresults: {

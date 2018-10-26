@@ -5,7 +5,7 @@
         "npm": {
             "name": "yagpt-test",
             "path": "/home/mod/me-test/yagpt-test",
-            "path_backup": "/home/mod/me-test/yagpt-test_backup",
+            "pathBackup": "/home/mod/me-test/yagpt-test_backup",
             "git": {
                 "https": "https://gitlab.com/divramod/yagpt-test.git",
                 "ssh": "git@gitlab.com:divramod/yagpt-test.git"

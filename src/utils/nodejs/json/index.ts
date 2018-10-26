@@ -1,15 +1,7 @@
-// https://gitlab.com/divramod/yagpt/issues/4
-// IMPORT
-import { UCommon } from '@utils/nodejs/common'
-
 // REQUIRE
 const PATH = require('path')
 const SHELL = require('shelljs')
 
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
-
-// CLASS
 export class UJsonUtility {
 
     public static getInstance(): UJsonUtility {
@@ -30,40 +22,44 @@ export class UJsonUtility {
         UJsonUtility.INSTANCE = this
     }
 
+    /**
+     * Gets a key value from a json file.
+     * @param filePath  The path of the file to get the key value from.
+     * @param keyName  The key to get the value from.
+     * @returns
+     *      1.
+     */
+    // TODO
+    // - docs
+    // - tests
     public getKeyValueFromFile(
-        FILE_PATH,
-        KEY_NAME,
-    ): IResult {
-        // PREPARE
-        const RESULT: IResult = UCommon.getResultObjectOne()
-
-        // RUN
-        const FILE_EXSITANT = SHELL.test('-f', PATH.resolve(FILE_PATH))
+        filePath: string,
+        keyName: string,
+    ): string | boolean | any {
+        let result
+        const FILE_EXSITANT = SHELL.test('-f', PATH.resolve(filePath))
         if (FILE_EXSITANT) {
-            delete require.cache[FILE_PATH]
-            const FILE = require(FILE_PATH)
-            if (FILE[KEY_NAME]) {
-                RESULT.value = true
-                RESULT.value = FILE[KEY_NAME]
+            delete require.cache[filePath]
+            const FILE = require(filePath)
+            if (FILE[keyName]) {
+                result = true
+                result = FILE[keyName]
             } else {
-                RESULT.value = false
-                RESULT.message = [
-                    KEY_NAME,
+                result = [
+                    'ERROR:',
+                    keyName,
                     'not existant in',
-                    FILE_PATH + '!',
+                    filePath + '!',
                 ].join(' ')
             }
-
         } else {
-            RESULT.value = false
-            RESULT.message = [
-                FILE_PATH,
+            result = [
+                'ERROR:',
+                filePath,
                 'not existant!',
             ].join(' ')
         }
-
-        // RETURN
-        return RESULT
+        return result
     }
 
 }

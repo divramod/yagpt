@@ -8,9 +8,6 @@ const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
-
 // TESTSUITE
 describe(__filename, async () => {
 
@@ -36,11 +33,7 @@ describe(__filename, async () => {
             'success:',
             'key existant',
         ].join(' '), async () => {
-
-            // PREPARE
-
-            // RUN
-            const R: IResult =
+            const R =
                 await U_INSTANCE.getKeyValueFromFile(
                     PATH.resolve(
                         process.cwd(),
@@ -48,50 +41,34 @@ describe(__filename, async () => {
                     ),
                     'name',
                 )
-
-            // TEST
-            expect(R.value).not.to.equal(undefined)
-            expect(R.value).to.equal('yagpt')
-
+            expect(R).to.equal('yagpt')
         })
 
         it([
             'success:',
             'key not existant',
         ].join(' '), async () => {
-
-            // PREPARE
             const FILE_PATH = PATH.resolve(
                 process.cwd(),
                 'yagpt.config.json',
             )
-
-            // RUN
-            const R: IResult =
+            const R =
                 await U_INSTANCE.getKeyValueFromFile(
                     FILE_PATH,
                     'blubbi',
                 )
-
-            // TEST
-            expect(R.value).to.equal(false)
-            expect(R.message).to.equal( [
+            expect(R).to.equal( [
                 'blubbi',
                 'not existant in',
                 FILE_PATH + '!',
             ].join(' ') )
-
         })
 
         it([
             'error:',
             'file not existant!',
         ].join(' '), async () => {
-
-            // PREPARE
-
-            // RUN
-            const R: IResult =
+            const R =
                 await U_INSTANCE.getKeyValueFromFile(
                     PATH.resolve(
                         process.cwd(),
@@ -99,19 +76,14 @@ describe(__filename, async () => {
                     ),
                     'name',
                 )
-
-            // TEST
-            expect(R.value).to.equal(false)
-            expect(R.message).to.equal([
+            expect(R).to.equal([
                 PATH.resolve(
                     process.cwd(),
                     'somefile.json',
                 ),
                 'not existant!',
             ].join(' '))
-
         })
-
     })
 
 })

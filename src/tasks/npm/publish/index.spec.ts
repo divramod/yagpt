@@ -11,9 +11,6 @@ import { Task } from './'
 // REQUIRE
 const RIMRAF = require('rimraf')
 
-// TYPINGS
-import { IResult } from '@utils/nodejs/common'
-
 // TESTSUITE
 describe(__filename, async () => {
 
@@ -35,17 +32,17 @@ describe(__filename, async () => {
         const TASK = new Task({ cwd: __dirname, logging: false })
 
         // PREPARE Repository
-        // RIMRAF.sync(UTest.NPM_REPOSITORY.path) // REMOVE DIRECTORY
+        // RIMRAF.sync(UTest.npmPackage.path) // REMOVE DIRECTORY
         await UTest.prepareNpmRepository()
-        await UGit.removeAllBranchesExcept(UTest.NPM_REPOSITORY.path)
+        await UGit.removeAllBranchesExcept(UTest.npmPackage.path)
         await UGit.checkoutNewBranch(
-            UTest.NPM_REPOSITORY.path,
+            UTest.npmPackage.path,
             'feature/123-test-feature',
         )
 
         // RUN
-        const R: IResult = await TASK.isRunnable({
-            PROJECT_PATH: UTest.NPM_REPOSITORY.path,
+        const R = await TASK.isRunnable({
+            PROJECT_PATH: UTest.npmPackage.path,
         })
 
         // isGitRepository
