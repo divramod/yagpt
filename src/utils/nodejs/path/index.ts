@@ -131,8 +131,6 @@ export class UPathUtility {
                     'created!',
                 ].join(' ')
             }
-            // SHELL.exec('ls -lisa ' + FILE_DIRECTORY_PATH)
-            // SHELL.exec('cat ' + FILE_PATH)
         } else {
             RESULT.value = false
             RESULT.message = [

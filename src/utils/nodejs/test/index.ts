@@ -96,7 +96,7 @@ export class UTestUtility {
     }
 
     public async gitCreateTestRepositoryAtPath(
-        repoPath: string,
+        gitRepositoryPath: string,
         createDirectoryIfNotExistant: boolean = true,
         removeDirectoryIfExistant: boolean = true,
         removeGitRepositoryIfExistant: boolean = true,
@@ -109,32 +109,36 @@ export class UTestUtility {
         ])
 
         // NOT EXISTANT
-        if (!SHELL.test('-d', PATH.resolve(repoPath))) {
+        if (!SHELL.test('-d', PATH.resolve(gitRepositoryPath))) {
             if (createDirectoryIfNotExistant) {
-                await this.createTestDirectory(repoPath)
+                await this.createTestDirectory(gitRepositoryPath)
             } else { // EXIT
                 RESULT.value = false
-                RESULT.message = 'Directory ' + repoPath + ' not existant'
+                RESULT.message = [
+                    'Directory',
+                    gitRepositoryPath,
+                    'not existant',
+                ].join(' ')
             }
         } else { // EXISTANT
             // removeDirectoryIfExistant
             if (removeDirectoryIfExistant) {
-                SHELL.rm('-rf', PATH.resolve(repoPath))
+                SHELL.rm('-rf', PATH.resolve(gitRepositoryPath))
                 RESULTS.removeDirectoryIfExistant.value = true
-                await this.createTestDirectory(repoPath)
+                await this.createTestDirectory(gitRepositoryPath)
             } else {
                 // removeGitRepositoryIfExistant
                 if (
-                    SHELL.test('-d', PATH.resolve(repoPath, '.git')) &&
+                    SHELL.test('-d', PATH.resolve(gitRepositoryPath, '.git')) &&
                     removeGitRepositoryIfExistant
                 ) {
-                    SHELL.rm('-rf', PATH.resolve(repoPath, '.git'))
+                    SHELL.rm('-rf', PATH.resolve(gitRepositoryPath, '.git'))
                     RESULTS.removeGitRepositoryIfExistant.value = true
                 } else {
                     RESULT.value = true
                     RESULT.message = [
                         'Repository at',
-                        repoPath,
+                        gitRepositoryPath,
                         'already existant',
                     ].join(' ')
                 }
@@ -142,26 +146,31 @@ export class UTestUtility {
         }
 
         if (RESULT.value === undefined) {
-            const GIT = GIT_P(repoPath)
+            const GIT = GIT_P(gitRepositoryPath)
             await GIT.init()
-            const README_PATH = PATH.resolve(repoPath, 'README.md')
+            const README_PATH = PATH.resolve(gitRepositoryPath, 'README.md')
             SHELL.touch(README_PATH)
+            SHELL.ShellString('Line 1').toEnd(README_PATH)
+            SHELL.ShellString('\nLine 2').toEnd(README_PATH)
+            SHELL.ShellString('\nLine 3').toEnd(README_PATH)
+            SHELL.ShellString('\nLine 4').toEnd(README_PATH)
+            SHELL.ShellString('\nLine 5').toEnd(README_PATH)
             await GIT.add(README_PATH)
             await GIT.commit('init')
             RESULT.value = true
             const MESSAGE_ARR_DIRECTORY_CREATED = []
             if (RESULTS.removeDirectoryIfExistant.value) {
-                MESSAGE_ARR_DIRECTORY_CREATED.push(
-                    'Repository at ' + repoPath + ' removed and created!',
-                )
+                MESSAGE_ARR_DIRECTORY_CREATED.push([
+                    'Repository at',
+                    gitRepositoryPath,
+                    'removed and created!',
+                ].join(' '))
             }
             RESULT.message = [
                 MESSAGE_ARR_DIRECTORY_CREATED.join(' '),
                 'Repository created!',
             ].join(' ')
-
         }
-
         RESULT.subresults = RESULTS
         return RESULT
     }

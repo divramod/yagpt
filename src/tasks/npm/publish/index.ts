@@ -132,7 +132,7 @@ export class Task extends SuperTask implements ITaskClass {
         // isDevelopMergable
         if (proceed) {
             const CHECK_IS_DEVELOP_MERGABLE =
-                await UGit.checkIsMergable(
+                await UGit.checkIsMergableFromTo(
                     PROJECT_PATH,
                     'develop',
                 )

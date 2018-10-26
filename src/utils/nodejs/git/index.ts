@@ -395,30 +395,38 @@ export class UGitUtility {
     /**
      * Checks, if a branch is mergable into the current one.
      * @param gitRepositoryPath  The path of the git repository.
-     * @param branchName  The name of the branch to check out.
+     * @param mergeFrom  The name of the branch to merge from.
+     * @param mergeTo The name of the branch to merge to.
+     *  This one is optional, if not passed it will use the currently checked
+     *  out branch as mergeTo branch.
      * @returns
-     *      1. boolean true
-     *      2. string Error: Branch `branchName` not mergable!
+     *      1. boolean true: clean
+     *      2. boolean true: unclean
+     *      3. string: Error: merge conflict
      */
-    public async checkIsMergable(
+    public async checkIsMergableFromTo(
         gitRepositoryPath: string,
-        branchName: string,
+        mergeFrom: string,
+        mergeTo?: string,
     ): Promise <boolean | string> {
         const GIT = GIT_P(gitRepositoryPath)
         let result
-        const R_FETCH = await GIT.raw([
-            'fetch',
-            'origin',
-            branchName,
-        ])
-        const PATH_BEFORE = process.cwd()
-        SHELL.cd(gitRepositoryPath)
-        const BRANCH_FULL_NAME  = 'origin/' + branchName
+        const CURRENT_BRANCH_NAME = await this.getBranchName(gitRepositoryPath)
+        if (mergeTo === undefined) {
+            mergeTo = CURRENT_BRANCH_NAME
+        }
+        const rCheckIsClean = await this.checkIsClean(gitRepositoryPath)
+        let stashed  = false
+        if (rCheckIsClean !== true) {
+            await GIT.stash()
+            stashed = true
+        }
+        await GIT.checkout(mergeTo)
         const R_MERGABLE = await GIT.raw([
             'merge',
-            '--no-commit',
             '--no-ff',
-            BRANCH_FULL_NAME,
+            '--no-commit',
+            mergeFrom,
         ])
         if (
             R_MERGABLE === null ||
@@ -427,18 +435,140 @@ export class UGitUtility {
             result = true
         } else {
             result = [
-                'Error:',
-                branchName,
-                'not mergable',
-            ].join(' ')
+                'ERROR:',
+                [
+                    '\nMerge from',
+                    mergeFrom,
+                    'to',
+                    mergeTo,
+                    'not possible!',
+                ].join(' '),
+                '\n\nERRORMESSAGE:',
+                '\n',
+                R_MERGABLE,
+                '\nTODO\'S TO FIX THE ISSUE:',
+                [
+                    '\n1. Checkout',
+                    mergeTo,
+                    'and run `git merge',
+                    mergeFrom,
+                    '`',
+                ].join(' '),
+                '\n2. fix merge conflicts',
+                '\n3. commit',
+            ].join('')
+            const R_RESET_HARD = await GIT.raw([
+                'merge',
+                '--abort',
+            ])
         }
-        const R_RESET_HARD = await GIT.raw([
-            'reset',
-            '--hard',
-            'ORIG_HEAD',
-        ])
-        SHELL.cd(PATH_BEFORE)
+        await GIT.checkout(CURRENT_BRANCH_NAME)
+        if (stashed === true) {
+            await GIT.stash(['apply'])
+        }
         return result
     }
+
+    /**
+     * Stashes the changes of the current branch, when it is dirty.
+     * @param gitRepositoryPath  The path of the git repository.
+     * @returns
+     *      1. boolean true: when repository dirty and changes stashed
+     *      2. string ERROR: repository clean when repository clean
+     */
+    public async stash(
+        gitRepositoryPath,
+    ): Promise <boolean | string> {
+        const GIT = GIT_P(gitRepositoryPath)
+        let result
+        const R_CHECK_IS_CLEAN = await this.checkIsClean(
+            gitRepositoryPath,
+        )
+        if (R_CHECK_IS_CLEAN === true) {
+            result = 'ERROR: repository clean'
+        } else {
+            await GIT.stash()
+            result = true
+        }
+        return result
+    }
+
+    /**
+     * Merges mergeFrom one branch mergeTo another. Proves, if merge is possible
+     * before doing it.
+     * @param gitRepositoryPath  The path of the git repository.
+     * @param mergeFrom  The brmergeFrom from which mergeTo merge.
+     * @param mergeTo  The brmergeTochmergeToo merge to.
+     * @returns
+     *      1. string SUCCESS: ...
+     *      2. string ERROR: merge conflicts
+     */
+    public async mergeFromTo(
+        gitRepositoryPath: string,
+        mergeFrom: string,
+        mergeTo: string,
+        options: string[] = [],
+    ): Promise <boolean | string> {
+        const GIT = GIT_P(gitRepositoryPath)
+        let result
+        const R_CHECK_IS_MERGABLE = await this.checkIsMergableFromTo(
+            gitRepositoryPath,
+            mergeFrom,
+            mergeTo,
+        )
+        if (R_CHECK_IS_MERGABLE === true) {
+            const R_STASH = await this.stash(gitRepositoryPath)
+            const CURRENT_BRANCH_NAME =
+                await this.getBranchName(gitRepositoryPath)
+            await GIT.checkout(mergeTo)
+            const R_MERGE = await GIT.raw([
+                'merge',
+                mergeFrom,
+            ])
+            result = [
+                'SUCCESS:\n',
+                R_MERGE,
+            ].join('')
+            await GIT.checkout(CURRENT_BRANCH_NAME)
+            if (R_STASH === true) {
+                await GIT.stash(['apply'])
+            }
+        } else {
+            result = R_CHECK_IS_MERGABLE
+        }
+        return result
+    }
+
+    /**
+     * Commits changes. If there are files which are not added one can omit
+     * filesToAdd which will add all files. When the commit message is
+     * ommited, 'update' will automatically be used as commit message.
+     * @param gitRepositoryPath  The path of the git repository.
+     * @param commitMessage  The commit message to use.
+     * @param filesToAdd  The files to add/commit.
+     * @returns
+     *     1. boolean(true) commitMessage default, filesToCommitTo default
+     *     2. boolean(true)
+     */
+    public async commit(
+        gitRepositoryPath: string,
+        commitMessage: string = 'update',
+        filesToAdd: string[] | string = 'all',
+    ): Promise <boolean | string> {
+        const GIT = GIT_P(gitRepositoryPath)
+        const result = true
+        if (filesToAdd === 'all') {
+            await GIT.raw([
+                'add',
+                '-A',
+            ])
+            await GIT.commit(commitMessage)
+        } else {
+            await GIT.add(filesToAdd)
+            await GIT.commit(commitMessage, filesToAdd)
+        }
+        return result
+    }
+
 }
 export const UGit = UGitUtility.getInstance()
