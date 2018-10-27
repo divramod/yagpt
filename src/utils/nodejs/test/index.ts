@@ -21,32 +21,37 @@ export const it = MOCHA.it
 // CLASS
 export class UTestUtility {
 
-    public static getInstance(): UTestUtility {
-        return UTestUtility.INSTANCE
+    public configPath: string = PATH.resolve(
+        require('global-modules-path').getPath('yagpt'),
+        'yagpt.config.json',
+    )
+    public config: any = UJson.getKeyValueFromFile(
+        this.configPath,
+        'testing',
+    )
+    public npmPackage: any = this.config.npm
+    public testPath: string = PATH.resolve(
+        this.config.path,
+    )
+
+    /**
+     * Returns the environment variable of the module.
+     * @returns  [testing|development|production]
+     */
+    public getEnv(): string {
+        return process.env.DMTPL_ENV
     }
 
-    private static INSTANCE: UTestUtility = new UTestUtility()
-
-    public name: string = 'UTestUtility'
-    public npmPackage: any
-    public TEST_PATH: any
-
-    constructor() {
-        if (UTestUtility.INSTANCE) {
-            throw new Error([
-                'Error: Instantiation failed: Use',
-                this.name,
-                '.getInstance() instead of new.',
-            ].join(' '))
-        }
-        this.setConstants()
-        UTestUtility.INSTANCE = this
-    }
-
-    // TODO
+    /**
+     * Cleans up cli output.
+     * @param numberOfLinesToCleanup  The number of lines to clean up.
+     * @returns
+     *      1. boolean=true: when cleanup was run and env=testing
+     *      2. boolean=false: when env!==testing
+     */
     public async userInputCleanup(
-        LINE_COUNT: number,
-    ): Promise<boolean> {
+        numberOfLinesToCleanup: number,
+    ): Promise < boolean > {
         let userInputCleanupRun = false
         if (this.getEnv() === 'testing') {
             let cleanupCommand = 'tput cuu1 && echo "'
@@ -54,7 +59,7 @@ export class UTestUtility {
                 cleanupCommand = cleanupCommand + ' '
             }
             cleanupCommand = cleanupCommand + '" && tput cuu1'
-            for (let i = 0; i < LINE_COUNT; i++) {
+            for (let i = 0; i < numberOfLinesToCleanup; i++) {
                 SHELL.exec(cleanupCommand)
             }
             userInputCleanupRun = true
@@ -62,69 +67,37 @@ export class UTestUtility {
         return userInputCleanupRun
     }
 
-    // TODO
-    public utilityTestConstructor(
-        U,
-    ): () => Promise<void> {
-        return async () => {
-            try {
-                const UInstance = new U()
-            } catch (e) {
-                expect(e.message).to.equal([
-                    'Error: Instantiation failed: Use',
-                    U.name,
-                    '.getInstance() instead of new.',
-                ].join(' '))
-            }
-        }
-    }
-
-    // TODO
-    public utilityTestGetInstance(
-        U_CLASS,
-        U_INSTANCE,
-    ): () => Promise<void> {
-        return async () => {
-            expect(U_INSTANCE).to.deep.equal(U_CLASS.getInstance())
-        }
-    }
-
-    // TODO
-    public getEnv(): string {
-        return process.env.DMTPL_ENV
-    }
-
     /**
      * Creates a git repository at a given path.
      * @param gitRepositoryPath  The path of the repository.
      * @param removeDirectoryIfExistant  Remove the directory if existant.
      * @returns
-     *      1. boolean true: if directory not existant
-     *      2. boolean true: if directory existant and removeDirectoryIfExistant
+     *      1. boolean=true: if directory not existant
+     *      2. boolean=true: if directory existant and removeDirectoryIfExistant
      *                       true
-     *      3. string ERROR: if directory existant and if
+     *      3. string=ERROR: if directory existant and if
      *                       removeDirectoryIfExistant=false
      */
     public async gitCreateTestRepositoryAtPath(
         gitRepositoryPath: string,
         removeDirectoryIfExistant: boolean = false,
-    ): Promise<string | boolean> {
+    ): Promise < string | boolean > {
         let result
-        result = true
         let createGitRepository = false
         if (!SHELL.test('-d', PATH.resolve(gitRepositoryPath))) {
             await this.createTestDirectory(gitRepositoryPath)
             createGitRepository = true
+            result = true
         } else {
             if (removeDirectoryIfExistant === true) {
                 SHELL.rm('-rf', PATH.resolve(gitRepositoryPath))
                 await this.createTestDirectory(gitRepositoryPath)
                 createGitRepository = true
+                result = true
             } else {
                 result = 'ERROR: directory existant!'
             }
         }
-
         if (createGitRepository === true) {
             const GIT = GIT_P(gitRepositoryPath)
             await GIT.init()
@@ -144,19 +117,20 @@ export class UTestUtility {
     /**
      * Creates a directory in path /tmp/test.
      * @param directoryPath  The path of the directory to create.
-     * @param deleteDirectoryIfExistant  If to delete the directory when
+     * @param overwriteIfExistant  If to delete the directory when
      *   existant.
      * @returns
      *      1. boolean true: if directory not existant
      *      2. boolean true: if directory existant and
-     *         deleteDirectoryIfExistant=true
+     *         overwriteIfExistant=true
      *      3. string ERROR: if directory existant and
+     *         overwriteIfExistant=false
      *      4. string ERROR: if directory is not in path /tmp/test
      */
     public async createTestDirectory(
         directoryPath: string,
-        deleteDirectoryIfExistant: boolean = false,
-    ): Promise<string | boolean> {
+        overwriteIfExistant: boolean = false,
+    ): Promise < string | boolean > {
         const DIRECTORY_PATH = PATH.resolve(directoryPath)
         let result
         if (DIRECTORY_PATH.indexOf('/tmp/test/') === -1) {
@@ -168,12 +142,10 @@ export class UTestUtility {
                 'Please use a subdirectory of \'/tmp/test\'!',
             ].join(' ')
         } else {
-
-            const R_CREATE_DIRECTORY = await UPath.createDirectory(
+            result = await UPath.createDirectory(
                 directoryPath,
-                deleteDirectoryIfExistant,
+                overwriteIfExistant,
             )
-            result = R_CREATE_DIRECTORY
         }
         return result
     }
@@ -187,16 +159,18 @@ export class UTestUtility {
      *      1. boolean true: if file not existant
      *      2. boolean true: if file existant and overwriteIfExistant=true
      *      3. string ERROR: if file existant and overwriteIfExistant=false
+     *      4. string ERROR: not in /tmp/test when not in /tmp/test
      */
     public async createTestFile(
         filePath,
         fileContent = '',
         overwriteIfExistant = false,
-    ): Promise<string | boolean> {
+    ): Promise < string | boolean > {
         let result
 
         // RUN
-        if (filePath.indexOf(this.TEST_PATH) !== -1) {
+        if (filePath.indexOf(this.testPath) !== -1) {
+
             result = await UPath.createFile(
                 filePath,
                 fileContent,
@@ -204,120 +178,16 @@ export class UTestUtility {
             )
         } else {
             result = [
+                'ERROR:',
                 filePath,
                 'not in',
-                this.TEST_PATH,
+                this.testPath,
                 'Please use a subdirectory of \'/tmp/test\'!',
             ].join(' ')
         }
         return result
     }
 
-    /**
-     * Prepares a NPM repository for testing purposes.
-     * @param npmPackagePath  The path where to prepare the npm package.
-     * @param overwriteIfExistant  Overwrite the path if existant.
-     * @returns
-     *      1. boolean=true: if directory not existant
-     *      2. boolean=true: if directory existant and overwriteIfExistant=true
-     *      3. string ERROR: if directory existant and overwriteIfExistant=false
-     */
-    // TODO
-    // - use copy if existant because it is faster
-    // - tests
-    public async prepareNpmRepository(
-        npmPackagePath: string = this.npmPackage.path,
-        overwriteIfExistant: boolean = false,
-    ): Promise<string | boolean> {
-        let result
-        if (SHELL.test('-d', npmPackagePath)) {
-            if (overwriteIfExistant === false) {
-                result = [
-                    'ERROR:',
-                    npmPackagePath,
-                    'existant!',
-                ].join(' ')
-            } else {
-                result = await this.copyOrClone(
-                    this.npmPackage.git.ssh,
-                    this.npmPackage.path,
-                    this.npmPackage.backupPath,
-                    true,
-                )
-            }
-        } else {
-            result = await this.copyOrClone(
-                this.npmPackage.git.ssh,
-                this.npmPackage.path,
-                this.npmPackage.backupPath,
-            )
-        }
-        return result
-    }
-
-    /**
-     * Copies a directory to a given path. If the source path to copy from is
-     * not existant, it will clone a git repository from the given repository-
-     * url.
-     * @param repositoryUrl:  The url of the repository.
-     * @param targetPath  The path where to copy/clone to.
-     * @param copyFromPath  The path where to copy from.
-     * @returns
-     *      1. boolean=true: when successful
-     *      2. ???
-     */
-    // TODO tests
-    public async copyOrClone(
-        repositoryUrl: string,
-        targetPath: string,
-        copyFromPath: string,
-        overwriteIfExistant: boolean = false,
-    ): Promise<string | boolean> {
-        let result
-        result = false
-        let run = true
-        if (SHELL.test('-d', targetPath) && overwriteIfExistant === false) {
-            run = false
-            result = [
-                'ERROR: Diretory',
-                targetPath,
-                'is existant!',
-            ].join(' ')
-        }
-        if (run === true) {
-            if (SHELL.test('-d', copyFromPath)) {
-                SHELL.cp(
-                    '-Rf',
-                    copyFromPath,
-                    targetPath,
-                )
-                result = true
-            } else {
-                const GIT = GIT_P()
-                const R_CLONE = GIT.clone(
-                    repositoryUrl,
-                    targetPath,
-                )
-                result = true
-            }
-        }
-        return result
-    }
-
-    // TODO documentation
-    // TODO tests
-    private setConstants(): void {
-        // TESTING
-        const YG_CONFIG_PATH = PATH.resolve(
-            require('global-modules-path').getPath('yagpt'),
-            'yagpt.config.json')
-        const R_GET_KEY_VALUE_FROM_FILE = UJson.getKeyValueFromFile(
-            YG_CONFIG_PATH,
-            'testing',
-        )
-        this.TEST_PATH = PATH.resolve(R_GET_KEY_VALUE_FROM_FILE.path)
-        this.npmPackage = R_GET_KEY_VALUE_FROM_FILE.npm
-    }
-
 }
-export const UTest = UTestUtility.getInstance()
+
+export const UTest = new UTestUtility()

@@ -8,11 +8,11 @@ const SHELL = require('shelljs')
 describe('UJson:' + __filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
     })
 
     describe('getKeyValueFromFile()', async () => {

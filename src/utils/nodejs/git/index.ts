@@ -1,35 +1,13 @@
-// https://gitlab.com/divramod/yagpt/issues/4
-
-// IMPORT
 const GIT_P = require('simple-git/promise')
 const gitBranchName = require('branch-name')
 const SHELL = require('shelljs')
 const PATH = require('path')
 const _ = require('underscore')
 
-// IMPORT
-import { UTest } from '@utils/nodejs/test'
+import { UPath } from '@utils/nodejs/path'
 
 // CLASS
 export class UGitUtility {
-
-    public static getInstance(): UGitUtility {
-        return UGitUtility.INSTANCE
-    }
-
-    private static INSTANCE: UGitUtility = new UGitUtility()
-    public name: string = 'UGitUtility'
-
-    constructor() {
-        if (UGitUtility.INSTANCE) {
-            throw new Error([
-                'Error: Instantiation failed: Use',
-                this.name,
-                '.getInstance() instead of new.',
-            ].join(' '))
-        }
-        UGitUtility.INSTANCE = this
-    }
 
     /**
      * Checks, if the current branch is a feature branch. Feature branches.
@@ -296,8 +274,7 @@ export class UGitUtility {
         gitRepositoryPath,
     ): Promise <boolean | string> {
         let result
-        const R_CHECK_IS_REPO =
-        await this.checkIsRepo(gitRepositoryPath)
+        const R_CHECK_IS_REPO = await this.checkIsRepo(gitRepositoryPath)
         if (R_CHECK_IS_REPO === true) {
             const GIT = GIT_P(gitRepositoryPath)
             const R = await GIT.status()
@@ -566,5 +543,80 @@ export class UGitUtility {
         return result
     }
 
+    /**
+     * Copies or clones a git repository to the local file system. When the
+     * path at `pathLocalBackup` is existant and it is a git repository, the
+     * directory will be copied to `pathLocalTarget`. If `pathLocalBackup`is
+     * not existant or not a git repository and `urlGit`is a clonable git
+     * repository, a git repository from `urlGit` will be cloned to
+     * `pathLocalTarget`.
+     * @param pathLocalTarget  The local target path for copy or clone.
+     * @param pathLocalBackup  The local backup path for copy.
+     * @param urlGit  The git url where to clone from
+     * @param overwriteIfExistant  Overwrite if existant.
+     * @returns
+     *      1. boolean=true: when target not existant
+     *                       (backupExistant=true --> copy)
+     *      2. boolean=true: when target existant, overwriteIfExistant=true
+     *                       (backupExistant=true --> copy)
+     *      3. boolean=true: when target not existant
+     *                       (backupExistant=false --> clone)
+     *      4. boolean=true: when existant, overwriteIfExistant=true
+     *                       (backupExistant=false --> clone)
+     *      5. string=ERROR: when existant, overwriteIfExistant=false
+     *      6. string=ERROR: pathLocalBackup is not a git repository
+     *      7. string=ERROR: `urlGit` is not a git repository url from wher one
+     *                       can clone
+     *      8. string=ERROR: no Internet connection
+     */
+    // TODO
+    // - be aware of the fact, that this test can only pass, when a internet
+    public async copyOrCloneRepository(
+        pathLocalTarget: string,
+        pathLocalBackup: string,
+        urlGit: string,
+        overwriteIfExistant: boolean = false,
+    ): Promise<boolean | string> {
+        let result
+        if (SHELL.test('-d', pathLocalTarget)) {
+            if (overwriteIfExistant === true) {
+                if (SHELL.test('-d', pathLocalBackup)) {
+                    result = await UPath.copyDirectory(
+                        pathLocalBackup,
+                        pathLocalTarget,
+                        true,
+                    )
+                } else {
+                    const GIT = GIT_P()
+                    const R_CLONE = GIT.clone(
+                        urlGit,
+                        pathLocalTarget,
+                    )
+                }
+            } else {
+                result = [
+                    'ERROR:',
+                    pathLocalTarget,
+                    'existant!',
+                ].join(' ')
+            }
+        } else {
+            if (SHELL.test('-d', pathLocalBackup)) {
+                result = await UPath.copyDirectory(
+                    pathLocalBackup,
+                    pathLocalTarget,
+                    true,
+                )
+            } else {
+                const GIT = GIT_P()
+                const R_CLONE = GIT.clone(
+                    urlGit,
+                    pathLocalTarget,
+                )
+            }
+        }
+        return result
+    }
+
 }
-export const UGit = UGitUtility.getInstance()
+export const UGit = new UGitUtility()

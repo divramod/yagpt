@@ -1,4 +1,7 @@
 const SHELL = require('shelljs')
+import { UConfig } from '@utils/nodejs/config'
+import { UGit } from '@utils/nodejs/git'
+
 export class UNpmUtility {
 
     /**
@@ -11,8 +14,8 @@ export class UNpmUtility {
      *      2. string=ERROR: `packagePath` not existant!
      */
     public async relink(
-        packagePath,
-        packageName,
+        packagePath: string,
+        packageName: string,
     ): Promise<string | boolean> {
         let result
         if (SHELL.test('-d', packagePath)) {
@@ -40,6 +43,24 @@ export class UNpmUtility {
             ].join(' ')
         }
         return result
+    }
+
+    /**
+     * A convinience function for copyOrCloneRepository, which prepares the npm
+     * repository given in the npm part of yagpt.config.json.
+     * see [[]]
+     */
+    public async prepareNpmRepository(): Promise <string | boolean> {
+        const PATH_LOCAL_TARGET = UConfig.testPath
+        const PATH_LOCAL_BACKUP = UConfig.npmPackage.backupPath
+        const URL_GIT = UConfig.npmPackage.git.ssh
+        const OVERWRITE_IF_EXISTANT = true
+        return await UGit.copyOrCloneRepository(
+            PATH_LOCAL_TARGET,
+            PATH_LOCAL_BACKUP,
+            URL_GIT,
+            OVERWRITE_IF_EXISTANT,
+        )
     }
 
 }

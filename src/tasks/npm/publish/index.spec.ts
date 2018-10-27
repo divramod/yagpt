@@ -1,11 +1,7 @@
 // https://gitlab.com/divramod/yagpt/issues/7
 import { UGit } from '@utils/nodejs/git'
-import {
-    describe,
-    expect,
-    it,
-    UTest,
-} from '@utils/nodejs/test'
+import { UNpm } from '@utils/nodejs/npm'
+import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { Task } from './'
 
 // REQUIRE
@@ -27,20 +23,13 @@ describe(__filename, async () => {
         'success:',
         'all conditions fulfilled',
     ].join(' '), async () => {
-
-        // PREPARE TASK
         const TASK = new Task({ cwd: __dirname, logging: false })
-
-        // PREPARE Repository
-        // RIMRAF.sync(UTest.npmPackage.path) // REMOVE DIRECTORY
-        await UTest.prepareNpmRepository()
+        await UNpm.prepareNpmRepository()
         await UGit.removeAllBranchesExcept(UTest.npmPackage.path)
         await UGit.checkoutNewBranch(
             UTest.npmPackage.path,
             'feature/123-test-feature',
         )
-
-        // RUN
         const R = await TASK.isRunnable({
             PROJECT_PATH: UTest.npmPackage.path,
         })
@@ -48,15 +37,12 @@ describe(__filename, async () => {
         // isGitRepository
         expect(R.subresults.isGitRepository.value).not.to.be.undefined
         expect(R.subresults.isGitRepository.value).to.equal(true)
-
         // checkIsFeatureBranch
         expect(R.subresults.isFeatureBranch.value).not.to.be.undefined
         expect(R.subresults.isFeatureBranch.value).to.equal(true)
-
         // isClean
         expect(R.subresults.isClean.value).not.to.be.undefined
         expect(R.subresults.isClean.value).to.equal(true)
-
         // isDevelopMergable
         expect(R.subresults.isDevelopMergable.value).not.to.be.undefined
         expect(R.subresults.isDevelopMergable.value).to.equal(true)

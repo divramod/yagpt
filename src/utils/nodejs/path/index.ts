@@ -28,6 +28,7 @@ export class UPathUtility {
                 result = true
             } else {
                 result = [
+                    'ERROR:',
                     'Directory',
                     DIRECTORY_PATH,
                     'existant and not created!',
@@ -59,7 +60,7 @@ export class UPathUtility {
         let result
         const FILE_DIRECTORY_PATH = PATH.dirname(filePath)
         const FILE_DIRECTORY_PATH_EXISTANT =
-            SHELL.test('-d', FILE_DIRECTORY_PATH)
+        SHELL.test('-d', FILE_DIRECTORY_PATH)
         if (FILE_DIRECTORY_PATH_EXISTANT) {
             const FILE_EXSITANT =
                 SHELL.test('-f', filePath)
@@ -68,6 +69,7 @@ export class UPathUtility {
                 if (overwriteIfExistant === false) {
                     writeFile = false
                     result = [
+                        'ERROR:',
                         filePath,
                         'existant!',
                     ].join(' ')
@@ -90,6 +92,58 @@ export class UPathUtility {
                 'ERROR:',
                 'Directory',
                 FILE_DIRECTORY_PATH,
+                'not existant!',
+            ].join(' ')
+        }
+        return result
+    }
+
+    /**
+     * Copies a directory.
+     * @param src  The source path from where to copy from.
+     * @param target  The target path where to copy to.
+     * @returns
+     *      1. boolean=true: when src existant and target not existant
+     *      2. boolean=true: when src existant and target existant and
+     *                       overwriteIfExistant=true
+     *      3. string=ERROR: when src existant and target existant and
+     *                       overwriteIfExistant=false
+     *      4. string=ERROR: when src not existant
+     */
+    public async copyDirectory(
+        src: string,
+        target: string,
+        overwriteIfExistant: boolean = false,
+    ): Promise<boolean | string> {
+        let result
+        if (SHELL.test('-d', src)) {
+            if (SHELL.test('-d', target)) {
+                if (overwriteIfExistant === true) {
+                    SHELL.cp(
+                        '-Rf',
+                        src,
+                        target,
+                    )
+                    result = true
+                } else {
+                    result = [
+                        'ERROR: target path',
+                        target,
+                        'existant!',
+                    ].join(' ')
+                }
+            } else {
+                SHELL.cp(
+                    '-R',
+                    src,
+                    target,
+                )
+                result = true
+            }
+        } else {
+            result = [
+                'ERROR: src path',
+                src,
                 'not existant!',
             ].join(' ')
         }

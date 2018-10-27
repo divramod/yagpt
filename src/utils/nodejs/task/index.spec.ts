@@ -55,14 +55,14 @@ class Task extends SuperTask implements ITaskClass {
 describe(__filename, async () => {
 
     beforeEach(async () => {
-        await RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        await RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
     })
 
     afterEach(async () => {
-        await RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY
+        await RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
     })
 
-    it('run()', async () => {
+    it.skip('run()', async () => {
 
         const T = new Task({ cwd: __dirname, logging: false })
         const R = await T.run()
