@@ -8,7 +8,7 @@ import { Task } from './'
 const RIMRAF = require('rimraf')
 
 // TESTSUITE
-describe(__filename, async () => {
+describe.skip(__filename, async () => {
 
     beforeEach(async () => {
         // RIMRAF.sync(UTest.TEST_PATH) // REMOVE DIRECTORY

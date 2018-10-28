@@ -82,97 +82,101 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_utils_nodejs_path_index_.upathutility.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_nodejs_path_index_.upathutility.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_utils_nodejs_path_index_.upathutility.html#instance" class="tsd-kind-icon">INSTANCE</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_path_index_.upathutility.html#copydirectory" class="tsd-kind-icon">copy<wbr>Directory</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_path_index_.upathutility.html#createdirectory" class="tsd-kind-icon">create<wbr>Directory</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_path_index_.upathutility.html#createfile" class="tsd-kind-icon">create<wbr>File</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_utils_nodejs_path_index_.upathutility.html#getinstance" class="tsd-kind-icon">get<wbr>Instance</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new UPath<wbr>Utility<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-signature-type">UPathUtility</a></li>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="copydirectory" class="tsd-anchor"></a>
+					<h3>copy<wbr>Directory</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>Directory<span class="tsd-signature-symbol">(</span>src<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, overwriteIfExistant<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/path/index.ts:23</li>
+									<li>Defined in utils/nodejs/path/index.ts:113</li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-signature-type">UPathUtility</a></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Copies a directory.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>src: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The source path from where to copy from.</p>
+									</div>
+								</li>
+								<li>
+									<h5>target: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The target path where to copy to.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> overwriteIfExistant: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<pre><code> 1. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when src existant <span class="hljs-keyword">and</span> target <span class="hljs-keyword">not</span> existant
+ 2. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when src existant <span class="hljs-keyword">and</span> target existant <span class="hljs-keyword">and</span>
+                  <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">true</span>
+ 3. <span class="hljs-attribute">string</span>=ERROR: when src existant <span class="hljs-keyword">and</span> target existant <span class="hljs-keyword">and</span>
+                  <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">false</span>
+ 4. <span class="hljs-attribute">string</span>=ERROR: when src <span class="hljs-keyword">not</span> existant</code></pre>
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;UPathUtility&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in utils/nodejs/path/index.ts:23</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
-					<a name="instance" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> INSTANCE</h3>
-					<div class="tsd-signature tsd-kind-icon">INSTANCE<span class="tsd-signature-symbol">:</span> <a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-signature-type">UPathUtility</a><span class="tsd-signature-symbol"> =&nbsp;new UPathUtility()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in utils/nodejs/path/index.ts:22</li>
-						</ul>
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="createdirectory" class="tsd-anchor"></a>
 					<h3>create<wbr>Directory</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Directory<span class="tsd-signature-symbol">(</span>directoryPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, bDeleteIfDirectoryExistant<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IResult</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Directory<span class="tsd-signature-symbol">(</span>directoryPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, deleteDirectoryIfExistant<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/path/index.ts:36</li>
+									<li>Defined in utils/nodejs/path/index.ts:17</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a Directory at a given path.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>directoryPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The path of the directory to create.</p>
+									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> bDeleteIfDirectoryExistant: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> deleteDirectoryIfExistant: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>If to delete the directory if existant</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IResult</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<pre><code> <span class="hljs-number">1.</span> <span class="hljs-built_in">boolean</span>=<span class="hljs-literal">true</span> <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> existant
+ <span class="hljs-number">2.</span> <span class="hljs-built_in">boolean</span>=<span class="hljs-literal">true</span> <span class="hljs-keyword">when</span> existant <span class="hljs-keyword">and</span> `deleteDirectoryIfExistant`=<span class="hljs-literal">true</span>
+ <span class="hljs-number">3.</span> <span class="hljs-built_in">string</span>=<span class="hljs-keyword">ERROR</span>: <span class="hljs-keyword">when</span> existant <span class="hljs-keyword">and</span> `deleteDirectoryIfExistant`=<span class="hljs-literal">false</span></code></pre>
 						</li>
 					</ul>
 				</section>
@@ -180,45 +184,46 @@
 					<a name="createfile" class="tsd-anchor"></a>
 					<h3>create<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>File<span class="tsd-signature-symbol">(</span>FILE_PATH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, FILE_CONTENT<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, OVERWRITE_IF_EXISTANT<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IResult</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>File<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fileContent<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, overwriteIfExistant<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/path/index.ts:92</li>
+									<li>Defined in utils/nodejs/path/index.ts:55</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a file with the given content.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>FILE_PATH: <span class="tsd-signature-type">any</span></h5>
+									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The path of the file to create.</p>
+									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> FILE_CONTENT: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> fileContent: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The content of the file to create.</p>
+									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> OVERWRITE_IF_EXISTANT: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> overwriteIfExistant: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Overwrite the file when existant.</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IResult</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="getinstance" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Instance</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Instance<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-signature-type">UPathUtility</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in utils/nodejs/path/index.ts:18</li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-signature-type">UPathUtility</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<pre><code> <span class="hljs-number">1</span>. <span class="hljs-built_in">boolean</span>=<span class="hljs-literal">true</span> <span class="hljs-keyword">When</span> <span class="hljs-keyword">file</span> <span class="hljs-keyword">not</span> existant.
+ <span class="hljs-number">2</span>. <span class="hljs-built_in">boolean</span>=ture <span class="hljs-keyword">When</span> <span class="hljs-keyword">file</span> existant <span class="hljs-keyword">and</span> `overwriteIfExistant`=<span class="hljs-literal">true</span>
+ <span class="hljs-number">3</span>. <span class="hljs-built_in">string</span>=<span class="hljs-literal">ERROR</span>: <span class="hljs-keyword">When</span> <span class="hljs-keyword">file</span> existant <span class="hljs-keyword">and</span> `overwriteIfExistant`=<span class="hljs-literal">false</span>
+ <span class="hljs-number">4</span>. <span class="hljs-built_in">string</span>=<span class="hljs-literal">ERROR</span>: <span class="hljs-keyword">When</span> directory <span class="hljs-keyword">not</span> existant</code></pre>
 						</li>
 					</ul>
 				</section>
@@ -243,10 +248,10 @@
 						<a href="../modules/_tasks_npm_publish_index_spec_.html">"tasks/npm/publish/index.spec"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_nodejs_common_index_.html">"utils/nodejs/common/index"</a>
+						<a href="../modules/_utils_nodejs_config_index_.html">"utils/nodejs/config/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_nodejs_common_index_spec_.html">"utils/nodejs/common/index.spec"</a>
+						<a href="../modules/_utils_nodejs_config_index_spec_.html">"utils/nodejs/config/index.spec"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_nodejs_date_index_.html">"utils/nodejs/date/index"</a>
@@ -299,23 +304,14 @@
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="_utils_nodejs_path_index_.upathutility.html" class="tsd-kind-icon">UPath<wbr>Utility</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_utils_nodejs_path_index_.upathutility.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_nodejs_path_index_.upathutility.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
-								<a href="_utils_nodejs_path_index_.upathutility.html#instance" class="tsd-kind-icon">INSTANCE</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_utils_nodejs_path_index_.upathutility.html#copydirectory" class="tsd-kind-icon">copy<wbr>Directory</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_nodejs_path_index_.upathutility.html#createdirectory" class="tsd-kind-icon">create<wbr>Directory</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_nodejs_path_index_.upathutility.html#createfile" class="tsd-kind-icon">create<wbr>File</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_utils_nodejs_path_index_.upathutility.html#getinstance" class="tsd-kind-icon">get<wbr>Instance</a>
 							</li>
 						</ul>
 					</li>

@@ -3,6 +3,7 @@ const gitBranchName = require('branch-name')
 const SHELL = require('shelljs')
 const PATH = require('path')
 const _ = require('underscore')
+const RIMRAF = require('rimraf')
 
 import { UPath } from '@utils/nodejs/path'
 
@@ -544,6 +545,81 @@ export class UGitUtility {
     }
 
     /**
+     * Clones a git repository to the local file system.
+     * @param
+     * @returns
+     *      1. string=ERROR: `pathLocalTarget` existant!
+     *      2. string=Error: `urlGit` not a repository!
+     *                       see checkIsRemoteRepository()
+     *      3. boolean=true:
+     */
+    public async clone(
+        urlGit: string,
+        pathLocalTarget: string,
+        overwriteIfExistant: boolean = false,
+    ): Promise<boolean | string> {
+        let result
+        result = true
+        if (overwriteIfExistant === false &&
+            SHELL.test('-d', pathLocalTarget)
+        ) {
+            result = [
+                'ERROR:',
+                pathLocalTarget,
+                'existant!',
+            ].join(' ')
+        } else {
+            const GIT = GIT_P()
+            const R_CHECK_IS_REMOTE_REPOSITORY =
+                await this.checkIsRemoteRepository(
+                    urlGit,
+                )
+            if (R_CHECK_IS_REMOTE_REPOSITORY !== true) {
+                result = R_CHECK_IS_REMOTE_REPOSITORY
+            } else {
+                if (SHELL.test('-d', pathLocalTarget)) {
+                    RIMRAF.sync(pathLocalTarget)
+                }
+                const R_CLONE = await GIT.clone(
+                    urlGit,
+                    pathLocalTarget,
+                )
+                result = true
+            }
+        }
+        return result
+    }
+
+    /**
+     * Checks if a given url is a actual remote repository.
+     * @param urlGit  The url of the remote repository.
+     * @returns
+     *      1. boolean=true: if the repository is existant
+     *      2. string=The actual error
+     */
+    public async checkIsRemoteRepository(
+        urlGit: string,
+    ): Promise<boolean | string> {
+        const GIT = GIT_P()
+        let result
+        let rCheck
+        try {
+            await GIT.silent(true).raw([
+                'ls-remote',
+                urlGit,
+            ])
+        } catch (e) {
+            rCheck = e.toString()
+        }
+        if (rCheck !== undefined) {
+            result = rCheck
+        } else {
+            result = true
+        }
+        return result
+    }
+
+    /**
      * Copies or clones a git repository to the local file system. When the
      * path at `pathLocalBackup` is existant and it is a git repository, the
      * directory will be copied to `pathLocalTarget`. If `pathLocalBackup`is
@@ -557,17 +633,17 @@ export class UGitUtility {
      * @returns
      *      1. boolean=true: when target not existant
      *                       (backupExistant=true --> copy)
-     *      2. boolean=true: when target existant, overwriteIfExistant=true
+     *      2. boolean=true: when target not existant
+     *                       (backupExistant=false --> clone)
+     *      3. boolean=true: when target existant, overwriteIfExistant=true
      *                       (backupExistant=true --> copy)
-     *      3. boolean=true: when target not existant
+     *      4. boolean=true: when target existant, overwriteIfExistant=true
      *                       (backupExistant=false --> clone)
-     *      4. boolean=true: when existant, overwriteIfExistant=true
-     *                       (backupExistant=false --> clone)
-     *      5. string=ERROR: when existant, overwriteIfExistant=false
-     *      6. string=ERROR: pathLocalBackup is not a git repository
-     *      7. string=ERROR: `urlGit` is not a git repository url from wher one
+     * TODO 5. string=ERROR: when existant, overwriteIfExistant=false
+     * TODO 6. string=ERROR: pathLocalBackup is not a git repository
+     * TODO 7. string=ERROR: `urlGit` is not a git repository url from wher one
      *                       can clone
-     *      8. string=ERROR: no Internet connection
+     * TODO 8. string=ERROR: no Internet connection
      */
     // TODO
     // - be aware of the fact, that this test can only pass, when a internet
@@ -581,19 +657,24 @@ export class UGitUtility {
         if (SHELL.test('-d', pathLocalTarget)) {
             if (overwriteIfExistant === true) {
                 if (SHELL.test('-d', pathLocalBackup)) {
+                    // 3.
                     result = await UPath.copyDirectory(
                         pathLocalBackup,
                         pathLocalTarget,
                         true,
                     )
                 } else {
+                    // 4.
                     const GIT = GIT_P()
-                    const R_CLONE = GIT.clone(
+                    const R_CLONE = await this.clone(
                         urlGit,
                         pathLocalTarget,
+                        true,
                     )
+                    result = true
                 }
             } else {
+                // 5.
                 result = [
                     'ERROR:',
                     pathLocalTarget,
@@ -602,17 +683,20 @@ export class UGitUtility {
             }
         } else {
             if (SHELL.test('-d', pathLocalBackup)) {
+                // 1.
                 result = await UPath.copyDirectory(
                     pathLocalBackup,
                     pathLocalTarget,
                     true,
                 )
             } else {
+                // 2.
                 const GIT = GIT_P()
-                const R_CLONE = GIT.clone(
+                const R_CLONE = await this.clone(
                     urlGit,
                     pathLocalTarget,
                 )
+                result = true
             }
         }
         return result

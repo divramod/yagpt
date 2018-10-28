@@ -837,52 +837,202 @@ describe('yaGit: ' + __filename, async () => {
 
     })
 
-    // TODO
-    // - create function, wich creates a backup?
-    describe.only('copyOrCloneRepository()', async () => {
+    describe('clone()', async () => {
+
+        it([
+            '1. string=ERROR: `pathLocalTarget` existant!',
+        ].join(' '), async () => {
+            const GIT_URL = UTest.config.git.git.ssh
+            const TARGET_PATH = UTest.config.git.backupPath
+            const BACKUP_PATH = UTest.config.git.backupPath
+            await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+                true,
+            )
+            const R = await U_INSTANCE.clone(
+                GIT_URL,
+                TARGET_PATH,
+            )
+            expect(R).to.contain([
+                'ERROR:',
+                TARGET_PATH,
+                'existant!',
+            ].join(' '))
+        }).timeout(10000)
+
+        it([
+            '2. string=Error: `urlGit` not a repository!',
+            'see checkIsRemoteRepository()',
+        ].join(' '), async () => {
+            const REPOSITORY_PATH = 'test'
+            const R = await U_INSTANCE.clone(
+                REPOSITORY_PATH,
+                UTest.config.git.backupPath,
+                true,
+            )
+            expect(R).to.contain('Error: fatal:')
+        })
+
+        it([
+            '3. boolean=true localTargetExistant=false',
+        ].join(' '), async () => {
+            RIMRAF.sync(UTest.config.git.backupPath)
+            const R = await U_INSTANCE.clone(
+                UTest.config.git.git.ssh,
+                UTest.config.git.backupPath,
+                true,
+            )
+            expect(R).to.equal(true)
+        }).timeout(20000)
+
+        it([
+            '4. boolean=true localTargetExistant=true',
+        ].join(' '), async () => {
+            await UTest.createTestDirectory(
+                UTest.config.git.backupPath,
+            )
+            const R = await U_INSTANCE.clone(
+                UTest.config.git.git.ssh,
+                UTest.config.git.backupPath,
+                true,
+            )
+            expect(R).to.equal(true)
+        }).timeout(20000)
+
+    })
+
+    describe('checkIsRemoteRepository()', async () => {
+
+        it([
+            '1. boolean=true',
+        ].join(' '), async () => {
+            const R = await U_INSTANCE.checkIsRemoteRepository(
+                UTest.config.git.git.ssh,
+            )
+            expect(R).to.equal(true)
+        }).timeout(10000)
+
+        it([
+            '2. string=ERROR',
+        ].join(' '), async () => {
+            const REPOSITORY_PATH = 'test'
+            const R = await U_INSTANCE.checkIsRemoteRepository(
+                REPOSITORY_PATH,
+            )
+            expect(R).to.contain('Error: fatal:')
+        })
+
+    })
+
+    describe('copyOrCloneRepository()', async () => {
+
+        const TARGET_PATH = '/tmp/test/test1'
+        const BACKUP_PATH = UConfig.config.git.backupPath
+        const GIT_URL = UConfig.config.git.git.ssh
+
+        it([
+            '2. boolean=true: when target not existant',
+            '(backupExistant=false --> clone)',
+        ].join(' '), async () => {
+            RIMRAF.sync(TARGET_PATH)
+            RIMRAF.sync(BACKUP_PATH)
+            const R = await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+            )
+            expect(R).to.equal(true)
+        }).timeout(25000)
 
         it([
             '1. boolean=true: when target not existant',
             '(backupExistant=true --> copy)',
         ].join(' '), async () => {
+            RIMRAF.sync(TARGET_PATH)
+            await U_INSTANCE.copyOrCloneRepository(
+                BACKUP_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+                true,
+            )
             const R = await U_INSTANCE.copyOrCloneRepository(
-                UConfig.testPath,
-                UConfig.npmPackage.backupPath,
-                UConfig.npmPackage.git.ssh,
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
                 true,
             )
             expect(R).to.equal(true)
-        })
+        }).timeout(25000)
 
         it([
-            '2. boolean=true: when target existant, overwriteIfExistant=true',
+            '3. boolean=true: when target existant, overwriteIfExistant=true',
             '(backupExistant=true --> copy)',
         ].join(' '), async () => {
-            await UNpm.prepareNpmRepository()
+            await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+            )
+            await U_INSTANCE.copyOrCloneRepository(
+                BACKUP_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+            )
             const R = await U_INSTANCE.copyOrCloneRepository(
-                UConfig.testPath,
-                UConfig.npmPackage.backupPath,
-                UConfig.npmPackage.git.ssh,
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
                 true,
             )
             expect(R).to.equal(true)
-        })
 
+        }).timeout(60000)
+
+        // TODO
         it([
-            '3. boolean=true: when target not existant',
+            '4. boolean=true: when target existant, overwriteIfExistant=true',
             '(backupExistant=false --> clone)',
         ].join(' '), async () => {
-            // await UNpm.prepareNpmRepository()
-            // const R = await U_INSTANCE.copyOrCloneRepository(
-                // UConfig.testPath,
-                // UConfig.npmPackage.backupPath,
-                // UConfig.npmPackage.git.ssh,
-                // true,
-            // )
-            // expect(R).to.equal(true)
-            expect(0).to.equal(1) // fails
+            RIMRAF.sync(BACKUP_PATH)
+            await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+            )
+            const R = await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+                true,
+            )
+            expect(R).to.equal(true)
 
-        })
+        }).timeout(60000)
+
+        // TODO
+        it([
+            '5. string=ERROR: when existant, overwriteIfExistant=false',
+        ].join(' '), async () => {
+            await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+            )
+            const R = await U_INSTANCE.copyOrCloneRepository(
+                TARGET_PATH,
+                BACKUP_PATH,
+                GIT_URL,
+                false,
+            )
+            expect(R).to.equal([
+                'ERROR:',
+                TARGET_PATH,
+                'existant!',
+            ].join(' '))
+
+        }).timeout(60000)
 
     })
 
