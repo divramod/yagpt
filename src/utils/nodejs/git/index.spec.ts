@@ -929,8 +929,8 @@ describe('yaGit: ' + __filename, async () => {
     describe('copyOrCloneRepository()', async () => {
 
         const TARGET_PATH = '/tmp/test/test1'
-        const BACKUP_PATH = UConfig.config.git.backupPath
-        const GIT_URL = UConfig.config.git.git.ssh
+        const BACKUP_PATH = UConfig.testing.git.backupPath
+        const GIT_URL = UConfig.testing.git.git.ssh
 
         it([
             '2. boolean=true: when target not existant',

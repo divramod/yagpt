@@ -60,6 +60,15 @@ export class Task extends SuperTask implements ITaskClass {
         let proceed = true
 
         // TEST
+        const branchName = await UGit.getBranchName(PROJECT_PATH)
+        console.log( // tslint:disable-line:no-console
+            'branchName',
+            branchName,
+        )
+        console.log( // tslint:disable-line:no-console
+            'PROJECT_PATH',
+            PROJECT_PATH,
+        )
 
         // isGitRepository
         if (proceed) {
@@ -79,6 +88,9 @@ export class Task extends SuperTask implements ITaskClass {
                 ].join(' ')
             }
         }
+        console.log( // tslint:disable-line:no-console
+            'afterIsGitRepo',
+        )
 
         // isFeatureBranch
         if (proceed) {
@@ -98,6 +110,9 @@ export class Task extends SuperTask implements ITaskClass {
                 ].join(' ')
             }
         }
+        console.log( // tslint:disable-line:no-console
+            'after isFeatureBranch',
+        )
 
         // isClean
         if (proceed) {
@@ -117,6 +132,9 @@ export class Task extends SuperTask implements ITaskClass {
                 ].join(' ')
             }
         }
+        console.log( // tslint:disable-line:no-console
+            'after isClean',
+        )
 
         // isDevelopMergable
         if (proceed) {
@@ -137,6 +155,9 @@ export class Task extends SuperTask implements ITaskClass {
                 ].join(' ')
             }
         }
+        console.log( // tslint:disable-line:no-console
+            'after isDevelopMergable',
+        )
 
         // RETURN RESULT
         return R
@@ -163,9 +184,9 @@ export class Task extends SuperTask implements ITaskClass {
 
         // get feature name and issue number
         const FEATURE_NAME =
-            await UGit.getFeatureName(PROJECT_PATH)
+        await UGit.getFeatureName(PROJECT_PATH)
         const ISSUE_NUMBER =
-            await UGit.getFeatureIssueNumber(PROJECT_PATH)
+        await UGit.getFeatureIssueNumber(PROJECT_PATH)
 
         // TODO: unlink
         // TODO: copy current directory to another place

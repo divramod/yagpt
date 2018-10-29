@@ -17,20 +17,20 @@ describe('UJson:' + __filename, async () => {
 
     describe('getKeyValueFromFile()', async () => {
         it([
-            '1. string=KEY_VALUE',
+            '1. object',
         ].join(' '), async () => {
             const R = await U_INSTANCE.getKeyValueFromFile(
                 PATH.resolve(
                     process.cwd(),
                     'yagpt.config.json',
                 ),
-                'name',
+                'tasks',
             )
-            expect(R).to.equal('yagpt')
+            expect(R).to.be.an('object')
         })
 
         it([
-            '2. string=ERROR: `keyName` not existant in `filePath`',
+            '3. string=ERROR: `keyName` not existant in `filePath`',
         ].join(' '), async () => {
             const FILE_PATH = PATH.resolve(
                 process.cwd(),
@@ -49,7 +49,7 @@ describe('UJson:' + __filename, async () => {
         })
 
         it([
-            '3. string=ERROR: `filePath`not existant',
+            '4. string=ERROR: `filePath`not existant',
         ].join(' '), async () => {
             const R = await U_INSTANCE.getKeyValueFromFile(
                 PATH.resolve(
@@ -66,6 +66,18 @@ describe('UJson:' + __filename, async () => {
                 ),
                 'not existant!',
             ].join(' '))
+        })
+
+        it([
+            '6. whole file',
+        ].join(' '), async () => {
+            const R = U_INSTANCE.getKeyValueFromFile(
+                PATH.resolve(
+                    process.cwd(),
+                    'yagpt.config.json',
+                ),
+            )
+            expect(R).to.be.an('object')
         })
     })
 

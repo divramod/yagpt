@@ -22,10 +22,10 @@ describe('yaNpm: ' + __filename, async () => {
             const TEST = await U_INSTANCE.prepareNpmRepository()
             const R = await U_INSTANCE.relink(
                 UConfig.testPath,
-                UConfig.npmPackage.name,
+                UConfig.config.testing.npm.name,
             )
             expect(R).to.equal(true)
-        }).timeout(20000)
+        }).timeout(200000)
 
         it([
             '2. string=ERROR: `packagePath` not existant!',
@@ -33,7 +33,7 @@ describe('yaNpm: ' + __filename, async () => {
             RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY
             const R = await U_INSTANCE.relink(
                 UConfig.testPath,
-                UConfig.npmPackage.name,
+                UConfig.config.testing.npm.name,
             )
             expect(R).to.equal([
                 'ERROR:',

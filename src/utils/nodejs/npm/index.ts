@@ -52,8 +52,8 @@ export class UNpmUtility {
      */
     public async prepareNpmRepository(): Promise <string | boolean> {
         const PATH_LOCAL_TARGET = UConfig.testPath
-        const PATH_LOCAL_BACKUP = UConfig.npmPackage.backupPath
-        const URL_GIT = UConfig.npmPackage.git.ssh
+        const PATH_LOCAL_BACKUP = UConfig.testing.npm.backupPath
+        const URL_GIT = UConfig.testing.npm.git.ssh
         const OVERWRITE_IF_EXISTANT = true
         return await UGit.copyOrCloneRepository(
             PATH_LOCAL_TARGET,

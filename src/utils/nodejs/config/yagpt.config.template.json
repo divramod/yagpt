@@ -1,11 +1,5 @@
 {
-    "tasks": {
-        "npm": {
-            "publish": {
-
-            }
-        }
-    },
+    "name": true,
     "testing": {
         "path": "/tmp/test/yagpt",
         "npm": {
