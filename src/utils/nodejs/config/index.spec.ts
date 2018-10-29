@@ -16,6 +16,12 @@ describe('UConfig ' + __filename, async () => {
 
     describe.only('constants', async () => {
 
+        it([
+            'test constants',
+        ].join(' '), async () => {
+            expect(false).to.equal(true)
+        })
+
     })
 
 })

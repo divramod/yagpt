@@ -639,7 +639,7 @@ export class UGitUtility {
      *                       (backupExistant=true --> copy)
      *      4. boolean=true: when target existant, overwriteIfExistant=true
      *                       (backupExistant=false --> clone)
-     * TODO 5. string=ERROR: when existant, overwriteIfExistant=false
+     *      5. string=ERROR: when existant, overwriteIfExistant=false
      * TODO 6. string=ERROR: pathLocalBackup is not a git repository
      * TODO 7. string=ERROR: `urlGit` is not a git repository url from wher one
      *                       can clone
