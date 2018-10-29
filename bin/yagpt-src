@@ -8,4 +8,5 @@ DIR="$(dirname "$(readlink -f "$0")")"
 $DIR/../node_modules/.bin/ts-node \
     -r $DIR/../node_modules/tsconfig-paths/register \
     --project $DIR/../tsconfig.json \
-    $DIR/../src/index.ts
+    $DIR/../src/cli.ts \
+    "$@"
