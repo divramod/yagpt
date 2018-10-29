@@ -131,6 +131,7 @@ describe('yaGit: ' + __filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.testPath)
             const R = await U_INSTANCE.getFeatureName(UTest.testPath)
             expect(R).to.equal([
+                'ERROR:',
                 'Current Branch master in',
                 UTest.testPath,
                 'is not a feature branch!',
@@ -173,6 +174,7 @@ describe('yaGit: ' + __filename, async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.testPath)
             const R = await U_INSTANCE.getFeatureIssueNumber(UTest.testPath)
             expect(R).to.equal([
+                'ERROR:',
                 'Current Branch master in',
                 UTest.testPath,
                 'is not a feature branch!',
@@ -428,11 +430,12 @@ describe('yaGit: ' + __filename, async () => {
         })
 
         it([
-            '2. string "Error: Current branch is not a feature branch!"',
+            '2. string "ERROR: Current branch is not a feature branch!"',
         ].join(' '), async () => {
             await UTest.gitCreateTestRepositoryAtPath(UTest.testPath)
             const R = await U_INSTANCE.checkIsFeatureBranch(UTest.testPath)
             expect(R).to.equal([
+                'ERROR:',
                 'Current Branch master in',
                 UTest.testPath,
                 'is not a feature branch!',
@@ -860,7 +863,7 @@ describe('yaGit: ' + __filename, async () => {
                 TARGET_PATH,
                 'existant!',
             ].join(' '))
-        }).timeout(10000)
+        }).timeout(100000)
 
         it([
             '2. string=Error: `urlGit` not a repository!',
@@ -899,7 +902,7 @@ describe('yaGit: ' + __filename, async () => {
                 true,
             )
             expect(R).to.equal(true)
-        }).timeout(20000)
+        }).timeout(200000)
 
     })
 

@@ -30,7 +30,7 @@ export class UGitUtility {
                 result = true
             } else {
                 result = [
-                    'Current Branch',
+                    'ERROR: Current Branch',
                     BRANCH_NAME,
                     'in',
                     gitRepositoryPath,
@@ -396,49 +396,53 @@ export class UGitUtility {
             stashed = true
         }
         await GIT.checkout(mergeTo)
-        const R_MERGABLE = await GIT.raw([
-            'merge',
-            '--no-ff',
-            '--no-commit',
-            mergeFrom,
-        ])
-        if (
-            R_MERGABLE === null ||
-            R_MERGABLE.indexOf('Already up-to-date.') > -1
-        ) {
-            result = true
-        } else {
-            result = [
-                'ERROR:',
-                [
-                    '\nMerge from',
-                    mergeFrom,
-                    'to',
-                    mergeTo,
-                    'not possible!',
-                ].join(' '),
-                '\n\nERRORMESSAGE:',
-                '\n',
-                R_MERGABLE,
-                '\nTODO\'S TO FIX THE ISSUE:',
-                [
-                    '\n1. Checkout',
-                    mergeTo,
-                    'and run `git merge',
-                    mergeFrom,
-                    '`',
-                ].join(' '),
-                '\n2. fix merge conflicts',
-                '\n3. commit',
-            ].join('')
-            const R_RESET_HARD = await GIT.raw([
+        try {
+            const R_MERGABLE = await GIT.silent(true).raw([
                 'merge',
-                '--abort',
+                '--no-ff',
+                '--no-commit',
+                mergeFrom,
             ])
-        }
-        await GIT.checkout(CURRENT_BRANCH_NAME)
-        if (stashed === true) {
-            await GIT.stash(['apply'])
+            if (
+                R_MERGABLE === null ||
+                R_MERGABLE.indexOf('Already up-to-date.') > -1
+            ) {
+                result = true
+            } else {
+                result = [
+                    'ERROR:',
+                    [
+                        '\nMerge from',
+                        mergeFrom,
+                        'to',
+                        mergeTo,
+                        'not possible!',
+                    ].join(' '),
+                    '\n\nERRORMESSAGE:',
+                    '\n',
+                    R_MERGABLE,
+                    '\nTODO\'S TO FIX THE ISSUE:',
+                    [
+                        '\n1. Checkout',
+                        mergeTo,
+                        'and run `git merge',
+                        mergeFrom,
+                        '`',
+                    ].join(' '),
+                    '\n2. fix merge conflicts',
+                    '\n3. commit',
+                ].join('')
+                const R_RESET_HARD = await GIT.raw([
+                    'merge',
+                    '--abort',
+                ])
+            }
+            await GIT.checkout(CURRENT_BRANCH_NAME)
+            if (stashed === true) {
+                await GIT.stash(['apply'])
+            }
+        } catch (e) {
+            result = e.toString()
         }
         return result
     }
