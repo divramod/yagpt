@@ -4,22 +4,8 @@ const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')
 const PATH = require('path')
-import {
-    ITaskClass,
-    ITaskConstructorParams,
-    SuperTask,
-} from '@utils/nodejs/task/index'
 
-// CLASS Task
-export class Task extends SuperTask implements ITaskClass {
-
-    constructor(opts: ITaskConstructorParams) {
-        super({
-            cwd: opts.cwd,
-            logging: opts.logging || false,
-            name: 'Npm Publish',
-        })
-    }
+export class Task {
 
     public async isRunnable(PARAMS: {
         PROJECT_PATH: string,
@@ -54,7 +40,7 @@ export class Task extends SuperTask implements ITaskClass {
     public async run(PARAMS: {
         PROJECT_PATH: string,
     }): Promise<any> {
-        await super.runBefore()
+        // await super.runBefore()
         const { PROJECT_PATH } = PARAMS
         const IS_RUNNABLE = await this.isRunnable(PARAMS)
         const R = {
@@ -199,7 +185,7 @@ export class Task extends SuperTask implements ITaskClass {
                 'HEAD',
             ])
             R.value = true
-            await super.runAfter()
+            // await super.runAfter()
         } else {
             R.value = false
         }
@@ -207,3 +193,4 @@ export class Task extends SuperTask implements ITaskClass {
     }
 
 }
+export const TNpmPublish = new Task()
