@@ -1,6 +1,6 @@
 {
     "name": "yagpt",
-    "version": "0.0.29",
+    "version": "0.0.30",
     "description": "A tmplate manager for projects",
     "main": "index.js",
     "scripts": {
