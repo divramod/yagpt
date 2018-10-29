@@ -4,7 +4,7 @@ export class NpmTask {
         let result
         if (task === 'publish') {
             console.log( // tslint:disable-line:no-console
-                'task',
+                'running task',
                 task,
             )
             result = await TNpmPublish.run({
