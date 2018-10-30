@@ -7,7 +7,7 @@ import { describe, expect, it, UTest } from '@utils/nodejs/test'
 import { UTest as U_INSTANCE, UTestUtility as U_CLASS } from './'
 
 // TESTSUITE
-describe('yaTest ' + __filename, async () => {
+describe('UTest ' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
@@ -17,41 +17,6 @@ describe('yaTest ' + __filename, async () => {
     afterEach(async () => {
         RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
         process.env.DMTPL_ENV = 'testing'
-    })
-
-    describe('getEnv()', async () => {
-
-        it([
-            '1. should return the before set process environment',
-        ].join(' '), async () => {
-            process.env.DMTPL_ENV = 'testing'
-            const R = await UTest.getEnv()
-            expect(R).to.equal('testing')
-        })
-
-    })
-
-    describe('userInputCleanup()', async () => {
-        it([
-            '1. boolean=true: when cleanup was run and env=testing',
-        ].join(' '), async () => {
-            process.env.DMTPL_ENV = 'testing'
-            console.log( // tslint:disable-line:no-console
-                'the line to delete',
-            )
-            const R = await UTest.userInputCleanup(1)
-            expect(R).to.equal(true)
-        })
-
-        it([
-            '2. boolean=false: env=something',
-        ].join(' '), async () => {
-            process.env.DMTPL_ENV = 'something'
-            const R = await UTest.userInputCleanup(1)
-            process.env.DMTPL_ENV = 'testing'
-            expect(R).to.equal(false)
-        })
-
     })
 
     describe('gitCreateTestRepositoryAtPath()', async () => {

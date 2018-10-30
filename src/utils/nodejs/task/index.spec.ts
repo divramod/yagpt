@@ -1,16 +1,22 @@
 import { UGit } from '@utils/nodejs/git'
+import { ULogger } from '@utils/nodejs/logger'
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
-import { ITaskClass, ITaskConstructorParams, SuperTask } from './'
+import { ITask, ITaskConstructorParams, TaskUtility } from './'
 
 // REQUIRE
 const RIMRAF = require('rimraf')
 const _ = require('underscore')
 
-// TEST CLASS Task
-class Task extends SuperTask implements ITaskClass {
+// TEST CLASS TestTask
+class TestTask extends TaskUtility implements ITask {
 
-    constructor(opts: ITaskConstructorParams) {
-        super({ name: 'Test', cwd: opts.cwd, logging: opts.logging || false })
+    constructor() {
+        super()
+        this.name = 'TestTask'
+    }
+
+    public async isRunnable(): Promise<any> {
+        return true
     }
 
     public async run(): Promise<any> {
@@ -52,7 +58,7 @@ class Task extends SuperTask implements ITaskClass {
 
 }
 
-describe(__filename, async () => {
+describe('UTask ' + __filename, async () => {
 
     beforeEach(async () => {
         await RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
@@ -62,92 +68,27 @@ describe(__filename, async () => {
         await RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
     })
 
-    it.skip('run()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = await T.run()
-        expect(R.subresults.someResult1.value).to.equal(true)
-        expect(R.subresults.someResult2.value).to.equal(false)
-
+    describe('constructor()', async () => {
+        it('1. constructor()', async () => {
+            const T = new TestTask()
+            expect(T).to.deep.equal(T)
+        })
     })
 
-    it('constructor()', async () => {
-
-        const T = new Task({ cwd: __dirname})
-        expect(T).to.deep.equal(T)
-
+    describe('runBefore()', async () => {
+        it('async runBefore()', async () => {
+            const T = new TestTask()
+            const R = await T.runBefore()
+            expect(R).to.equal(undefined)
+        })
     })
 
-    it('printName()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = T.printName()
-        expect(R).to.equal(false)
-
-        const T1 = new Task({ cwd: __dirname, logging: true })
-        const R1 = T1.printName()
-        expect(R1).to.equal(true)
-
-    })
-
-    it('getTaskPath()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = T.getTaskPath()
-        expect(R).to.equal('@utils/nodejs/task')
-
-    })
-
-    it('getName()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = T.getName()
-        expect(R).to.equal('Test')
-
-    })
-
-    it('async runBefore()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = await T.runBefore()
-        expect(R).to.equal(false)
-
-        const T1 = new Task({ cwd: __dirname, logging: true })
-        const R1 = await T1.runBefore()
-        expect(R1).to.equal(true)
-    })
-
-    it('async runAfter()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = await T.runAfter()
-        expect(R).to.equal(false)
-
-        const T1 = new Task({ cwd: __dirname, logging: true })
-        const R1 = await T1.runAfter()
-        expect(R1).to.equal(true)
-
-    })
-
-    it('logValue()', async () => {
-
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = T.logValue('', '')
-        expect(R).to.equal(false)
-
-        const T1 = new Task({ cwd: __dirname, logging: true })
-        const R1 = T1.logValue('', '')
-        expect(R1).to.equal(true)
-    })
-
-    it('logHeader()', async () => {
-        const T = new Task({ cwd: __dirname, logging: false })
-        const R = T.logHeader('', '')
-        expect(R).to.equal(false)
-
-        const T1 = new Task({ cwd: __dirname, logging: true })
-        const R1 = T1.logHeader('', '')
-        expect(R1).to.equal(true)
+    describe('runAfter()', async () => {
+        it('async runAfter()', async () => {
+            const T = new TestTask()
+            const R = await T.runAfter()
+            expect(R).to.equal(undefined)
+        })
     })
 
 })

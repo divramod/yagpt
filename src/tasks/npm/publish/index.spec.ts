@@ -2,7 +2,7 @@ import { UConfig } from '@utils/nodejs/config'
 import { UGit } from '@utils/nodejs/git'
 import { UNpm } from '@utils/nodejs/npm'
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
-import { Task } from './'
+import { NpmPublish } from './'
 
 const RIMRAF = require('rimraf')
 
@@ -22,7 +22,7 @@ describe('Task Npm.publish ' + __filename, async () => {
             'success:',
             'all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new Task()
+            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             await UGit.removeAllBranchesExcept(UConfig.testing.path)
             await UGit.checkoutNewBranch(
@@ -52,7 +52,7 @@ describe('Task Npm.publish ' + __filename, async () => {
             'error:',
             'not all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new Task()
+            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             const R = await TASK.isRunnable(
                 UConfig.testing.path,
@@ -72,7 +72,7 @@ describe('Task Npm.publish ' + __filename, async () => {
         it([
             '1. value=true',
         ].join(' '), async () => {
-            const TASK = new Task()
+            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             await UGit.removeAllBranchesExcept(UConfig.testing.path)
             await UGit.checkoutNewBranch(
@@ -93,7 +93,7 @@ describe('Task Npm.publish ' + __filename, async () => {
             '2. value=false',
             'not all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new Task()
+            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             const R = await TASK.run(
                 UConfig.testing.path,

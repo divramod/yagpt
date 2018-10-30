@@ -5,8 +5,9 @@ export interface ITaskConstructorParams {
     logging?: boolean;
 }
 
-export interface ITaskClass {
-    run(PARAMS: any): Promise<any>;
+export interface ITask {
+    run(projectPath: string): Promise<any>;
+    isRunnable();
 }
 
 // SuperTask

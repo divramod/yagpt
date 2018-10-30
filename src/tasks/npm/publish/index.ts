@@ -1,11 +1,18 @@
 import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
+import { TaskUtility } from '@utils/nodejs/task'
 const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')
 const PATH = require('path')
 
-export class Task {
+export class NpmPublish extends TaskUtility {
+
+    constructor() {
+        super()
+        this.name = 'NpmPublishTask'
+    }
+
     /**
      * Publishes an npm package. Because i use git flow as workflow, the package
      * needs to meet some prerequisites. For seeing them go to the docs of the
@@ -243,4 +250,4 @@ export class Task {
     }
 
 }
-export const TNpmPublish = new Task()
+export const NpmPublishTask = new NpmPublish()

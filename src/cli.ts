@@ -1,6 +1,6 @@
 import { UCommander } from '@utils/nodejs/commander'
-import { UTest } from '@utils/nodejs/test'
+import { UEnvironment } from '@utils/nodejs/environment'
 
-if (UTest.getEnv() !== 'testing') {
+if (UEnvironment.getEnv() !== 'testing') {
     UCommander.runProgram()
 }

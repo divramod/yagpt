@@ -35,39 +35,6 @@ export class UTestUtility {
     )
 
     /**
-     * Returns the environment variable of the module.
-     * @returns  [testing|development|production]
-     */
-    public getEnv(): string {
-        return process.env.DMTPL_ENV
-    }
-
-    /**
-     * Cleans up cli output.
-     * @param numberOfLinesToCleanup  The number of lines to clean up.
-     * @returns
-     *      1. boolean=true: when cleanup was run and env=testing
-     *      2. boolean=false: when env!==testing
-     */
-    public async userInputCleanup(
-        numberOfLinesToCleanup: number,
-    ): Promise < boolean > {
-        let userInputCleanupRun = false
-        if (this.getEnv() === 'testing') {
-            let cleanupCommand = 'tput cuu1 && echo "'
-            for (let i = 0; i < 80; i++) {
-                cleanupCommand = cleanupCommand + ' '
-            }
-            cleanupCommand = cleanupCommand + '" && tput cuu1'
-            for (let i = 0; i < numberOfLinesToCleanup; i++) {
-                SHELL.exec(cleanupCommand)
-            }
-            userInputCleanupRun = true
-        }
-        return userInputCleanupRun
-    }
-
-    /**
      * Creates a git repository at a given path.
      * @param gitRepositoryPath  The path of the repository.
      * @param removeDirectoryIfExistant  Remove the directory if existant.

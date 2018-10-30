@@ -1,6 +1,6 @@
 const MOMENT = require('moment')
-const COLORS = require('colors/safe')
 import { UDate } from '@utils/nodejs/date'
+import { ULogger } from '@utils/nodejs/logger'
 import { UTest } from '@utils/nodejs/test'
 
 // TYPINGS
@@ -11,163 +11,57 @@ import {
 } from './index.d'
 
 export {
-    ITaskClass,
+    ITask,
     ITaskConstructorParams,
 } from './index.d'
 
-export class SuperTask {
+export class TaskUtility {
 
-    private cwd: string
-    private name: string
-    private logging: boolean
+    public name: string
     private runStartTime: Date
     private runEndTime: Date
-    private LOG_VALUE_COLOR_THEME: ISuperTaskLogValueColorTheme = {
-        description: ['rainbow'],
-        value: ['white'],
-    }
-    private LOG_HEADER_COLOR_THEME: ISuperTaskLogHeaderColorTheme = {
-        devider: ['rainbow'],
-        value: ['white', 'bold'],
+
+    /**
+     * Sets the starttime of the task and logs a header with the taskname and
+     * the starttime to the screen.
+     */
+    public async runBefore(): Promise<void> {
+        this.runStartTime = MOMENT(new Date())
+        ULogger.logHeader(
+            this.name,
+            '=',
+            6,
+            20,
+            ULogger.LOG_HEADER_COLOR_THEME,
+        )
+        ULogger.logValue(
+            'start:',
+            MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
+            ULogger.LOG_VALUE_COLOR_THEME,
+        )
     }
 
-    constructor( { name, cwd, logging }: ISuperTaskConstructorParams ) {
-        this.cwd = cwd
-        this.logging = logging
-        this.name = name
-    }
-
-    public printName(): boolean {
-        let printed = false
-        if (this.logging) {
-            this.logHeader(
-                this.name,
-                '=',
-                6,
-                20,
-                this.LOG_HEADER_COLOR_THEME,
-            )
-            printed = true
-        }
-        return printed
-    }
-
-    public getTaskPath(): string {
-        const CURRENT_PATH = this.cwd
-        const TASK_PATH = '\@' +
-            CURRENT_PATH.substring(
-                CURRENT_PATH.lastIndexOf('src') + 4,
-                CURRENT_PATH.length,
-            )
-        return TASK_PATH
-    }
-
-    public getName(): string {
-        return this.name
-    }
-
-    public async runBefore(): Promise<boolean> {
-        let runBefore = false
-        if (this.logging) {
-            this.runStartTime = MOMENT(new Date())
-            this.printName()
-            this.logValue(
-                'start:',
-                MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
-                this.LOG_VALUE_COLOR_THEME,
-            )
-            runBefore = true
-        }
-        return runBefore
-    }
-
-    public async runAfter(): Promise<boolean> {
-        let runAfter = false
-        if (this.logging) {
-            this.runEndTime = MOMENT(new Date())
-            this.logValue(
-                'end:',
-                MOMENT(this.runEndTime).format('hh:mm:ss SSS'),
-                this.LOG_VALUE_COLOR_THEME,
-            )
-            this.logValue(
-                'duration:',
-                UDate.getDateDiff(this.runStartTime, this.runEndTime),
-                this.LOG_VALUE_COLOR_THEME,
-            )
-            runAfter = true
-        }
-        return runAfter
-    }
-
-    public logValue(
-        DESCRIPTION: string,
-        VALUE: any,
-        THEME?,
-    ): boolean {
-        if (this.logging) {
-            let msg: string
-            let description = DESCRIPTION.toString()
-            const RUNS = 15 - DESCRIPTION.length
-            for (let i = 0; i < RUNS; i++) {
-                description = ' ' + description
-            }
-            if (THEME) {
-                COLORS.setTheme(THEME)
-                msg = [
-                    COLORS.description(description),
-                    ' ',
-                    COLORS.value(VALUE.toString()),
-                ].join('')
-            } else {
-                msg = [
-                    description,
-                    ' ',
-                    VALUE,
-                ].join('')
-            }
-            console.log(msg) // tslint:disable-line:no-console
-            UTest.userInputCleanup(1)
-        }
-        return this.logging
-    }
-
-    public logHeader(
-        VALUE: string,
-        DEVIDER: string,
-        OFFSET: number = 0,
-        DEVIDER_LENGTH: number = 0,
-        THEME?,
-    ): boolean {
-        if (this.logging) {
-            let msg: string
-            let offset: string = ''
-            let devider: string = ''
-            for (let i = 0; i < OFFSET; i++) {
-                offset = offset + ' '
-            }
-            for (let i = 0; i < DEVIDER_LENGTH; i++) {
-                devider = devider + DEVIDER
-            }
-            if (THEME) {
-                COLORS.setTheme(THEME)
-                msg = [
-                    offset,
-                    COLORS.devider(devider),
-                    ' ',
-                    COLORS.value(VALUE),
-                    ' ',
-                    COLORS.devider(devider),
-                ].join('')
-            } else {
-                msg = [
-                    offset + VALUE,
-                ].join('')
-            }
-            console.log(msg) // tslint:disable-line:no-console
-            UTest.userInputCleanup(1)
-        }
-        return this.logging
+    /**
+     * Calculates the amount of time the task was running and logs starttime,
+     * endtime and duration to the screen.
+     */
+    public async runAfter(): Promise<void> {
+        this.runEndTime = MOMENT(new Date())
+        ULogger.logValue(
+            'start:',
+            MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
+            ULogger.LOG_VALUE_COLOR_THEME,
+        )
+        ULogger.logValue(
+            'end:',
+            MOMENT(this.runEndTime).format('hh:mm:ss SSS'),
+            ULogger.LOG_VALUE_COLOR_THEME,
+        )
+        ULogger.logValue(
+            'duration:',
+            UDate.getDateDiff(this.runStartTime, this.runEndTime),
+            ULogger.LOG_VALUE_COLOR_THEME,
+        )
     }
 
 }
