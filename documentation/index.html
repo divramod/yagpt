@@ -68,52 +68,10 @@
 				<ul>
 					<li>using gitflow: <a href="https://www.atlassian.com/git/tutorials/comparing-workflows">https://www.atlassian.com/git/tutorials/comparing-workflows</a></li>
 				</ul>
-				<h1 id="install">Install</h1>
+				<h1 id="installation">INSTALLATION</h1>
 				<pre><code>npm <span class="hljs-keyword">install</span> dm-tpl -g
 <span class="hljs-comment"># or</span>
-npm <span class="hljs-keyword">install</span> dm-tpl <span class="hljs-comment">--save-dev</span></code></pre><h1 id="update">UPDATE</h1>
-				<ul>
-					<li>proof if repository clean</li>
-				</ul>
-				<pre><code>// add and <span class="hljs-keyword">commit</span> changes
-git <span class="hljs-keyword">add</span> -A
-git <span class="hljs-keyword">commit</span>
-
-// try <span class="hljs-keyword">to</span> <span class="hljs-keyword">merge</span> develop
-git pull origin develop
-git <span class="hljs-keyword">merge</span> develop
-
-// push changes
-git push -u origin <span class="hljs-keyword">HEAD</span>
-
-// <span class="hljs-keyword">merge</span> <span class="hljs-keyword">into</span> develop <span class="hljs-keyword">and</span> push
-git checkout develop
-git <span class="hljs-keyword">merge</span> feature/...
-git push -u origin <span class="hljs-keyword">HEAD</span>
-
-// <span class="hljs-keyword">create</span> <span class="hljs-keyword">release</span> / tag
-git checkout <span class="hljs-keyword">release</span>/<span class="hljs-number">0.1</span><span class="hljs-number">.1</span>
-semver -i <span class="hljs-keyword">patch</span>
-git <span class="hljs-keyword">add</span> -A
-git <span class="hljs-keyword">commit</span> -m <span class="hljs-string">"RELEASE 0.1.1"</span>
-git push -u origin <span class="hljs-keyword">HEAD</span>
-
-// <span class="hljs-keyword">merge</span> <span class="hljs-keyword">release</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">master</span>
-git checkout <span class="hljs-keyword">master</span>
-git <span class="hljs-keyword">merge</span> <span class="hljs-keyword">release</span>/<span class="hljs-number">0.1</span><span class="hljs-number">.1</span>
-git push -u origin <span class="hljs-keyword">HEAD</span>
-
-// <span class="hljs-keyword">create</span> tag
-git tag -a v0<span class="hljs-number">.1</span><span class="hljs-number">.1</span> -m <span class="hljs-string">"TAG 0.1.1"</span>
-
-// checkout <span class="hljs-keyword">master</span>
-git checkout <span class="hljs-keyword">master</span>
-
-// npm publish
-npm publish
-
-// npm <span class="hljs-keyword">link</span></code></pre><h1 id="features">FEATURES</h1>
-				<h2 id="technical-features">Technical Features</h2>
+npm <span class="hljs-keyword">install</span> dm-tpl <span class="hljs-comment">--save-dev</span></code></pre><h1 id="features-technique-">FEATURES (Technique)</h1>
 				<ul>
 					<li><input checked="" disabled="" type="checkbox"> programatic mocha testing with livereload (<code>npm run test:watch</code>)</li>
 					<li><input checked="" disabled="" type="checkbox"> nyc code coverage with livereload (<code>npm run coverage:watch</code>)</li>
@@ -123,7 +81,7 @@ npm publish
 					<li><input disabled="" type="checkbox"> node debugger</li>
 					<li><input disabled="" type="checkbox"> ci</li>
 				</ul>
-				<h2 id="workflow-features">Workflow Features</h2>
+				<h1 id="features-business-">Features (Business)</h1>
 				<ul>
 					<li>npm<ul>
 							<li><input disabled="" type="checkbox"> publish release</li>
@@ -137,17 +95,117 @@ npm publish
 						</ul>
 					</li>
 				</ul>
-				<h1 id="todo-usage">TODO: USAGE</h1>
-				<h1 id="utility-vs-tasks">Utility vs Tasks</h1>
+				<h1 id="system-design">SYSTEM DESIGN</h1>
 				<h2 id="utility">Utility</h2>
 				<ul>
-					<li>are <a href="https://stackoverflow.com/questions/30174078/how-to-define-singleton-in-typescript">Singletons</a></li>
-					<li>offer Helper functions</li>
+					<li>offer Helper functions for Tasks</li>
 				</ul>
 				<h2 id="tasks">Tasks</h2>
 				<ul>
-					<li>have a run function</li>
+					<li>have a run() and a checkIsRunnable() function</li>
 					<li>use Utility functions</li>
+				</ul>
+				<h1 id="design-decisions">DESIGN DECISIONS</h1>
+				<ul>
+					<li>Overall, i want to reduce the complexity of the system as much as possible to
+					avoid overengeneering.</li>
+					<li>Complexity is anything related to the structure of a software system that
+					makes it hard to understand and modify the system.</li>
+					<li>One of the most important goals of good design is for a system to be obvious!</li>
+					<li>Complexity is caused by two things: dependencies and obscurity</li>
+					<li>3 sympthoms of complexity<ol>
+							<li>Change amplification (have to change code on many different places to reach
+							goal)</li>
+							<li>Cognitive Load (you have to invest time to understand code)</li>
+							<li>Unknown unknowns</li>
+						</ol>
+					</li>
+				</ul>
+				<h2 id="tactical-vs-strategic-programming">Tactical vs Strategic Programming</h2>
+				<ul>
+					<li>use strategic programming</li>
+				</ul>
+				<h2 id="deep-modules">Deep Modules</h2>
+				<ul>
+					<li>create deep modules (easy interfaces, complexity should be in the
+					implementation)</li>
+					<li>An abstraction is a simplified view of an entity, which omits unimportant
+					details.</li>
+				</ul>
+				<h2 id="information-hiding-and-leakage">Information Hiding and Leakage</h2>
+				<ul>
+					<li>The most important technique for achieving deep modules is information hiding</li>
+					<li>The best form of information hiding is when information is totally hidden
+					within a module, so that it is irrelevant and invisible to users of the module</li>
+					<li>Try to combine classes who depend on the same thing</li>
+					<li>One of the best skills you can learn as a software designer is a high level
+					of sensitivity to information leakage</li>
+					<li>avoid Temporal decomposition: When designing modules, focus on the knowledge
+					that’s needed to perform each task, not the order in which tasks occur.</li>
+					<li>Information hiding can often be improved by making a class slightly larger.</li>
+					<li>Reduce the number of instance variables in classes</li>
+					<li>It’s important to recognize which information are needed outside a module and
+					expose them</li>
+					<li>RED FLAG: IF the API for a commonly used feature forces users to learn about
+						other features that are rarely used, this increases the cognitive load on
+					users who don’t need the rarely used features.</li>
+				</ul>
+				<h2 id="general-purpose-modules">General-Purpose Modules</h2>
+				<ul>
+					<li>General-purpose consistent with the thought of designing upfront, saving time
+					later</li>
+					<li>One of the most important elements of software design is determining who needs
+					to know what, and when</li>
+					<li>Q: What is the simplest interface that will cover all my current needs?</li>
+					<li>Q: In how many situations will this method be used?</li>
+					<li>Q: Is this API easy to use for my current needs?</li>
+				</ul>
+				<h2 id="different-layer-different-abstraction">Different Layer, Different Abstraction</h2>
+				<ul>
+					<li>Avoid Pass-through methods</li>
+					<li>Merge classes</li>
+					<li>Divide methods</li>
+					<li>Expose methods to caller</li>
+					<li>RED FLAG: A pass-through method is one that does nothing except pass its
+						arguments to another method, usually with the same API as the pass-through
+						method. This typically indicates that there is not a clean division of
+					responsibility between the classes.</li>
+				</ul>
+				<h2 id="pull-complexity-downwards">Pull complexity downwards</h2>
+				<ul>
+					<li>It is more important for a module to have a simple interface that a simple
+					implementation</li>
+					<li>It is better to solve the problems instead of throwing errors/exceptions</li>
+					<li>avoid configuration parameters as much as possible</li>
+				</ul>
+				<h2 id="better-together-or-apart">Better together or apart</h2>
+				<ul>
+					<li>Bring together if information is shared</li>
+					<li>Bring together if it will simplify the interface</li>
+					<li>Bring together to eliminate duplication</li>
+					<li>RED FLAG: Repetition: If the same piece of code (or code that is almost the
+						same) appears over and over again, that’s a read flag that you haven’t found
+					the right abstractions.</li>
+					<li>RED FLAG: Special-General Mixture: This red flag occurs when a general-purpose
+						mechanism also contains code specialized for a particular use of that
+						mechanism. This makes the mechanism more complicated and creates information
+						leakage between the mechanism and the particular use case: future modifications
+						to the use case are likely to require changes to the underlying mechanism as
+					well.</li>
+					<li>RED FLAG: Conjoined Methods: It should be possible to understand each method
+						independently. If you can’t understand the implementation of one method without
+						also understanding the implementation of another, that’s a red flag. This red
+						flag can occur in other contexts as well: if two pieces of code are physically
+						separated, but each can only be understood by looking at the other, thats a
+					red flag.</li>
+				</ul>
+				<h2 id="error-handling">Error Handling</h2>
+				<ul>
+					<li>use Error masking, where possible</li>
+					<li>use Error aggregation where possible</li>
+					<li>avoid error-ful design, favor &quot;design errors out of existence approach&quot;</li>
+					<li>use Just crash approach for cases, where system would be in an inconsistant
+					state</li>
 				</ul>
 			</div>
 		</div>
@@ -158,16 +216,22 @@ npm publish
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
+						<a href="modules/_cli_.html">"cli"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_spec_.html">"index.spec"</a>
+						<a href="modules/_cli_spec_.html">"cli.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_tasks_npm_index_.html">"tasks/npm/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_tasks_npm_publish_index_.html">"tasks/npm/publish/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_tasks_npm_publish_index_spec_.html">"tasks/npm/publish/index.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_nodejs_commander_index_.html">"utils/nodejs/commander/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_nodejs_config_index_.html">"utils/nodejs/config/index"</a>

@@ -88,9 +88,11 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkisclean" class="tsd-kind-icon">check<wbr>IsClean</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkisfeaturebranch" class="tsd-kind-icon">check<wbr>IsFeature<wbr>Branch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkismergablefromto" class="tsd-kind-icon">check<wbr>IsMergable<wbr>From<wbr>To</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkisremoterepository" class="tsd-kind-icon">check<wbr>IsRemote<wbr>Repository</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkisrepo" class="tsd-kind-icon">check<wbr>IsRepo</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkoutbranch" class="tsd-kind-icon">checkout<wbr>Branch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#checkoutnewbranch" class="tsd-kind-icon">checkout<wbr>New<wbr>Branch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#clone" class="tsd-kind-icon">clone</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#commit" class="tsd-kind-icon">commit</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#copyorclonerepository" class="tsd-kind-icon">copy<wbr>OrClone<wbr>Repository</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_nodejs_git_index_.ugitutility.html#getbranchname" class="tsd-kind-icon">get<wbr>Branch<wbr>Name</a></li>
@@ -116,7 +118,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:154</li>
+									<li>Defined in utils/nodejs/git/index.ts:155</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -155,7 +157,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:273</li>
+									<li>Defined in utils/nodejs/git/index.ts:274</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -188,7 +190,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:20</li>
+									<li>Defined in utils/nodejs/git/index.ts:21</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -222,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:380</li>
+									<li>Defined in utils/nodejs/git/index.ts:381</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -261,6 +263,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="checkisremoterepository" class="tsd-anchor"></a>
+					<h3>check<wbr>IsRemote<wbr>Repository</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>IsRemote<wbr>Repository<span class="tsd-signature-symbol">(</span>urlGit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in utils/nodejs/git/index.ts:604</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if a given url is a actual remote repository.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>urlGit: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The url of the remote repository.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<pre><code> <span class="hljs-number">1.</span> <span class="hljs-built_in">bool</span>ean=<span class="hljs-literal">true</span>: <span class="hljs-keyword">if</span> the repository <span class="hljs-keyword">is</span> existant
+ <span class="hljs-number">2.</span> <span class="hljs-built_in">string</span>=The actual error</code></pre>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="checkisrepo" class="tsd-anchor"></a>
 					<h3>check<wbr>IsRepo</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -270,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:53</li>
+									<li>Defined in utils/nodejs/git/index.ts:54</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -304,7 +339,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:232</li>
+									<li>Defined in utils/nodejs/git/index.ts:233</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -344,7 +379,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:188</li>
+									<li>Defined in utils/nodejs/git/index.ts:189</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -375,6 +410,44 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="clone" class="tsd-anchor"></a>
+					<h3>clone</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span>urlGit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, pathLocalTarget<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, overwriteIfExistant<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in utils/nodejs/git/index.ts:560</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Clones a git repository to the local file system.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>urlGit: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>pathLocalTarget: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> overwriteIfExistant: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<pre><code> <span class="hljs-number">1.</span> <span class="hljs-built_in">string</span>=ERROR: `pathLocalTarget` existant!
+ <span class="hljs-number">2.</span> <span class="hljs-built_in">string</span>=Error: `urlGit` <span class="hljs-keyword">not</span> a repository!
+                  see checkIsRemoteRepository()
+ <span class="hljs-number">3.</span> <span class="hljs-built_in">bool</span>ean=<span class="hljs-literal">true</span>:</code></pre>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="commit" class="tsd-anchor"></a>
 					<h3>commit</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -384,7 +457,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:526</li>
+									<li>Defined in utils/nodejs/git/index.ts:531</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -431,7 +504,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:574</li>
+									<li>Defined in utils/nodejs/git/index.ts:654</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -474,17 +547,16 @@
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<pre><code> 1. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target <span class="hljs-keyword">not</span> existant
                   (<span class="hljs-attribute">backupExistant</span>=<span class="hljs-literal">true</span> --&gt; copy)
- 2. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">true</span>
+ 2. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target <span class="hljs-keyword">not</span> existant
+                  (<span class="hljs-attribute">backupExistant</span>=<span class="hljs-literal">false</span> --&gt; clone)
+ 3. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">true</span>
                   (<span class="hljs-attribute">backupExistant</span>=<span class="hljs-literal">true</span> --&gt; copy)
- 3. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target <span class="hljs-keyword">not</span> existant
+ 4. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when target existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">true</span>
                   (<span class="hljs-attribute">backupExistant</span>=<span class="hljs-literal">false</span> --&gt; clone)
- 4. <span class="hljs-attribute">boolean</span>=<span class="hljs-literal">true</span>: when existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">true</span>
-                  (<span class="hljs-attribute">backupExistant</span>=<span class="hljs-literal">false</span> --&gt; clone)
- 5. <span class="hljs-attribute">string</span>=ERROR: when existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">false</span>
- 6. <span class="hljs-attribute">string</span>=ERROR: pathLocalBackup is <span class="hljs-keyword">not</span> a git repository
- 7. <span class="hljs-attribute">string</span>=ERROR: `urlGit` is <span class="hljs-keyword">not</span> a git repository url <span class="hljs-keyword">from</span> wher one
-                  can clone
- 8. <span class="hljs-attribute">string</span>=ERROR: <span class="hljs-literal">no</span> Internet connection</code></pre>
+ 5. <span class="hljs-attribute">string</span>=ERROR: when existant, <span class="hljs-attribute">overwriteIfExistant</span>=<span class="hljs-literal">false</span></code></pre><p>TODO 6. string=ERROR: pathLocalBackup is not a git repository
+								TODO 7. string=ERROR: <code>urlGit</code> is not a git repository url from wher one
+								can clone
+							TODO 8. string=ERROR: no Internet connection</p>
 						</li>
 					</ul>
 				</section>
@@ -498,7 +570,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:90</li>
+									<li>Defined in utils/nodejs/git/index.ts:91</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -532,7 +604,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:340</li>
+									<li>Defined in utils/nodejs/git/index.ts:341</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -566,7 +638,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:304</li>
+									<li>Defined in utils/nodejs/git/index.ts:305</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -600,7 +672,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:479</li>
+									<li>Defined in utils/nodejs/git/index.ts:484</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -649,7 +721,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:115</li>
+									<li>Defined in utils/nodejs/git/index.ts:116</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -690,7 +762,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/nodejs/git/index.ts:452</li>
+									<li>Defined in utils/nodejs/git/index.ts:457</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -722,16 +794,22 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_index_.html">"index"</a>
+						<a href="../modules/_cli_.html">"cli"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_index_spec_.html">"index.spec"</a>
+						<a href="../modules/_cli_spec_.html">"cli.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_tasks_npm_index_.html">"tasks/npm/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_tasks_npm_publish_index_.html">"tasks/npm/publish/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_tasks_npm_publish_index_spec_.html">"tasks/npm/publish/index.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_nodejs_commander_index_.html">"utils/nodejs/commander/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_nodejs_config_index_.html">"utils/nodejs/config/index"</a>
@@ -803,6 +881,9 @@
 								<a href="_utils_nodejs_git_index_.ugitutility.html#checkismergablefromto" class="tsd-kind-icon">check<wbr>IsMergable<wbr>From<wbr>To</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_utils_nodejs_git_index_.ugitutility.html#checkisremoterepository" class="tsd-kind-icon">check<wbr>IsRemote<wbr>Repository</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_nodejs_git_index_.ugitutility.html#checkisrepo" class="tsd-kind-icon">check<wbr>IsRepo</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -810,6 +891,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_nodejs_git_index_.ugitutility.html#checkoutnewbranch" class="tsd-kind-icon">checkout<wbr>New<wbr>Branch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_utils_nodejs_git_index_.ugitutility.html#clone" class="tsd-kind-icon">clone</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_nodejs_git_index_.ugitutility.html#commit" class="tsd-kind-icon">commit</a>
@@ -844,6 +928,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../modules/_utils_nodejs_git_index_.html#path" class="tsd-kind-icon">PATH</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_utils_nodejs_git_index_.html#rimraf" class="tsd-kind-icon">RIMRAF</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../modules/_utils_nodejs_git_index_.html#shell" class="tsd-kind-icon">SHELL</a>

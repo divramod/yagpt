@@ -7,9 +7,7 @@ export class NpmTask {
                 'running task',
                 task,
             )
-            result = await TNpmPublish.run({
-                PROJECT_PATH: process.cwd(),
-            })
+            result = await TNpmPublish.run(process.cwd())
             console.log( // tslint:disable-line:no-console
                 'result',
                 result,

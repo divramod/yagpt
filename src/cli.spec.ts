@@ -7,7 +7,7 @@ describe.only('cli ' + __filename, async () => {
         'test',
     ].join(' '), async () => {
         const program = UCommander.program
-        program.npm = 'publish'
+        // program.npm = 'publish'
         UCommander.runProgram()
     })
 

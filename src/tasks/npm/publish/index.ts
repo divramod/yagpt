@@ -7,47 +7,41 @@ const PATH = require('path')
 
 export class Task {
 
-    public async isRunnable(PARAMS: {
+    /**
+     * Publishes an npm package. Because i use git flow as workflow, the package
+     * needs to meet some prerequisites. For seeing them go to the docs of the
+     * [[isRunnable]] function in the current class.
+     * ```
+     * Steps:
+     * [x] getFeatureName
+     * [x] getFeatureIssueNumber
+     * ```
+     * @param PROJECT_PATH  The path of the project, which will be published.
+     * @returns
+     *      isRunnable: IIsRunnable
+     *      - result from the isRunnable() prerequisites check
+     *      value: boolean
+     *      - true: when everything went fine
+     *      - false: when something happened
+     *      error: undefined | error
+     *      - undefined: when everything went fine
+     *      - error: the error which has been raised
+     *      log: ILogEntry[]
+     */
+    // TODO: implement logging
+    // TODO: catch the error which can occur while running (how to raise this
+    //       error --> gitlab not available)
+    // TODO: catch the error which occured, as i automatically ran the cli spec
+    public async run(
         PROJECT_PATH: string,
-    }): Promise<any> {
-        const { PROJECT_PATH } = PARAMS
-        const R = {
-            isClean: undefined,
-            isDevelopMergable: undefined,
-            isFeatureBranch: undefined,
-            isGitRepository: undefined,
-            value: undefined,
-        }
-        const branchName = await UGit.getBranchName(PROJECT_PATH)
-        R.isGitRepository = await UGit.checkIsRepo(PROJECT_PATH)
-        R.isFeatureBranch = await UGit.checkIsFeatureBranch(PROJECT_PATH)
-        R.isClean = await UGit.checkIsClean(PROJECT_PATH)
-        R.isDevelopMergable = await UGit.checkIsMergableFromTo(
-            PROJECT_PATH,
-            'develop',
-        )
-        R.value = true
-        for (const prop in R) {
-            if (prop.indexOf('is') === 0) {
-                if (R[prop] !== true) {
-                    R.value = false
-                }
-            }
-        }
-        return R
-    }
-
-    public async run(PARAMS: {
-        PROJECT_PATH: string,
-    }): Promise<any> {
+    ): Promise<any> {
         // await super.runBefore()
-        const { PROJECT_PATH } = PARAMS
-        const IS_RUNNABLE = await this.isRunnable(PARAMS)
-        const R = {
+        const IS_RUNNABLE = await this.isRunnable(PROJECT_PATH)
+        const RESULT = {
             isRunnable: IS_RUNNABLE,
             value: undefined,
         }
-        if (R.isRunnable.value === true) {
+        if (RESULT.isRunnable.value === true) {
             // get feature name and issue number
             const FEATURE_NAME =
                 await UGit.getFeatureName(PROJECT_PATH)
@@ -184,10 +178,67 @@ export class Task {
                 'origin',
                 'HEAD',
             ])
-            R.value = true
+            RESULT.value = true
             // await super.runAfter()
         } else {
-            R.value = false
+            RESULT.value = false
+        }
+        return RESULT
+    }
+
+    // TODO: implement isNpmPackage
+    // TODO: implement isDirectory
+    /**
+     * Tests, if the following prerequisites for running [[run]] are met:
+     *
+     * ```
+     * [x] isGitRepository: if the given `PROJECT_PATH` is a git repository
+     * [x] isFeatureBranch: if the git repository is on a feature branch
+     * [x] isClean: if the directory is a clean git repository
+     * [x] isDevelopMergable: if the branch development is mergable into the
+     *                        current feature branch
+     * [ ] isNpmPackage: if the given `PROJECT_PATH` includes a npm package
+     * [ ] isDirectory: if the given `PROJECT_PATH` is a actual path
+     * ```
+     * @param PROJECT_PATH  The path of the directory which should be tested.
+     * @returns
+     * ```
+     * isGitRepository: string | boolean
+     * isFeatureBranch: string | boolean
+     * isClean: string | boolean
+     * isDevelopMergable: string | boolean
+     * isNpmPackage: string | boolean
+     * isDirectory: string | boolean
+     * value: boolean
+     * - true, if all prerequisites are met
+     * - false, if one of the prerequisites isn't met
+     * ```
+     */
+    public async isRunnable(
+        PROJECT_PATH: string,
+    ): Promise<any> {
+        const R = {
+            isClean: undefined,
+            isDevelopMergable: undefined,
+            isFeatureBranch: undefined,
+            isGitRepository: undefined,
+            value: undefined,
+        }
+        const branchName = await UGit.getBranchName(PROJECT_PATH)
+        R.isGitRepository = await UGit.checkIsRepo(PROJECT_PATH)
+        R.isFeatureBranch = await UGit.checkIsFeatureBranch(PROJECT_PATH)
+        R.isClean = await UGit.checkIsClean(PROJECT_PATH)
+        R.isDevelopMergable = await UGit.checkIsMergableFromTo(
+            PROJECT_PATH,
+            'develop',
+        )
+        R.value = true
+        for (const prop in R) {
+            if (prop.indexOf('is') === 0) {
+                if (R[prop] !== true) {
+                    R.value = false
+                }
+            }
         }
         return R
     }

@@ -26,13 +26,18 @@ npm install dm-tpl --save-dev
   - [ ] publish hotfix
   - [ ] create feature
 
+# Workflows
+- gitflow (TODO: document)
+- monorepo (TODO: document)
+- issuemanagement (TODO: document)
+
 # SYSTEM DESIGN
 
 ## Utility
 - offer Helper functions for Tasks
 
 ## Tasks
-- have a run and a checkIsRunnable function
+- have a run() and a checkIsRunnable() function
 - use Utility functions
 
 # DESIGN DECISIONS
