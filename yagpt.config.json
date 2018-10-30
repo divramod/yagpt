@@ -9,11 +9,11 @@
     "testing": {
         "path": "/tmp/test/yagpt",
         "npm": {
-            "name": "npm-test",
-            "backupPath": "/tmp/backups/npm-test",
+            "name": "yagpt-test",
+            "backupPath": "/tmp/backups/yagpt-test",
             "git": {
-                "https": "https://github.com/divramod/npm-test.git",
-                "ssh": "git@github.com:divramod/npm-test.git"
+                "https": "https://github.com/divramod/yagpt-test.git",
+                "ssh": "git@github.com:divramod/yagpt-test.git"
             }
         },
         "git": {

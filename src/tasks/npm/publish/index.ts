@@ -6,7 +6,6 @@ const SHELL = require('shelljs')
 const PATH = require('path')
 
 export class Task {
-
     /**
      * Publishes an npm package. Because i use git flow as workflow, the package
      * needs to meet some prerequisites. For seeing them go to the docs of the

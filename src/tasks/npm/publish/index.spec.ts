@@ -7,7 +7,7 @@ import { Task } from './'
 const RIMRAF = require('rimraf')
 
 // TESTSUITE
-describe.only('Task Npm.publish ' + __filename, async () => {
+describe('Task Npm.publish ' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY
