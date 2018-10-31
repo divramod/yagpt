@@ -2,6 +2,16 @@ const COLORS = require('colors/safe')
 const SHELL = require('shelljs')
 import { UEnvironment } from '@utils/nodejs/environment'
 
+export interface ISuperTaskLogValueColorTheme {
+    description: [string];
+    value: any;
+}
+
+export interface ISuperTaskLogHeaderColorTheme {
+    devider: [string];
+    value: any;
+}
+
 /**
  * This class helps with all the different Logging Tasks in the project.
  */
@@ -28,14 +38,16 @@ export class LoggerUtility {
      * ```
      */
     public logValue(
-        DESCRIPTION: string,
+        DESCRIPTION: string | number,
         VALUE: any,
         THEME?,
+        PRINT: boolean = false,
+        OFFSET: number = 0,
     ): boolean {
         if (this.logging) {
             let msg: string
             let description = DESCRIPTION.toString()
-            const RUNS = 15 - DESCRIPTION.length
+            const RUNS = OFFSET - description.length
             for (let i = 0; i < RUNS; i++) {
                 description = ' ' + description
             }
@@ -54,7 +66,9 @@ export class LoggerUtility {
                 ].join('')
             }
             console.log(msg) // tslint:disable-line:no-console
-            this.userInputCleanup(1)
+            if (PRINT === false) {
+                this.userInputCleanup(1)
+            }
         }
         return this.logging
     }
@@ -78,6 +92,7 @@ export class LoggerUtility {
         OFFSET: number = 0,
         DEVIDER_LENGTH: number = 0,
         THEME?,
+        PRINT: boolean = false,
     ): boolean {
         if (this.logging) {
             let msg: string

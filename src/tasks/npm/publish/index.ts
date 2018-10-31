@@ -1,31 +1,94 @@
 import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
-import { TaskUtility } from '@utils/nodejs/task'
+import { ITask, UTask } from '@utils/nodejs/task'
 const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')
 const PATH = require('path')
 
-export class NpmPublish extends TaskUtility {
+/**
+ * This Class helps publishing an npm package.
+ * @param projectPath  The path where the package exists.
+ * @param versionPart  The part of the version to increment
+ */
+export class NpmPublishTask extends UTask implements ITask {
 
-    constructor() {
+    /**
+     * The path where to run the Publish task in.
+     */
+    private projectPath: string
+
+    /**
+     * The part of the versionnumber, saved in the package.json of a project to
+     * increment. Possible values are major, minor, patch.
+     * @see [https://semver.org](https://semver.org)
+     */
+    private versionPart: string
+
+    constructor(
+        projectPath: string,
+        versionPart: string = 'patch',
+    ) {
         super()
+        super.setChild(this)
         this.name = 'NpmPublishTask'
+        this.projectPath = projectPath
+        this.versionPart = versionPart
+    }
+
+    /**
+     * Tests, if the prerequisites for running [[runSteps]] are met.
+     * @returns
+     * ```
+     * isGitRepository: string | boolean
+     * - if the given `PROJECT_PATH` is a git repository
+     * isFeatureBranch: string | boolean
+     * - if the git repository is on a feature branch
+     * isClean: string | boolean
+     * - if the directory is a clean git repository
+     * isDevelopMergable: string | boolean
+     * - if the branch development is mergable into the current feature branch
+     * TODO isCorrectVersionPart
+     * - tests, if `this.versionPart` is an official semver version part
+     * TODO isNpmPackage: string | boolean
+     * - if `this.projectPath` contains an npm package
+     * value: boolean
+     * - true, if all prerequisites are met
+     * - false, if one of the prerequisites isn't met
+     * ```
+     */
+    public async checkPrerequisites(): Promise<any> {
+        const RESULT = {
+            isClean: undefined,
+            isDevelopMergable: undefined,
+            isFeatureBranch: undefined,
+            isGitRepository: undefined,
+        }
+        const branchName = await UGit.getBranchName(this.projectPath)
+        RESULT.isGitRepository = await UGit.checkIsRepo(this.projectPath)
+        RESULT.isFeatureBranch = await UGit.checkIsFeatureBranch(
+            this.projectPath,
+        )
+        RESULT.isClean = await UGit.checkIsClean(this.projectPath)
+        RESULT.isDevelopMergable = await UGit.checkIsMergableFromTo(
+            this.projectPath,
+            'develop',
+        )
+        return RESULT
     }
 
     /**
      * Publishes an npm package. Because i use git flow as workflow, the package
      * needs to meet some prerequisites. For seeing them go to the docs of the
-     * [[isRunnable]] function in the current class.
+     * [[checkPrerequisites]] function in the current class.
      * ```
      * Steps:
-     * [x] getFeatureName
-     * [x] getFeatureIssueNumber
+     * TODO
      * ```
      * @param PROJECT_PATH  The path of the project, which will be published.
      * @returns
-     *      isRunnable: IIsRunnable
-     *      - result from the isRunnable() prerequisites check
+     *      checkPrerequisites: IIsRunnable
+     *      - result from the checkPrerequisites() prerequisites check
      *      value: boolean
      *      - true: when everything went fine
      *      - false: when something happened
@@ -34,220 +97,308 @@ export class NpmPublish extends TaskUtility {
      *      - error: the error which has been raised
      *      log: ILogEntry[]
      */
-    // TODO: implement logging
-    // TODO: catch the error which can occur while running (how to raise this
-    //       error --> gitlab not available)
-    // TODO: catch the error which occured, as i automatically ran the cli spec
-    public async run(
-        PROJECT_PATH: string,
-    ): Promise<any> {
-        // await super.runBefore()
-        const IS_RUNNABLE = await this.isRunnable(PROJECT_PATH)
-        const RESULT = {
-            isRunnable: IS_RUNNABLE,
-            value: undefined,
-        }
-        if (RESULT.isRunnable.value === true) {
-            // get feature name and issue number
-            const FEATURE_NAME =
-                await UGit.getFeatureName(PROJECT_PATH)
-            const ISSUE_NUMBER =
-                await UGit.getFeatureIssueNumber(PROJECT_PATH)
-            const GIT = GIT_P(PROJECT_PATH)
-            await GIT.raw([
+    public async runSteps(): Promise<any> {
+
+        const PROJECT_PATH = this.projectPath
+        const PATH_BEFORE = process.cwd()
+
+        // step
+        const FEATURE_NAME = await super.runStep({
+            comment: 'test comment',
+            name: 'getFeatureName',
+        }, async () => await UGit.getFeatureName(PROJECT_PATH))
+
+        // step
+        const ISSUE_NUMBER = await super.runStep({
+            comment: 'gets the issue number',
+            name: 'getFeatureIssueNumber',
+        }, async () => await UGit.getFeatureIssueNumber(PROJECT_PATH))
+
+        // step
+        await super.runStep({
+            comment: 'checks out develop',
+            name: 'gitFetchOriginDevelop',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'fetch',
                 'origin',
                 'develop',
             ])
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitMergeOriginDevelop',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'merge',
                 '-m',
                 'MERGE DEVELOP"',
                 'origin/develop',
             ])
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitCheckoutDevelop',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'checkout',
                 'develop',
             ])
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitMergeFeatureIntoDevelop',
+        }, async () => {
             const FEATURE_FULL_NAME = [
                 'feature/',
                 ISSUE_NUMBER,
                 '-',
                 FEATURE_NAME,
             ].join('')
-            await GIT.raw([
+            return await UGit.raw(PROJECT_PATH, [
                 'merge',
                 FEATURE_FULL_NAME,
             ])
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: 'pushes the develop',
+            name: 'gitPushOriginHEAD',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'push',
                 '-u',
                 'origin',
                 'HEAD',
             ])
-            // TODO git checkout release/0.1.1
+        })
+
+        // step
+        const NEXT_VERSION_NUMBER = await super.runStep({
+            comment: 'increments the version number as patch',
+            name: 'semverIncrementVersionNumber',
+        }, async () => {
             const R_CURRENT_VERSION_NUMBER = UJson.getKeyValueFromFile(
                 PATH.resolve(PROJECT_PATH, 'package.json'),
                 'version',
             )
             const CURRENT_VERSION_NUMBER = R_CURRENT_VERSION_NUMBER.value
-            const NEXT_VERSION_NUMBER =
-                SEMVER.inc(CURRENT_VERSION_NUMBER, 'patch')
+            return SEMVER.inc(
+                CURRENT_VERSION_NUMBER,
+                'patch',
+            )
+        })
+
+        // step
+        await super.runStep({
+            comment: 'checks out a new branch for the release',
+            name: 'gitCheckoutRelease',
+        }, async () => {
             const FULL_RELEASE_NAME = 'release/' + NEXT_VERSION_NUMBER
-            await GIT.raw([
+            return await UGit.raw(PROJECT_PATH, [
                 'checkout',
                 '-b',
                 FULL_RELEASE_NAME,
             ])
-            // bump version number in package.json
-            const PATH_BEFORE = process.cwd()
+        })
+
+        // step
+        // TODO write function
+        await super.runStep({
+            comment: 'patches the npm version',
+            name: 'npmVersionPatch',
+        }, async () => {
             SHELL.cd(PROJECT_PATH)
-            SHELL.exec('npm version patch', { silent: true })
+            const R = SHELL.exec('npm version patch', { silent: true })
             SHELL.cd(PATH_BEFORE)
-            // git add -A
-            await GIT.raw([
+            return R
+        })
+
+        // step
+        await super.runStep({
+            comment: 'adds the changes to be tracked',
+            name: 'gitAddAll',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'add',
                 '-A',
             ])
-            // git commit -m "RELEASE 0.1.1"
+        })
+
+        // step
+        await super.runStep({
+            comment: 'creates a commit for the release',
+            name: 'gitCommitReleaseMessage',
+        }, async () => {
             const FULL_RELEASE_MESSAGE = [
                 '-m',
                 '"RELEASE ' + NEXT_VERSION_NUMBER + '"',
             ].join(' ')
-            await GIT.raw([
+            return await UGit.raw(PROJECT_PATH, [
                 'commit',
                 FULL_RELEASE_MESSAGE,
             ])
-            // checkout develop
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: 'checks out develop',
+            name: 'gitCheckoutDevelop',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'checkout',
                 'develop',
             ])
-            // merge release into develop
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: 'merges release into develop',
+            name: 'gitMergeReleaseIntoDevelop',
+        }, async () => {
+            const FULL_RELEASE_NAME = 'release/' + NEXT_VERSION_NUMBER
+            return await UGit.raw(PROJECT_PATH, [
                 'merge',
                 FULL_RELEASE_NAME,
             ])
-            // push -u origin HEAD
-            await GIT.raw([
+        })
+
+        // step
+        // TODO
+        await super.runStep({
+            comment: '',
+            name: 'gitPushOriginHEAD',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'push',
                 '-u',
                 'origin',
                 'HEAD',
             ])
-            // checkout master
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: 'checks out master',
+            name: 'gitCheckoutMaster',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'checkout',
                 'master',
             ])
-            // merge release into develop
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitMergeReleaseIntoMaster',
+        }, async () => {
+            const FULL_RELEASE_NAME = 'release/' + NEXT_VERSION_NUMBER
+            return await UGit.raw(PROJECT_PATH, [
                 'merge',
                 FULL_RELEASE_NAME,
             ])
-            // push -u origin HEAD
-            await GIT.raw([
+        })
+
+        // step
+        // TODO
+        await super.runStep({
+            comment: '',
+            name: 'gitPushOriginHEAD',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'push',
                 '-u',
                 'origin',
                 'HEAD',
             ])
-            // publish
+        })
+
+        // step
+        // TODO: write function
+        await super.runStep({
+            comment: '',
+            name: 'npmPublish',
+        }, async () => {
             SHELL.cd(PROJECT_PATH)
-            SHELL.exec('npm publish', { silent: true })
+            const RESULT = SHELL.exec('npm publish', { silent: true })
             SHELL.cd(PATH_BEFORE)
-            // push tags
-            await GIT.raw([
+            return RESULT
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitPushTags',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'push',
                 '--tags',
             ])
-            // push -u origin HEAD
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitBranchDeleteRelease',
+        }, async () => {
+            const FULL_RELEASE_NAME = 'release/' + NEXT_VERSION_NUMBER
+            return await UGit.raw(PROJECT_PATH, [
                 'branch',
                 '-D',
                 FULL_RELEASE_NAME,
             ])
-            // checkout feature
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: 'Checks out the Feature on which it was originally on.',
+            name: 'gitCheckoutFeature',
+        }, async () => {
+            const FEATURE_FULL_NAME = [
+                'feature/',
+                ISSUE_NUMBER,
+                '-',
+                FEATURE_NAME,
+            ].join('')
+            return await UGit.raw(PROJECT_PATH, [
                 'checkout',
                 FEATURE_FULL_NAME,
             ])
-            // merge develop into feature
-            await GIT.raw([
+        })
+
+        // step
+        await super.runStep({
+            comment: '',
+            name: 'gitMergeDevelop',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'merge',
                 'develop',
             ])
-            // push -u origin HEAD
-            await GIT.raw([
+        })
+
+        // step
+        // TODO
+        await super.runStep({
+            comment: '',
+            name: 'gitPushOriginHEAD',
+        }, async () => {
+            return await UGit.raw(PROJECT_PATH, [
                 'push',
                 '-u',
                 'origin',
                 'HEAD',
             ])
-            RESULT.value = true
-            // await super.runAfter()
-        } else {
-            RESULT.value = false
-        }
-        return RESULT
-    }
-
-    // TODO: implement isNpmPackage
-    // TODO: implement isDirectory
-    /**
-     * Tests, if the following prerequisites for running [[run]] are met:
-     *
-     * ```
-     * [x] isGitRepository: if the given `PROJECT_PATH` is a git repository
-     * [x] isFeatureBranch: if the git repository is on a feature branch
-     * [x] isClean: if the directory is a clean git repository
-     * [x] isDevelopMergable: if the branch development is mergable into the
-     *                        current feature branch
-     * [ ] isNpmPackage: if the given `PROJECT_PATH` includes a npm package
-     * [ ] isDirectory: if the given `PROJECT_PATH` is a actual path
-     * ```
-     * @param PROJECT_PATH  The path of the directory which should be tested.
-     * @returns
-     * ```
-     * isGitRepository: string | boolean
-     * isFeatureBranch: string | boolean
-     * isClean: string | boolean
-     * isDevelopMergable: string | boolean
-     * isNpmPackage: string | boolean
-     * isDirectory: string | boolean
-     * value: boolean
-     * - true, if all prerequisites are met
-     * - false, if one of the prerequisites isn't met
-     * ```
-     */
-    public async isRunnable(
-        PROJECT_PATH: string,
-    ): Promise<any> {
-        const R = {
-            isClean: undefined,
-            isDevelopMergable: undefined,
-            isFeatureBranch: undefined,
-            isGitRepository: undefined,
-            value: undefined,
-        }
-        const branchName = await UGit.getBranchName(PROJECT_PATH)
-        R.isGitRepository = await UGit.checkIsRepo(PROJECT_PATH)
-        R.isFeatureBranch = await UGit.checkIsFeatureBranch(PROJECT_PATH)
-        R.isClean = await UGit.checkIsClean(PROJECT_PATH)
-        R.isDevelopMergable = await UGit.checkIsMergableFromTo(
-            PROJECT_PATH,
-            'develop',
-        )
-        R.value = true
-        for (const prop in R) {
-            if (prop.indexOf('is') === 0) {
-                if (R[prop] !== true) {
-                    R.value = false
-                }
-            }
-        }
-        return R
+        })
     }
 
 }
-export const NpmPublishTask = new NpmPublish()
+export const TNpmPublish = NpmPublishTask

@@ -1,3 +1,4 @@
+const MOMENT = require('moment')
 export class UDateUtility {
 
     /**
@@ -11,7 +12,14 @@ export class UDateUtility {
         dateBegin,
         dateEnd,
     ): number {
-        return dateEnd - dateBegin
+        return (dateEnd - dateBegin) / 1000
+    }
+
+    /**
+     * TODO
+     */
+    public getDate(): any {
+        return new Date()
     }
 
 }

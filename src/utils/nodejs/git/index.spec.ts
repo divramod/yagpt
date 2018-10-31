@@ -7,7 +7,7 @@ const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
 // TESTSUITE
-describe('yaGit: ' + __filename, async () => {
+describe('UGit: ' + __filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY

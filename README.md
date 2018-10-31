@@ -9,13 +9,14 @@ npm install dm-tpl --save-dev
 ```
 
 # FEATURES (Technique)
-- [x] programatic mocha testing with livereload (```npm run test:watch```)
-- [x] nyc code coverage with livereload (```npm run coverage:watch```)
-- [x] class based typescript
-- [x] gitflow support 
-- [x] run via ts-node with livereload (```npm run start:watch```)
-- [ ] node debugger
-- [ ] ci
+- [x] testing: mocha with livereload (```npm run test:watch```)
+- [x] code coverage: nyc with livereload (```npm run coverage:watch```)
+- [x] typescript: class based
+- [x] gitflow
+- [x] typescript: run via ts-node with livereload (```npm run start:watch```)
+- [x] documentation: [typedoc](https://github.com/TypeStrong/typedoc/blob/master/examples/basic/src/classes.ts)
+- [ ] debugging: ???
+- [ ] continous integration: ???
 
 # Features (Business)
 - npm
@@ -33,12 +34,19 @@ npm install dm-tpl --save-dev
 
 # SYSTEM DESIGN
 
-## Utility
+## Utility Classes
 - offer Helper functions for Tasks
+- these functions are really basic and each can be viewed as a step of tasks
 
-## Tasks
-- have a run() and a checkIsRunnable() function
-- use Utility functions
+## Task Classes
+- extend the TaskUtility Class which offers helperfunctions for running a task
+  - runBefore(): logs the name and the start time of a task
+  - runAfter(): logs the end time and duration of a task
+- implement the TaskInterface
+  - run(): have a run function, which runs the steps of the task
+  - check(): have a check function, which checks, if all prerequisites for
+    running the task are met
+- are using the functions of Uitility Classes to solve multistep tasks
 
 # DESIGN DECISIONS
 - Overall, i want to reduce the complexity of the system as much as possible to

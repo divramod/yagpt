@@ -303,7 +303,7 @@ export class UGitUtility {
      *                              branch!')
      */
     public async getFeatureName(
-        gitRepositoryPath,
+        gitRepositoryPath: string,
     ): Promise <boolean | string> {
         let result
         const R_CHECK_IS_REPO = await this.checkIsRepo(gitRepositoryPath)
@@ -704,6 +704,17 @@ export class UGitUtility {
             }
         }
         return result
+    }
+
+    /**
+     * TODO: try catch for error
+     */
+    public async raw(
+        projectPath: string,
+        args: string[],
+    ): Promise<any> {
+        const GIT = GIT_P(projectPath)
+        return GIT.raw(args)
     }
 
 }

@@ -1,13 +1,10 @@
-import { NpmPublishTask } from '@tasks/npm/publish'
+import { TNpmPublish } from '@tasks/npm/publish'
 export class NpmTask {
     public async run(task: string): Promise<any> {
         let result
         if (task === 'publish') {
-            console.log( // tslint:disable-line:no-console
-                'running task',
-                task,
-            )
-            result = await NpmPublishTask.run(process.cwd())
+            const TASK = new TNpmPublish(process.cwd())
+            result = await TASK.runTask()
             console.log( // tslint:disable-line:no-console
                 'result',
                 result,

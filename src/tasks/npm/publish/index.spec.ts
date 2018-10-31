@@ -2,27 +2,27 @@ import { UConfig } from '@utils/nodejs/config'
 import { UGit } from '@utils/nodejs/git'
 import { UNpm } from '@utils/nodejs/npm'
 import { describe, expect, it, UTest } from '@utils/nodejs/test'
-import { NpmPublish } from './'
+import { TNpmPublish } from './'
 
 const RIMRAF = require('rimraf')
+const SHELL = require('shelljs')
 
 // TESTSUITE
 describe('Task Npm.publish ' + __filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY
+        RIMRAF.sync(UConfig.testing.path)
     })
 
     afterEach(async () => {
-        RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY
+        RIMRAF.sync(UConfig.testing.path)
     })
 
-    describe('isRunnable()', async () => {
+    describe('checkIsRunnable()', async () => {
         it([
             'success:',
             'all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             await UGit.removeAllBranchesExcept(UConfig.testing.path)
             await UGit.checkoutNewBranch(
@@ -33,9 +33,8 @@ describe('Task Npm.publish ' + __filename, async () => {
                 UConfig.testing.path,
                 'feature/123-test-feature',
             )
-            const R = await TASK.isRunnable(
-                UConfig.testing.path,
-            )
+            const TASK = new TNpmPublish(UConfig.testing.path)
+            const R = await TASK.checkIsRunnable()
 
             expect(R.isGitRepository).not.to.be.undefined
             expect(R.isGitRepository).to.equal(true)
@@ -52,11 +51,9 @@ describe('Task Npm.publish ' + __filename, async () => {
             'error:',
             'not all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
-            const R = await TASK.isRunnable(
-                UConfig.testing.path,
-            )
+            const TASK = new TNpmPublish(UConfig.testing.path)
+            const R = await TASK.checkIsRunnable()
             expect(R.isFeatureBranch).not.to.be.undefined
             expect(R.isFeatureBranch).to.contain([
                 'ERROR:',
@@ -68,11 +65,11 @@ describe('Task Npm.publish ' + __filename, async () => {
         }).timeout(60000)
     })
 
-    describe('run()', async () => {
+    describe('runTask()', async () => {
+
         it([
             '1. value=true',
         ].join(' '), async () => {
-            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
             await UGit.removeAllBranchesExcept(UConfig.testing.path)
             await UGit.checkoutNewBranch(
@@ -83,9 +80,8 @@ describe('Task Npm.publish ' + __filename, async () => {
                 UConfig.testing.path,
                 'feature/123-test-feature',
             )
-            const R = await TASK.run(
-                UConfig.testing.path,
-            )
+            const TASK = new TNpmPublish(UConfig.testing.path)
+            const R = await TASK.runTask(true)
             expect(R.value).to.equal(true)
         }).timeout(60000)
 
@@ -93,11 +89,9 @@ describe('Task Npm.publish ' + __filename, async () => {
             '2. value=false',
             'not all conditions fulfilled',
         ].join(' '), async () => {
-            const TASK = new NpmPublish()
             await UNpm.prepareNpmRepository()
-            const R = await TASK.run(
-                UConfig.testing.path,
-            )
+            const TASK = new TNpmPublish(UConfig.testing.path)
+            const R = await TASK.runTask()
             expect(R.value).to.equal(false)
         }).timeout(60000)
 
