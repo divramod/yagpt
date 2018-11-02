@@ -2,11 +2,17 @@ const COLORS = require('colors/safe')
 const SHELL = require('shelljs')
 import { UEnvironment } from '@utils/nodejs/environment'
 
+/**
+ * TODO
+ */
 export interface ISuperTaskLogValueColorTheme {
     description: [string];
     value: any;
 }
 
+/**
+ * TODO
+ */
 export interface ISuperTaskLogHeaderColorTheme {
     devider: [string];
     value: any;

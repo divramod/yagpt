@@ -15,6 +15,88 @@ describe('yaPath: ' + __filename, async () => {
         RIMRAF.sync(UConfig.testPath) // REMOVE DIRECTORY
     })
 
+    describe('checkIfPathIsDirectory()', async () => {
+
+        it([
+            'true: if path is directory',
+        ].join(' '), async () => {
+            const TEST_PATH = UConfig.testPath
+            RIMRAF.sync(TEST_PATH)
+            UTest.createTestDirectory(TEST_PATH)
+            const R = await U_INSTANCE.checkIfPathIsDirectory(
+                TEST_PATH,
+            )
+            expect(R).to.equal(true)
+        })
+
+        it([
+            'false: if path is no directory',
+        ].join(' '), async () => {
+            const TEST_PATH = UConfig.testPath
+            RIMRAF.sync(TEST_PATH)
+            const R = await U_INSTANCE.checkIfPathIsDirectory(
+                TEST_PATH,
+            )
+            expect(R).to.equal(false)
+        })
+
+    })
+
+    describe('checkIfPathIsFile()', async () => {
+
+        it([
+            'true: if path is file',
+        ].join(' '), async () => {
+            const TEST_DIRECTORY_PATH = UConfig.testPath
+            const TEST_FILE_PATH = PATH.resolve(UConfig.testPath, 'test.md')
+            UTest.createTestDirectory(TEST_DIRECTORY_PATH)
+            UTest.createTestFile(TEST_FILE_PATH)
+            const R = await U_INSTANCE.checkIfPathIsFile(
+                TEST_FILE_PATH,
+            )
+            expect(R).to.equal(true)
+        })
+
+        it([
+            'false: if path is no file',
+        ].join(' '), async () => {
+            const TEST_FILE_PATH = PATH.resolve(UConfig.testPath, 'test.md')
+            RIMRAF.sync(TEST_FILE_PATH)
+            const R = await U_INSTANCE.checkIfPathIsFile(
+                TEST_FILE_PATH,
+            )
+            expect(R).to.equal(false)
+        })
+
+    })
+
+    describe('checkIfPathExists()', async () => {
+
+        it([
+            'true: when path exists',
+        ].join(' '), async () => {
+            const TEST_PATH = UConfig.testPath
+            RIMRAF.sync(TEST_PATH)
+            UTest.createTestDirectory(TEST_PATH)
+            const R = await U_INSTANCE.checkIfPathExists(
+                TEST_PATH,
+            )
+            expect(R).to.equal(true)
+        })
+
+        it([
+            'false: when path doesn\'t exists',
+        ].join(' '), async () => {
+            const TEST_PATH = UConfig.testPath
+            RIMRAF.sync(TEST_PATH)
+            const R = await U_INSTANCE.checkIfPathExists(
+                TEST_PATH,
+            )
+            expect(R).to.equal(false)
+        })
+
+    })
+
     describe('createDirectory()', async () => {
 
         it([

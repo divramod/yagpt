@@ -6,9 +6,9 @@ describe('cli ' + __filename, async () => {
     it([
         'test',
     ].join(' '), async () => {
-        const program = UCommander.program
+        const program = await UCommander.getProgram()
         // program.npm = 'publish'
-        UCommander.runProgram()
+        UCommander.run()
     })
 
 })

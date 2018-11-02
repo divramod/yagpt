@@ -3,7 +3,86 @@ const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
+/**
+ * @TODO
+ * ```
+ *
+ * - [ ] checkIfPathExists()
+ * - [x] createDirectory()
+ * - [x] createFile()
+ * - [x] copyDirectory()
+ * ```
+ */
 export class UPathUtility {
+
+    /**
+     * Checks if the given path is a directory.
+     * @param path  The path to test for.
+     * @returns
+     * ```
+     * - [ ] true: if path is directory
+     * - [ ] false: if path is no directory
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * ```
+     */
+    public checkIfPathIsDirectory(
+    path: string,
+    ): boolean | string {
+        const PATH_TO_TEST = PATH.resolve(path)
+        const PATH_IS_DIRECTORY = SHELL.test('-d', PATH_TO_TEST)
+        if (PATH_IS_DIRECTORY === true) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /**
+     * Checks if a given path is a file.
+     * @param path  The path to check.
+     * @returns
+     * ```
+     * - true: if path is file
+     * - false: if path is no file
+     */
+    public checkIfPathIsFile(
+        path: string,
+    ): boolean | string {
+        const PATH_TO_TEST = PATH.resolve(path)
+        const PATH_IS_FILE = SHELL.test('-f', PATH_TO_TEST)
+        if (PATH_IS_FILE === true) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /**
+     * Checks, if a given path exists.
+     * @param
+     * @returns
+     * ```
+     * - true: when path exists
+     * - false: when path doesn't exists
+     * ```
+     */
+    public checkIfPathExists(
+        path: string,
+    ): boolean | string {
+        const PATH_TO_TEST = PATH.resolve(path)
+        const PATH_IS_DIRECTORY = SHELL.test('-d', PATH_TO_TEST)
+        const PATH_IS_FILE = SHELL.test('-f', PATH_TO_TEST)
+        if (PATH_IS_DIRECTORY === true || PATH_IS_FILE === true) {
+            return true
+        } else {
+            return false
+        }
+    }
 
     /**
      * Creates a Directory at a given path.
