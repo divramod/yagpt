@@ -1,24 +1,24 @@
-// https://gitlab.com/divramod/yagpt/issues/7
-// IMPORT
 const FS = require('fs')
 const PATH = require('path')
 const SHELL = require('shelljs')
 const RIMRAF = require('rimraf')
 const GIT_P = require('simple-git/promise')
-
-// IMPORT
-import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
 import { UPath } from '@utils/nodejs/path'
+import { UGit } from '@utils/tools/git'
 import { expect } from 'chai'
 import * as MOCHA from 'mocha'
-
-// EXPORT
 export { expect } from 'chai'
 export const describe = MOCHA.describe
 export const it = MOCHA.it
 
-// CLASS
+/**
+ * @TODO
+ * ```
+ *
+ * - [ ]
+ * ```
+ */
 export class UTestUtility {
 
     public configPath: string = PATH.resolve(

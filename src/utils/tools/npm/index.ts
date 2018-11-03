@@ -1,6 +1,6 @@
 const SHELL = require('shelljs')
-import { UConfig } from '@utils/nodejs/config'
-import { UGit } from '@utils/nodejs/git'
+import { UGit } from '@utils/tools/git'
+import { UConfig } from '@utils/yagpt/config'
 
 export class UNpmUtility {
 

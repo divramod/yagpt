@@ -3,7 +3,7 @@ const PATH = require('path')
 const SHELL = require('shelljs')
 
 // IMPORT
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { UTest as U_INSTANCE, UTestUtility as U_CLASS } from './'
 
 // TESTSUITE

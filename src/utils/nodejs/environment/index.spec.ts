@@ -1,17 +1,17 @@
 const RIMRAF = require('rimraf')
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { UEnvironment as U_INSTANCE } from './'
 
 // TESTSUITE
 describe('UEnvironment ' + __filename, async () => {
 
     beforeEach(async () => {
-        RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.testPath)
         process.env.DMTPL_ENV = 'testing'
     })
 
     afterEach(async () => {
-        RIMRAF.sync(UTest.testPath) // REMOVE DIRECTORY
+        RIMRAF.sync(UTest.testPath)
         process.env.DMTPL_ENV = 'testing'
     })
 

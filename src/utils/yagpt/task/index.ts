@@ -1,7 +1,7 @@
 const MOMENT = require('moment')
 import { UDate } from '@utils/nodejs/date'
 import { ULogger } from '@utils/nodejs/logger'
-import { UTest } from '@utils/nodejs/test'
+import { UTest } from '@utils/yagpt/test'
 
 /**
  * This class is intended to help devops with solving the problems they face on

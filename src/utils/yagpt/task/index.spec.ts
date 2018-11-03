@@ -1,8 +1,8 @@
 const RIMRAF = require('rimraf')
 const _ = require('underscore')
-import { UGit } from '@utils/nodejs/git'
 import { ULogger } from '@utils/nodejs/logger'
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { UGit } from '@utils/tools/git'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { ITask, UTask } from './'
 
 describe('UTask ' + __filename, async () => {

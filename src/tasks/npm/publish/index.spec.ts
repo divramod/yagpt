@@ -1,7 +1,7 @@
-import { UConfig } from '@utils/nodejs/config'
-import { UGit } from '@utils/nodejs/git'
-import { UNpm } from '@utils/nodejs/npm'
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { UGit } from '@utils/tools/git'
+import { UNpm } from '@utils/tools/npm'
+import { UConfig } from '@utils/yagpt/config'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { TNpmPublish } from './'
 
 const RIMRAF = require('rimraf')

@@ -1,6 +1,6 @@
-import { UConfig } from '@utils/nodejs/config'
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
-import { UCommander as U_INSTANCE } from './'
+import { UConfig } from '@utils/yagpt/config'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
+import { UPackage as U_INSTANCE } from './'
 const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
@@ -26,12 +26,12 @@ describe.only(__filename, async () => {
 
     })
 
-    describe.only('checkIfModuleTaskExistant()', async () => {
+    describe.only('parseProgramArguments()', async () => {
 
         it([
             '0 runTask()',
         ].join(' '), async () => {
-            const R = await U_INSTANCE.checkIfModuleTaskExistant(
+            const R = await U_INSTANCE.parseProgramArguments(
                 'npm',
                 'publish',
             )
@@ -41,14 +41,14 @@ describe.only(__filename, async () => {
         it([
             '1 runYagptPrompt()',
         ].join(' '), async () => {
-            const R = await U_INSTANCE.checkIfModuleTaskExistant()
+            const R = await U_INSTANCE.parseProgramArguments()
             expect(R).to.equal(1)
         })
 
         it([
             '2 printModuleHelp()',
         ].join(' '), async () => {
-            const R = await U_INSTANCE.checkIfModuleTaskExistant(
+            const R = await U_INSTANCE.parseProgramArguments(
                 'npm',
                 'notExistantTask',
             )
@@ -58,7 +58,7 @@ describe.only(__filename, async () => {
         it([
             '3 runModulePrompt()',
         ].join(' '), async () => {
-            const R = await U_INSTANCE.checkIfModuleTaskExistant(
+            const R = await U_INSTANCE.parseProgramArguments(
                 'npm',
             )
             expect(R).to.equal(3)
@@ -67,7 +67,7 @@ describe.only(__filename, async () => {
         it([
             '4 printGeneralHelp()',
         ].join(' '), async () => {
-            const R = await U_INSTANCE.checkIfModuleTaskExistant(
+            const R = await U_INSTANCE.parseProgramArguments(
                 'notExistantModule',
             )
             expect(R).to.equal(4)

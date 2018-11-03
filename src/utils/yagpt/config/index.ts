@@ -61,14 +61,6 @@ export class UConfigUtility {
         return this
     }
 
-    /**
-     * Returns the environment variable of the module.
-     * @returns  [testing|development|production]
-     */
-    public getEnv(): string {
-        return process.env.DMTPL_ENV
-    }
-
 }
 
 export const UConfig = new UConfigUtility()

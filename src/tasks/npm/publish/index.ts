@@ -1,6 +1,6 @@
-import { UGit } from '@utils/nodejs/git'
 import { UJson } from '@utils/nodejs/json'
-import { ITask, UTask } from '@utils/nodejs/task'
+import { UGit } from '@utils/tools/git'
+import { ITask, UTask } from '@utils/yagpt/task'
 const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')

@@ -1,4 +1,4 @@
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { UJson as U_INSTANCE, UJsonUtility as U_CLASS } from './'
 
 const PATH = require('path')

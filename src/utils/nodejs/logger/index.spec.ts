@@ -1,5 +1,5 @@
-import { UGit } from '@utils/nodejs/git'
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { UGit } from '@utils/tools/git'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { ULogger } from './'
 
 // REQUIRE

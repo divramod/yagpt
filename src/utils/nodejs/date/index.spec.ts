@@ -1,4 +1,4 @@
-import { describe, expect, it, UTest } from '@utils/nodejs/test'
+import { describe, expect, it, UTest } from '@utils/yagpt/test'
 import { UDate as U_INSTANCE, UDateUtility as U_CLASS } from './'
 
 describe('yaDate: ' + __filename, async () => {

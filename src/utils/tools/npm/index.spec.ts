@@ -1,5 +1,5 @@
-import { UConfig } from '@utils/nodejs/config'
-import { describe, expect, it } from '@utils/nodejs/test'
+import { UConfig } from '@utils/yagpt/config'
+import { describe, expect, it } from '@utils/yagpt/test'
 import { UNpm as U_INSTANCE, UNpmUtility as U_CLASS } from './'
 const PATH = require('path')
 const RIMRAF = require('rimraf')
