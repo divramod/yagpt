@@ -4,10 +4,15 @@ const SHELL = require('shelljs')
 const PATH = require('path')
 const _ = require('underscore')
 const RIMRAF = require('rimraf')
-
 import { UPath } from '@utils/nodejs/path'
 
-// CLASS
+/**
+ * @TODO
+ * ```
+ *
+ * - [ ] comment
+ * ```
+ */
 export class UGitUtility {
 
     /**

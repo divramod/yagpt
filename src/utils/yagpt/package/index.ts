@@ -170,6 +170,13 @@ export class UPackageUtility {
      * ```
      * @TODO
      * ```
+     * - 11 package: help
+     * - 12 package: prompt
+     * - 21 module: help
+     * - 22 module: prompt
+     * - 31 task: help
+     * - 32 task: prompt
+     * - 33 task: run
      *
      * - [ ] add -h --help flag for package / module / task
      * ```
@@ -316,6 +323,28 @@ export class UPackageUtility {
                 process.argv.splice(index, 1)
                 result = true
             }
+        }
+        return result
+    }
+
+    /**
+     * @TODO
+     * ```
+     *
+     * - [ ] comment
+     * - [ ]
+     * ```
+     */
+    public async runTask(task: string): Promise<any> {
+        let result
+        result = true
+        if (task === 'publish') {
+            // const TASK = new TNpmPublish(process.cwd())
+            // result = await TASK.runTask()
+            // console.log( // tslint:disable-line:no-console
+                // 'result',
+                // result,
+            // )
         }
         return result
     }

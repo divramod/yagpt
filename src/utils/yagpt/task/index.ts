@@ -241,4 +241,7 @@ class TaskUtility {
 
 }
 export const UTask = TaskUtility
-export { ITask } from './index.d'
+export interface ITask {
+    runSteps(): Promise<any>;
+    checkPrerequisites(): Promise<any>;
+}
