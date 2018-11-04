@@ -2,7 +2,7 @@
 - using gitflow: https://www.atlassian.com/git/tutorials/comparing-workflows
 
 # Docs
-[installation](docs/installation.md) | [features](docs/features.md) | [software design](docs/software-design.md)
+[installation](docs/installation.md) | [features](docs/features.md) | [software design](docs/software-design.md) | [styleguide](docs/styleguide.md) | [Design Notes](docs/designNotes.md)
 
 # INSTALLATION 
 For detailed instructions on how to install nodejs/npm see [installation](docs/installation.md)
