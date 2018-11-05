@@ -50,11 +50,15 @@ npm install yagpt --save-dev
 ```
 
 # FEATURES (Technique)
-- [x] testing: mocha with livereload (```npm run test:watch```)
-- [x] 100% code coverage: nyc with livereload (```npm run coverage:watch```)
-- [x] typescript: run via ts-node with livereload (```npm run start:watch```)
+- [x] testing: [mochajs](https://mochajs.org/) with livereload
+      (```npm run test:watch```)
+- [x] 100% code coverage: [istanbuljs](https://istanbul.js.org) with
+      [nyc](https://github.com/istanbuljs/nyc) with livereload
+      (```npm run coverage:watch```)
+- [x] typescript: run via [ts-node](https://github.com/TypeStrong/ts-node) with
+      livereload (```npm run start:watch```)
 - [x] documentation: [typedoc](https://github.com/TypeStrong/typedoc/blob/master/examples/basic/src/classes.ts)
-- [x] tslint: lints the code
+- [x] [tslint](https://palantir.github.io/tslint): lints the code
 - [ ] debugging: ???
 - [ ] continous integration: ???
 
