@@ -74,7 +74,7 @@ import { UPath } from '@utils/nodejs/path'
  *       home (home dir), test (test dir), ...)
  * - [ ] test pathes: is project, is app, is module
  * ```
-*/
+ */
 export class UPackageUtility {
 
     /**
