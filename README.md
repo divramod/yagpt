@@ -40,15 +40,6 @@ I intend to use the work on this package for:
   Excerpts i collected from Reading the Book "A Philosophy of Software Design"
   by John Ousterhout.
 
-# INSTALLATION 
-For detailed instructions on how to install nodejs/npm and other tools used by
-the package, see [installation](docs/installation.md):
-```
-npm install yagpt -g
-# or
-npm install yagpt --save-dev
-```
-
 # FEATURES (Technique)
 - [x] testing: [mochajs](https://mochajs.org/) with livereload
       (```npm run test:watch```)
@@ -66,3 +57,31 @@ npm install yagpt --save-dev
 - [gitflow for git](https://www.atlassian.com/git/tutorials/comparing-workflows)
 - monorepo (TODO: document)
 - issuemanagement on github (TODO: document)
+
+# INSTALLATION
+For detailed instructions on how to install nodejs/npm and other tools used by
+the package, see [installation](docs/installation.md):
+```
+npm install yagpt -g
+# or
+npm install yagpt --save-dev
+```
+
+# USAGE
+
+## TODO: from command line interface
+```
+// TODO: run a system wide task without project (git/docker/npm/vim)
+// TODO: create a project
+  // TODO:
+```
+
+## TODO: programatically
+```
+// TODO: create a task in a project and run it
+// TODO: use utility function in a npm package
+// TODO: use uitilty function in a browser project (react/vue/angular)
+// TODO: use utility function in a electron project
+// TODO: use utility function in a react-native project
+// TODO: use utility function in a api project
+```
