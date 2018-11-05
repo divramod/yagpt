@@ -402,3 +402,4 @@ export class NpmPublishTask extends UTask implements ITask {
 
 }
 export const TNpmPublish = NpmPublishTask
+export const Class = NpmPublishTask

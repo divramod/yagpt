@@ -1,4 +1,5 @@
 const programCommander = require('commander')
+const PATH = require('path')
 import { Npm } from '@tasks/npm'
 import { UPath } from '@utils/nodejs/path'
 
@@ -73,7 +74,7 @@ import { UPath } from '@utils/nodejs/path'
  *       home (home dir), test (test dir), ...)
  * - [ ] test pathes: is project, is app, is module
  * ```
- */
+*/
 export class UPackageUtility {
 
     /**
@@ -87,43 +88,56 @@ export class UPackageUtility {
      * - [ ] create test
      * ```
      */
-    public run(): boolean {
+    public async run(): Promise<boolean> {
         const args = this.getPackageProgram().args
-        // const module = args[0]
-        // const task = args[1]
-        // const R_CHECK_IF_MODULE_TASK_EXISTANT = this.parseProgramArguments(
-        // module,
-        // task,
-        // )
-        // switch (R_CHECK_IF_MODULE_TASK_EXISTANT) {
-        // case 0: {
-        // // 0 runTask()
-        // break
-        // }
-        // case 1: {
-        // // 1 runPackagePrompt()
-        // break
-        // }
-        // case 2: {
-        // // 2 printModuleHelp()
-        // break
-        // }
-        // case 3: {
-        // // 3 runModulePrompt()
-        // break
-        // }
-        // case 4: {
-        // // 4 printPackageHelp()
-        // break
-        // }
-        // default: {
-        // break
-        // }
-        // }
-        // console.log( // tslint:disable-line:no-console
-        // 'R_CHECK_IF_MODULE_TASK_EXISTANT',
-        // R_CHECK_IF_MODULE_TASK_EXISTANT,
-        // )
+        const module = args[0]
+        const task = args[1]
+        const R_CHECK_IF_MODULE_TASK_EXISTANT = this.parseProgramArguments(
+            module,
+            task,
+        )
+        console.log( // tslint:disable-line:no-console
+            'R_CHECK_IF_MODULE_TASK_EXISTANT',
+            R_CHECK_IF_MODULE_TASK_EXISTANT,
+        )
+        switch (R_CHECK_IF_MODULE_TASK_EXISTANT) {
+            case 0: {
+                // 0 runTask()
+                const TASK_PATH = PATH.resolve(
+                    '.',
+                    module,
+                    task,
+                )
+                const TASK_IMPORT = await import(TASK_PATH)
+                const TASK_CLASS = TASK_IMPORT.Class
+                const TASK = new TASK_CLASS(__dirname)
+                const R_TASK = await TASK.run({projectPath: process.cwd()})
+                console.log( // tslint:disable-line:no-console
+                    'R_TASK',
+                    R_TASK,
+                )
+                break
+            }
+            case 1: {
+                // 1 runPackagePrompt()
+                break
+            }
+            case 2: {
+                // 2 printModuleHelp()
+                break
+            }
+            case 3: {
+                // 3 runModulePrompt()
+                break
+            }
+            case 4: {
+                // 4 printPackageHelp()
+                break
+            }
+            default: {
+                break
+            }
+        }
         return true
     }
 
@@ -342,8 +356,8 @@ export class UPackageUtility {
             // const TASK = new TNpmPublish(process.cwd())
             // result = await TASK.runTask()
             // console.log( // tslint:disable-line:no-console
-                // 'result',
-                // result,
+            // 'result',
+            // result,
             // )
         }
         return result
