@@ -109,7 +109,8 @@ export class UPackageUtility {
                     module,
                     task,
                 )
-                const TASK_IMPORT = await import(TASK_PATH)
+                const G = './tasks/npm/publish'
+                const TASK_IMPORT = await import(G)
                 const TASK_CLASS = TASK_IMPORT.Class
                 const TASK = new TASK_CLASS(__dirname)
                 const R_TASK = await TASK.run({projectPath: process.cwd()})
