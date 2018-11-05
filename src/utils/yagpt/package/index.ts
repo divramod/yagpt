@@ -1,6 +1,7 @@
 const programCommander = require('commander')
 const PATH = require('path')
 import { Npm } from '@tasks/npm'
+import { UEnvironment } from '@utils/nodejs/environment'
 import { UPath } from '@utils/nodejs/path'
 
 /**
@@ -103,21 +104,27 @@ export class UPackageUtility {
         switch (R_CHECK_IF_MODULE_TASK_EXISTANT) {
             case 0: {
                 // 0 runTask()
-                const TASK_PATH = PATH.resolve(
-                    '.',
-                    'src',
-                    module,
-                    task,
-                )
-                const G = './tasks/npm/publish'
-                const TASK_IMPORT = await import(G)
-                const TASK_CLASS = TASK_IMPORT.Class
-                const TASK = new TASK_CLASS(__dirname)
-                const R_TASK = await TASK.run({projectPath: process.cwd()})
-                console.log( // tslint:disable-line:no-console
-                    'R_TASK',
-                    R_TASK,
-                )
+                if (UEnvironment.getEnv() !== 'testing') {
+                    const TASK_PATH = PATH.resolve(
+                        '.',
+                        'src',
+                        module,
+                        task,
+                    )
+                    const G = PATH.resolve('./../../src/tasks/npm/publish')
+                    console.log( // tslint:disable-line:no-console
+                        'G',
+                        G,
+                    )
+                    const TASK_IMPORT = await import(G)
+                    const TASK_CLASS = TASK_IMPORT.Class
+                    const TASK = new TASK_CLASS(__dirname)
+                    const R_TASK = await TASK.run({projectPath: process.cwd()})
+                    console.log( // tslint:disable-line:no-console
+                        'R_TASK',
+                        R_TASK,
+                    )
+                }
                 break
             }
             case 1: {
