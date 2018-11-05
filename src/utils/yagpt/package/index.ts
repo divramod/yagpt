@@ -111,7 +111,7 @@ export class UPackageUtility {
                         module,
                         task,
                     )
-                    const G = PATH.resolve('./../../src/tasks/npm/publish')
+                    const G = PATH.resolve('./../src/tasks/npm/publish')
                     console.log( // tslint:disable-line:no-console
                         'G',
                         G,
