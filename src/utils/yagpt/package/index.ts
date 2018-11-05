@@ -105,6 +105,7 @@ export class UPackageUtility {
                 // 0 runTask()
                 const TASK_PATH = PATH.resolve(
                     '.',
+                    'src',
                     module,
                     task,
                 )
