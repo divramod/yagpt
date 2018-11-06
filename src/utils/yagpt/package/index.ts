@@ -118,8 +118,8 @@ export class UPackageUtility {
                     )
                     const TASK_IMPORT = await import(G)
                     const TASK_CLASS = TASK_IMPORT.Class
-                    const TASK = new TASK_CLASS(__dirname)
-                    const R_TASK = await TASK.run({projectPath: process.cwd()})
+                    const TASK = new TASK_CLASS()
+                    const R_TASK = await TASK.runTask()
                     console.log( // tslint:disable-line:no-console
                         'R_TASK',
                         R_TASK,

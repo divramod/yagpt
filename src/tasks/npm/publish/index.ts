@@ -7,9 +7,37 @@ const SHELL = require('shelljs')
 const PATH = require('path')
 
 /**
- * This Class helps publishing an npm package.
- * @param projectPath  The path where the package exists.
- * @param versionPart  The part of the version to increment
+ * This Class helps publishing an npm package. It is the first task I wrote for
+ * the Package.
+ *
+ * A task class usually has to implement different functions as stated in ITask.
+ * These are:
+ * - checkPrerequisites(): for checking if the task can be run
+ * - setOptions(): for setting the information the task needs for running
+ * - runSteps(): for running the steps of the task
+ *
+ * For setting the options of a task it is possible to do it in different ways:
+ * 1. with the options of the program (commander) -p -v
+ * 2. with an options object passed to the run function of the task
+ * 3. with an options object passed to the constructor of the task class
+ * 4. with default values
+ * 5. with values gotten from questions answered in a prompt
+ *
+ * @param projectPath
+ *   The path where the package exists.
+ * @param versionPart
+ *   The part of the version to increment
+ *
+ * @TODO
+ * ```
+ *
+ * - [ ] add setOptions(): use steps too?
+ *   - [ ] parseOptions()
+ *   - [ ] getDefaults()
+ * - [ ] add printHelp()
+ * - [ ] add runPrompt() --> needs to explicitly called
+ * - [ ] checkPrerequisites(): use steps
+ * ```
  */
 export class NpmPublishTask extends UTask implements ITask {
 
@@ -25,15 +53,18 @@ export class NpmPublishTask extends UTask implements ITask {
      */
     private versionPart: string
 
-    constructor(
-        projectPath: string,
-        versionPart: string = 'patch',
-    ) {
+    /**
+     * @TODO
+     * ```
+     *
+     * - [ ] comment
+     * ```
+     */
+    constructor() {
         super()
         super.setChild(this)
         this.name = 'NpmPublishTask'
-        this.projectPath = projectPath
-        this.versionPart = versionPart
+        this.setOptions()
     }
 
     /**
@@ -48,16 +79,20 @@ export class NpmPublishTask extends UTask implements ITask {
      * - if the directory is a clean git repository
      * isDevelopMergable: string | boolean
      * - if the branch development is mergable into the current feature branch
+     * value: boolean
+     * - true, if all prerequisites are met
+     * - false, if one of the prerequisites isn't met
+     * TODO projectPathNotUndefined
      * TODO isCorrectVersionPart
      * - tests, if `this.versionPart` is an official semver version part
      * TODO isNpmPackage: string | boolean
      * - if `this.projectPath` contains an npm package
-     * value: boolean
-     * - true, if all prerequisites are met
-     * - false, if one of the prerequisites isn't met
      * ```
      */
     public async checkPrerequisites(): Promise<any> {
+        console.log( // tslint:disable-line:no-console
+            'in',
+        )
         const RESULT = {
             isClean: undefined,
             isDevelopMergable: undefined,
@@ -398,6 +433,41 @@ export class NpmPublishTask extends UTask implements ITask {
                 'HEAD',
             ])
         })
+    }
+
+    /**
+     * private setOptions
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * - [ ] create result object
+     * ```
+     */
+    private setOptions(): boolean | string {
+        let result
+        result = true
+
+        // 0. differentiate between mandantory and no mandantory options
+
+        // 1. parse cli options if given
+        // TODO this.projectPath
+        // TODO this.versionPart
+
+        // 2. use default values if given
+
+        // 3. use prompt/input when still undefined
+
+        // 4. break if some mandantory option couldn't be set
+        return result
     }
 
 }
