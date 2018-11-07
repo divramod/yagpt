@@ -30,7 +30,7 @@ const PATH = require('path')
  *
  * @TODO
  * ```
- *
+ * - [ ] how to combine the 5 options to set the options for a task
  * - [ ] add setOptions(): use steps too?
  *   - [ ] parseOptions()
  *   - [ ] getDefaults()

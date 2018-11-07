@@ -242,7 +242,41 @@ class TaskUtility {
 
 }
 export const UTask = TaskUtility
+
+/**
+ * The Task, which all Tasks should implement, ensures, that a task is
+ * foreseeable.
+ * @TODO
+ * ```
+ *
+ * - [ ]
+ * ```
+ */
 export interface ITask {
+
+    /**
+     *
+     */
     runSteps(): Promise<any>;
+
+    /**
+     *
+     */
     checkPrerequisites(): Promise<any>;
+
+    /**
+     * - [ ] parses the options
+     */
+    setOptions(): any;
+
+    /**
+     *
+     */
+    getProgram(): Promise<any>;
+
+    /**
+     *
+     */
+    getPrompt(): Promise<any>;
+
 }
