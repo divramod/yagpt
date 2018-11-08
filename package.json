@@ -26,7 +26,8 @@
         "test:src": "nyc mocha --opts mocha.src.opts",
         "test:src:watch": "mocha --opts mocha.src.opts --watch",
         "test:watch": "DMTPL_ENV=testing nodemon --config nodemon.coverage.json",
-        "ts:watch": "./node_modules/.bin/tsc --watch"
+        "ts:watch": "./node_modules/.bin/tsc --watch",
+        "run:watch": "./node_modules/.bin/nodemon --config nodemon.test.json"
     },
     "repository": {
         "type": "git",

@@ -272,11 +272,11 @@ export interface ITask {
     /**
      *
      */
-    getProgram(): Promise<any>;
+    getProgram(): any;
 
     /**
      *
      */
-    getPrompt(): Promise<any>;
+    getPrompt(): any;
 
 }

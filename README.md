@@ -34,8 +34,8 @@ I intend to use the work on this package for:
 - [design notes](docs/designNotes.md):
   A list of notes which explain, which design decisions i made for the project
   and which thoughts drove them.
-- [projects](docs/projects.md):
-  A list of project types with which the package should help me.
+- [user manual](docs/userManual.md):
+  Explains how yagpt is concipated and how to use it.
 - [a philosophy of software design](docs/aPhilosophyOfSoftwareDesign.md):
   Excerpts i collected from Reading the Book "A Philosophy of Software Design"
   by John Ousterhout.
@@ -65,23 +65,4 @@ the package, see [installation](docs/installation.md):
 npm install yagpt -g
 # or
 npm install yagpt --save-dev
-```
-
-# USAGE
-
-## TODO: from command line interface
-```
-// TODO: run a system wide task without project (git/docker/npm/vim)
-// TODO: create a project
-  // TODO:
-```
-
-## TODO: programatically
-```
-// TODO: create a task in a project and run it
-// TODO: use utility function in a npm package
-// TODO: use uitilty function in a browser project (react/vue/angular)
-// TODO: use utility function in a electron project
-// TODO: use utility function in a react-native project
-// TODO: use utility function in a api project
 ```

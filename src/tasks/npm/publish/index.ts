@@ -1,10 +1,13 @@
 import { UJson } from '@utils/nodejs/json'
+import { UPath } from '@utils/nodejs/path'
 import { UGit } from '@utils/tools/git'
+import { UNpm } from '@utils/tools/npm'
 import { ITask, UTask } from '@utils/yagpt/task'
 const GIT_P = require('simple-git/promise')
 const SEMVER = require('semver')
 const SHELL = require('shelljs')
 const PATH = require('path')
+const programCommander = require('commander')
 
 /**
  * This Class helps publishing an npm package. It is the first task I wrote for
@@ -42,6 +45,11 @@ const PATH = require('path')
 export class NpmPublishTask extends UTask implements ITask {
 
     /**
+     * - [ ] comment
+     */
+    private program: any
+
+    /**
      * The path where to run the Publish task in.
      */
     private projectPath: string
@@ -51,7 +59,7 @@ export class NpmPublishTask extends UTask implements ITask {
      * increment. Possible values are major, minor, patch.
      * @see [https://semver.org](https://semver.org)
      */
-    private versionPart: string
+    private semverVersionPart: string
 
     /**
      * @TODO
@@ -64,7 +72,66 @@ export class NpmPublishTask extends UTask implements ITask {
         super()
         super.setChild(this)
         this.name = 'NpmPublishTask'
+        this.description = '...'
+
+        this.program = programCommander
+        this.program.description(this.description)
+        this.program.option(
+            '-p, --projectPath <projectPath>',
+            'The Project Path',
+        )
+        this.program.option(
+            '-s, --semverVersionPart <semverVersionPart>',
+            'The Semver Version Part which should be incremented',
+        )
+        this.program.parse(process.argv)
+
         this.setOptions()
+    }
+
+    /**
+     * getProgram
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public getProgram(): any {
+        let result
+        result = true
+
+        return result
+    }
+
+    /**
+     * getPrompt
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public getPrompt(): any {
+        let result
+        result = true
+        return result
     }
 
     /**
@@ -84,7 +151,7 @@ export class NpmPublishTask extends UTask implements ITask {
      * - false, if one of the prerequisites isn't met
      * TODO projectPathNotUndefined
      * TODO isCorrectVersionPart
-     * - tests, if `this.versionPart` is an official semver version part
+     * - tests, if `this.semverVersionPart` is an official semver version part
      * TODO isNpmPackage: string | boolean
      * - if `this.projectPath` contains an npm package
      * ```
@@ -446,28 +513,55 @@ export class NpmPublishTask extends UTask implements ITask {
      * @TODO
      * ```
      *
-     * - [ ] write comments
-     * - [ ] create tests
-     * - [ ] implement code
      * - [ ] create result object
      * ```
      */
-    private setOptions(): boolean | string {
-        let result
-        result = true
+    public setOptions(): any {
 
-        // 0. differentiate between mandantory and no mandantory options
+        // TODO proof, if program is run from cli or programmatically
 
-        // 1. parse cli options if given
-        // TODO this.projectPath
-        // TODO this.versionPart
+        // set this.projectPath
+        if (this.program.projectPath) {
+            const PROJECT_PATH = UPath.checkIfPathIsDirectory(
+                this.program.projectPath,
+            )
+            if (PROJECT_PATH === true) {
+                // 1 is a directory
+                this.projectPath === PATH.resolve(
+                    this.program.projectPath,
+                )
+            } else {
+                // 2 ERROR: is not a directory
+                this.projectPath = undefined
+            }
+        } else {
+            // 3 no path given
+            // --> take path from where the script is run (DEFAULT)
+            this.projectPath === PATH.resolve('.')
+        }
+
+        // set this.semverVersionPart
+        if (this.program.semverVersionPart) {
+            const R_CHECK_IS_SEMVER_VERSION_PART = checkIsSemverVersionPart(
+                this.program.semverVersionPart,
+            )
+            if  (R_CHECK_IS_SEMVER_VERSION_PART === true) {
+                // 1 is a semverVersionPart
+                this.semverVersionPart = this.program.semverVersionPart
+            } else {
+                // ERROR: is not a semver compatiple version part
+                this.semverVersionPart = undefined
+            }
+        } else {
+            this.semverVersionPart = 'patch'
+        }
 
         // 2. use default values if given
 
         // 3. use prompt/input when still undefined
 
         // 4. break if some mandantory option couldn't be set
-        return result
+        return true
     }
 
 }

@@ -15,6 +15,19 @@
  */
 export class ProgramUtility {
 
+    /**
+     * @param options
+     * @TODO
+     * ```
+     *
+     * - [ ] process
+     * ```
+     */
+    constructor(
+        options?: any,
+    ) {
+        //
+    }
 }
 export const UProgram = new ProgramUtility()
 export const UProgramClass = ProgramUtility

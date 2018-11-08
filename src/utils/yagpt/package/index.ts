@@ -108,14 +108,12 @@ export class UPackageUtility {
                     const TASK_PATH = PATH.resolve(
                         '.',
                         'src',
+                        'tasks',
                         module,
                         task,
                     )
-                    const G = PATH.resolve('./src/tasks/npm/publish')
-                    console.log( // tslint:disable-line:no-console
-                        'G',
-                        G,
-                    )
+                    // const G = PATH.resolve('./src/tasks/npm/publish')
+                    const G = PATH.resolve(TASK_PATH)
                     const TASK_IMPORT = await import(G)
                     const TASK_CLASS = TASK_IMPORT.Class
                     const TASK = new TASK_CLASS()
