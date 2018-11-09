@@ -1,8 +1,4 @@
-test
-i1
-R_CHECK_IF_MODULE_TASK_EXISTANT 1
-R_CHECK_IF_MODULE_TASK_EXISTANT 1
-pre-commit
+20181109_070209
 
 > yagpt@0.0.35 test /home/mod/me-code/public/yagpt
 > npm run test:src
@@ -36,4 +32,4 @@ All files                     |    28.11 |     3.45 |       25 |       27 |     
  src/utils/yagpt/test         |     37.1 |        0 |       25 |    36.21 |                   |
   index.ts                    |     37.1 |        0 |       25 |    36.21 |... 39,141,147,155 |
 ------------------------------|----------|----------|----------|----------|-------------------|
-pre-commit finished
+pre-commit finished at
