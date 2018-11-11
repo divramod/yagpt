@@ -23,6 +23,8 @@ export class UTestUtility {
 
     public configPath: string = PATH.resolve(
         require('global-modules-path').getPath('yagpt'),
+        'modules',
+        'npm-package',
         'yagpt.config.json',
     )
     public config: any = UJson.getKeyValueFromFile(
