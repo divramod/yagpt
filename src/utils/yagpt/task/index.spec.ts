@@ -147,4 +147,70 @@ class TestTask extends UTask implements ITask {
             })
         }
     }
+
+    /**
+     * public setOptions
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public setOptions(): boolean | string {
+        let result
+        result = true
+        return result
+    }
+
+    /**
+     * public getProgram
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public getProgram(): boolean | string {
+        let result
+        result = true
+        return result
+    }
+
+    /**
+     * public getPrompt
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public getPrompt(): boolean | string {
+        let result
+        result = true
+        return result
+    }
 }

@@ -18,7 +18,8 @@ describe('Task Npm.publish ' + __filename, async () => {
         RIMRAF.sync(UConfig.testing.path)
     })
 
-    describe('checkIsRunnable()', async () => {
+    describe('checkPrerequisites()', async () => {
+
         it([
             'success:',
             'all conditions fulfilled',
@@ -33,8 +34,11 @@ describe('Task Npm.publish ' + __filename, async () => {
                 UConfig.testing.path,
                 'feature/123-test-feature',
             )
-            const TASK = new TNpmPublish(UConfig.testing.path)
-            const R = await TASK.checkIsRunnable()
+            const TASK = new TNpmPublish({
+                projectPath: UConfig.testing.path,
+                semverVersionPart: 'patch',
+            })
+            const R = await TASK.checkPrerequisites()
 
             expect(R.isGitRepository).not.to.be.undefined
             expect(R.isGitRepository).to.equal(true)
@@ -52,8 +56,11 @@ describe('Task Npm.publish ' + __filename, async () => {
             'not all conditions fulfilled',
         ].join(' '), async () => {
             await UNpm.prepareNpmRepository()
-            const TASK = new TNpmPublish(UConfig.testing.path)
-            const R = await TASK.checkIsRunnable()
+            const TASK = new TNpmPublish({
+                projectPath: UConfig.testing.path,
+                semverVersionPart: 'patch',
+            })
+            const R = await TASK.checkPrerequisites()
             expect(R.isFeatureBranch).not.to.be.undefined
             expect(R.isFeatureBranch).to.contain([
                 'ERROR:',
@@ -61,7 +68,6 @@ describe('Task Npm.publish ' + __filename, async () => {
                 'is not a feature branch!',
                 ].join(' '),
             )
-            expect(R.value).to.equal(false)
         }).timeout(60000)
     })
 
@@ -80,7 +86,10 @@ describe('Task Npm.publish ' + __filename, async () => {
                 UConfig.testing.path,
                 'feature/123-test-feature',
             )
-            const TASK = new TNpmPublish(UConfig.testing.path)
+            const TASK = new TNpmPublish({
+                projectPath: UConfig.testing.path,
+                semverVersionPart: 'patch',
+            })
             const R = await TASK.runTask(true)
             expect(R.value).to.equal(true)
         }).timeout(60000)
@@ -90,7 +99,10 @@ describe('Task Npm.publish ' + __filename, async () => {
             'not all conditions fulfilled',
         ].join(' '), async () => {
             await UNpm.prepareNpmRepository()
-            const TASK = new TNpmPublish(UConfig.testing.path)
+            const TASK = new TNpmPublish({
+                projectPath: UConfig.testing.path,
+                semverVersionPart: 'patch',
+            })
             const R = await TASK.runTask()
             expect(R.value).to.equal(false)
         }).timeout(60000)

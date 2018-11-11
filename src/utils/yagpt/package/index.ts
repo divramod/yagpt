@@ -97,10 +97,6 @@ export class UPackageUtility {
             module,
             task,
         )
-        console.log( // tslint:disable-line:no-console
-            'R_CHECK_IF_MODULE_TASK_EXISTANT',
-            R_CHECK_IF_MODULE_TASK_EXISTANT,
-        )
         switch (R_CHECK_IF_MODULE_TASK_EXISTANT) {
             case 0: {
                 // 0 runTask()

@@ -5,7 +5,7 @@ const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
-describe.only(__filename, async () => {
+describe(__filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UConfig.testPath)
@@ -15,7 +15,7 @@ describe.only(__filename, async () => {
         RIMRAF.sync(UConfig.testPath)
     })
 
-    describe('runProgram()', async () => {
+    describe.skip('runProgram()', async () => {
 
         it([
             '1. boolean=true:',
@@ -26,7 +26,7 @@ describe.only(__filename, async () => {
 
     })
 
-    describe.only('parseProgramArguments()', async () => {
+    describe('parseProgramArguments()', async () => {
 
         it([
             '0 runTask()',

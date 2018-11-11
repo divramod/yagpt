@@ -63,6 +63,30 @@ export class UNpmUtility {
         )
     }
 
+    /**
+     * public checkIsSemverVersionPart
+     *
+     * @param
+     * @returns
+     * ```
+     * - [ ]
+     * ```
+     * @TODO
+     * ```
+     *
+     * - [ ] write comments
+     * - [ ] create tests
+     * - [ ] implement code
+     * ```
+     */
+    public checkIsSemverVersionPart(
+        versionPartToCheck: string,
+    ): boolean | string {
+        let result
+        result = true
+        return result
+    }
+
 }
 
 export const UNpm = new UNpmUtility()

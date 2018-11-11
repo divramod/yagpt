@@ -5,7 +5,7 @@ const PATH = require('path')
 const RIMRAF = require('rimraf')
 const SHELL = require('shelljs')
 
-describe.only(__filename, async () => {
+describe(__filename, async () => {
 
     beforeEach(async () => {
         RIMRAF.sync(UConfig.testPath)

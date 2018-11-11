@@ -42,7 +42,8 @@ const programCommander = require('commander')
  * - [ ] checkPrerequisites(): use steps
  * ```
  */
-export class NpmPublishTask extends UTask implements ITask {
+// export class NpmPublishTask extends UTask implements ITask {
+export class NpmPublishTask extends UTask {
 
     /**
      * - [ ] comment
@@ -53,6 +54,11 @@ export class NpmPublishTask extends UTask implements ITask {
      * The path where to run the Publish task in.
      */
     private projectPath: string
+
+    /**
+     *
+     */
+    private description: string
 
     /**
      * The part of the versionnumber, saved in the package.json of a project to
@@ -68,7 +74,9 @@ export class NpmPublishTask extends UTask implements ITask {
      * - [ ] comment
      * ```
      */
-    constructor() {
+    constructor(
+        options?: any,
+    ) {
         super()
         super.setChild(this)
         this.name = 'NpmPublishTask'
@@ -86,7 +94,7 @@ export class NpmPublishTask extends UTask implements ITask {
         )
         this.program.parse(process.argv)
 
-        this.setOptions()
+        this.setOptions(options)
     }
 
     /**
@@ -157,9 +165,6 @@ export class NpmPublishTask extends UTask implements ITask {
      * ```
      */
     public async checkPrerequisites(): Promise<any> {
-        console.log( // tslint:disable-line:no-console
-            'in',
-        )
         const RESULT = {
             isClean: undefined,
             isDevelopMergable: undefined,
@@ -516,44 +521,52 @@ export class NpmPublishTask extends UTask implements ITask {
      * - [ ] create result object
      * ```
      */
-    public setOptions(): any {
+    public setOptions(
+        options?: any,
+    ): any {
 
         // TODO proof, if program is run from cli or programmatically
+        if (options === undefined) {
 
-        // set this.projectPath
-        if (this.program.projectPath) {
-            const PROJECT_PATH = UPath.checkIfPathIsDirectory(
-                this.program.projectPath,
-            )
-            if (PROJECT_PATH === true) {
-                // 1 is a directory
-                this.projectPath === PATH.resolve(
+            // set this.projectPath
+            if (this.program.projectPath) {
+                const PROJECT_PATH = UPath.checkIfPathIsDirectory(
                     this.program.projectPath,
                 )
+                if (PROJECT_PATH === true) {
+                    // 1 is a directory
+                    this.projectPath === PATH.resolve(
+                        this.program.projectPath,
+                    )
+                } else {
+                    // 2 ERROR: is not a directory
+                    this.projectPath = undefined
+                }
             } else {
-                // 2 ERROR: is not a directory
-                this.projectPath = undefined
+                // 3 no path given
+                // --> take path from where the script is run (DEFAULT)
+                this.projectPath === PATH.resolve('.')
             }
-        } else {
-            // 3 no path given
-            // --> take path from where the script is run (DEFAULT)
-            this.projectPath === PATH.resolve('.')
-        }
 
-        // set this.semverVersionPart
-        if (this.program.semverVersionPart) {
-            const R_CHECK_IS_SEMVER_VERSION_PART = checkIsSemverVersionPart(
-                this.program.semverVersionPart,
-            )
-            if  (R_CHECK_IS_SEMVER_VERSION_PART === true) {
-                // 1 is a semverVersionPart
-                this.semverVersionPart = this.program.semverVersionPart
+            // set this.semverVersionPart
+            if (this.program.semverVersionPart) {
+                const R_CHECK_IS_SEMVER_VERSION_PART =
+                    UNpm.checkIsSemverVersionPart(
+                        this.program.semverVersionPart,
+                    )
+                if  (R_CHECK_IS_SEMVER_VERSION_PART === true) {
+                    // 1 is a semverVersionPart
+                    this.semverVersionPart = this.program.semverVersionPart
+                } else {
+                    // ERROR: is not a semver compatiple version part
+                    this.semverVersionPart = undefined
+                }
             } else {
-                // ERROR: is not a semver compatiple version part
-                this.semverVersionPart = undefined
+                this.semverVersionPart = 'patch'
             }
         } else {
-            this.semverVersionPart = 'patch'
+            this.projectPath = options.projectPath
+            this.semverVersionPart = options.semverVersionPart
         }
 
         // 2. use default values if given
