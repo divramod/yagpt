@@ -32,14 +32,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/divramod/yagpt.git"
+    "url": "git+ssh://git@github.com/divramod/yagpt.git"
   },
   "author": "Arvid Petermann",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/divramod/yagpt/issues"
+    "url": "https://github.com/divramod/yagpt/issues"
   },
-  "homepage": "https://gitlab.com/divramod/yagpt#README",
+  "homepage": "https://github.com/divramod/yagpt#README",
   "nyc": {
     "extension": [
       ".ts",
