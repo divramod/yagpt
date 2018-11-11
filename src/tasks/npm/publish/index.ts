@@ -528,6 +528,10 @@ export class NpmPublishTask extends UTask {
         // TODO proof, if program is run from cli or programmatically
         if (options === undefined) {
 
+            console.log( // tslint:disable-line:no-console
+                'in',
+            )
+
             // set this.projectPath
             if (this.program.projectPath) {
                 const PROJECT_PATH = UPath.checkIfPathIsDirectory(
@@ -545,7 +549,7 @@ export class NpmPublishTask extends UTask {
             } else {
                 // 3 no path given
                 // --> take path from where the script is run (DEFAULT)
-                this.projectPath === PATH.resolve('.')
+                this.projectPath = process.cwd()
             }
 
             // set this.semverVersionPart
@@ -569,6 +573,14 @@ export class NpmPublishTask extends UTask {
             this.semverVersionPart = options.semverVersionPart
         }
 
+        console.log( // tslint:disable-line:no-console
+            'this.projectPath',
+            this.projectPath,
+        )
+        console.log( // tslint:disable-line:no-console
+            'this.semverVersionPart',
+            this.semverVersionPart,
+        )
         // 2. use default values if given
 
         // 3. use prompt/input when still undefined
