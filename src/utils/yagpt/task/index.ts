@@ -1,7 +1,7 @@
-const MOMENT = require('moment')
-import { UDate } from '@utils/nodejs/date'
-import { ULogger } from '@utils/nodejs/logger'
-import { UTest } from '@utils/yagpt/test'
+const MOMENT = require('moment');
+import {UDate} from '@utils/nodejs/date';
+import {ULogger} from '@utils/nodejs/logger';
+import {UTest} from '@utils/yagpt/test';
 
 /**
  * This class is intended to help devops with solving the problems they face on
@@ -36,212 +36,204 @@ import { UTest } from '@utils/yagpt/test'
  * @param runEndTime  The time, when the task finished
  */
 class TaskUtility {
+  /**
+   * The name of the Task.
+   */
+  public name: string;
 
-    /**
-     * The name of the Task.
-     */
-    public name: string
+  /**
+   * The start time of the Task.
+   */
+  private runStartTime: Date;
 
-    /**
-     * The start time of the Task.
-     */
-    private runStartTime: Date
+  /**
+   * The end time of the Task.
+   */
+  private runEndTime: Date;
 
-    /**
-     * The end time of the Task.
-     */
-    private runEndTime: Date
+  /**
+   * The child task, which implements the task Utility. This one is here,
+   * because i want to access methods of the child class from the parent.
+   */
+  private child;
 
-    /**
-     * The child task, which implements the task Utility. This one is here,
-     * because i want to access methods of the child class from the parent.
-     */
-    private child
+  /**
+   * This array saves, the metadata of a step which ran. It is there for
+   * beeing able to inspect and log the results of running the tasksteps.
+   */
+  private stepsLog: any[] = [];
 
-    /**
-     * This array saves, the metadata of a step which ran. It is there for
-     * beeing able to inspect and log the results of running the tasksteps.
-     */
-    private stepsLog: any[] = []
+  /**
+   * This array saves, the metadata of a prerequisit check which ran.
+   * It is there for beeing able to inspect and log the results of running
+   * the prerequisit steps.
+   */
+  private prerequisitesLog: any[] = [];
 
-    /**
-     * This array saves, the metadata of a prerequisit check which ran.
-     * It is there for beeing able to inspect and log the results of running
-     * the prerequisit steps.
-     */
-    private prerequisitesLog: any[] = []
-
-    /**
-     * Runs a step or a prerequisit check, passed in by the childs functions
-     * runSteps and checkPrerequisites.
-     * @param name  The name of the step.
-     * @param comment  A comment for the step.
-     * @param hide  If you want to surpress the logging out of the step data
-     * in the function [[printStepLog]]
-     * @param run  If the step should be ran.
-     * @param handlerFunction  The function, which should be run as a step.
-     * @returns  The result of the step.
-     */
-    public async runStep(
-        { name = '', comment = '', run = true, hide = false }:
-        { name?: string, comment?: string, run?: boolean, hide?: boolean },
-        handlerFunction?: any,
-    ): Promise<boolean | string> {
-        const START = UDate.getDate()
-        let result
-        try {
-            result = await handlerFunction()
-        } catch (e) {
-            result = e.message
-        }
-        const END = UDate.getDate()
-        const DURATION = UDate.getDateDiff(START, END)
-        const STEP = {
-            comment,
-            duration: DURATION,
-            end: END,
-            hide,
-            name,
-            result,
-            start: START,
-        }
-        this.stepsLog.push(STEP)
-        return STEP.result
+  /**
+   * Runs a step or a prerequisit check, passed in by the childs functions
+   * runSteps and checkPrerequisites.
+   * @param name  The name of the step.
+   * @param comment  A comment for the step.
+   * @param hide  If you want to surpress the logging out of the step data
+   * in the function [[printStepLog]]
+   * @param run  If the step should be ran.
+   * @param handlerFunction  The function, which should be run as a step.
+   * @returns  The result of the step.
+   */
+  public async runStep(
+    {
+      name = '',
+      comment = '',
+      run = true,
+      hide = false,
+    }: {name?: string; comment?: string; run?: boolean; hide?: boolean},
+    handlerFunction?: any,
+  ): Promise<boolean | string> {
+    const START = UDate.getDate();
+    let result;
+    try {
+      result = await handlerFunction();
+    } catch (e) {
+      result = e.message;
     }
+    const END = UDate.getDate();
+    const DURATION = UDate.getDateDiff(START, END);
+    const STEP = {
+      comment,
+      duration: DURATION,
+      end: END,
+      hide,
+      name,
+      result,
+      start: START,
+    };
+    this.stepsLog.push(STEP);
+    return STEP.result;
+  }
 
-    /**
-     * Set The child task, which implements the task Utility. This one is here,
-     * because i want to access methods of the child class from the parent.
-     * @param  The child, which extends the TaskUtility class.
-     */
-    public setChild(
-        child: any,
-    ): void {
-        this.child = child
-    }
+  /**
+   * Set The child task, which implements the task Utility. This one is here,
+   * because i want to access methods of the child class from the parent.
+   * @param  The child, which extends the TaskUtility class.
+   */
+  public setChild(child: any): void {
+    this.child = child;
+  }
 
-    /**
-     * Prints the results of the different steps, which were run by the task.
-     */
-    public printStepLog(): boolean {
-        let stepNumber = 0
-        for (const step of this.stepsLog) {
-            stepNumber++
-            if (step.hide === false) {
-                ULogger.logValue(
-                    stepNumber,
-                    step.name + ' (' + step.duration + ')',
-                    ULogger.LOG_VALUE_COLOR_THEME,
-                    false,
-                    2,
-                )
-            }
-        }
-        return true
-    }
-
-    /**
-     * Checks if the task is runnable. If all checks pass, it will start to run
-     * the steps of the task.
-     * @param printStepLog  If you want to print the logs for the steps.
-     * @returns
-     * The result of the task, wich contains the results of the substeps and
-     * the results of the prerequisites checks.
-     * RESULT.value
-     * 1. true if successfully ran
-     * 2. false if something happened
-     */
-    public async runTask(
-        printStepLog: boolean = false,
-    ): Promise<any> {
-        await this.runBefore()
-        const IS_RUNNABLE = await this.checkIsRunnable()
-        const RESULT = {
-            checkIsRunnable: IS_RUNNABLE,
-            value: undefined,
-        }
-        if (IS_RUNNABLE.value === true) {
-            await this.child.runSteps()
-            RESULT.value = true
-        } else {
-            RESULT.value = false
-        }
-        await this.runAfter()
-        if (printStepLog === true) {
-            this.printStepLog()
-        }
-        return RESULT
-    }
-
-    /**
-     * A wrapper around the checkPrerequisites function of the inheriting
-     * classes. The wrapper is for convinience, so that the checkPrerequisites
-     * functions of the inheriting classes can be kept as clean as possible.
-     * The function checks, if all prerequisites are met and adds a value prop
-     * to the result object, which indicates if a task can be run.
-     * @returns
-     * An object witch the results of the checkPrerequisites call plus a value
-     * property which says, if all checks returned true, which indicates, if a
-     * task can be run without doubt.
-     */
-    public async checkIsRunnable(): Promise<any> {
-        const CHECK_PREREQUISITES_RESULT = await this.child.checkPrerequisites()
-        CHECK_PREREQUISITES_RESULT.value = true
-        for (const prop in CHECK_PREREQUISITES_RESULT) {
-            if (CHECK_PREREQUISITES_RESULT[prop] !== true) {
-                CHECK_PREREQUISITES_RESULT.value = false
-            }
-        }
-        return CHECK_PREREQUISITES_RESULT
-    }
-
-    /**
-     * Sets the starttime of the task and logs a header with the taskname and
-     * the starttime to the screen.
-     */
-    public async runBefore(): Promise<boolean> {
-        this.runStartTime = MOMENT(new Date())
-        ULogger.logHeader(
-            this.name,
-            '=',
-            6,
-            20,
-            ULogger.LOG_HEADER_COLOR_THEME,
-        )
+  /**
+   * Prints the results of the different steps, which were run by the task.
+   */
+  public printStepLog(): boolean {
+    let stepNumber = 0;
+    for (const step of this.stepsLog) {
+      stepNumber++;
+      if (step.hide === false) {
         ULogger.logValue(
-            'start:',
-            MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
-            ULogger.LOG_VALUE_COLOR_THEME,
-        )
-        return true
+          stepNumber,
+          step.name + ' (' + step.duration + ')',
+          ULogger.LOG_VALUE_COLOR_THEME,
+          false,
+          2,
+        );
+      }
     }
+    return true;
+  }
 
-    /**
-     * Calculates the amount of time the task was running and logs starttime,
-     * endtime and duration to the screen.
-     */
-    public async runAfter(): Promise<boolean> {
-        this.runEndTime = MOMENT(new Date())
-        ULogger.logValue(
-            'start:',
-            MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
-            ULogger.LOG_VALUE_COLOR_THEME,
-        )
-        ULogger.logValue(
-            'end:',
-            MOMENT(this.runEndTime).format('hh:mm:ss SSS'),
-            ULogger.LOG_VALUE_COLOR_THEME,
-        )
-        ULogger.logValue(
-            'duration:',
-            UDate.getDateDiff(this.runStartTime, this.runEndTime),
-            ULogger.LOG_VALUE_COLOR_THEME,
-        )
-        return true
+  /**
+   * Checks if the task is runnable. If all checks pass, it will start to run
+   * the steps of the task.
+   * @param printStepLog  If you want to print the logs for the steps.
+   * @returns
+   * The result of the task, wich contains the results of the substeps and
+   * the results of the prerequisites checks.
+   * RESULT.value
+   * 1. true if successfully ran
+   * 2. false if something happened
+   */
+  public async runTask(printStepLog: boolean = false): Promise<any> {
+    await this.runBefore();
+    const IS_RUNNABLE = await this.checkIsRunnable();
+    const RESULT = {
+      checkIsRunnable: IS_RUNNABLE,
+      value: undefined,
+    };
+    if (IS_RUNNABLE.value === true) {
+      await this.child.runSteps();
+      RESULT.value = true;
+    } else {
+      RESULT.value = false;
     }
+    await this.runAfter();
+    if (printStepLog === true) {
+      this.printStepLog();
+    }
+    return RESULT;
+  }
 
+  /**
+   * A wrapper around the checkPrerequisites function of the inheriting
+   * classes. The wrapper is for convinience, so that the checkPrerequisites
+   * functions of the inheriting classes can be kept as clean as possible.
+   * The function checks, if all prerequisites are met and adds a value prop
+   * to the result object, which indicates if a task can be run.
+   * @returns
+   * An object witch the results of the checkPrerequisites call plus a value
+   * property which says, if all checks returned true, which indicates, if a
+   * task can be run without doubt.
+   */
+  public async checkIsRunnable(): Promise<any> {
+    const CHECK_PREREQUISITES_RESULT = await this.child.checkPrerequisites();
+    CHECK_PREREQUISITES_RESULT.value = true;
+    for (const prop in CHECK_PREREQUISITES_RESULT) {
+      if (CHECK_PREREQUISITES_RESULT[prop] !== true) {
+        CHECK_PREREQUISITES_RESULT.value = false;
+      }
+    }
+    return CHECK_PREREQUISITES_RESULT;
+  }
+
+  /**
+   * Sets the starttime of the task and logs a header with the taskname and
+   * the starttime to the screen.
+   */
+  public async runBefore(): Promise<boolean> {
+    this.runStartTime = MOMENT(new Date());
+    ULogger.logHeader(this.name, '=', 6, 20, ULogger.LOG_HEADER_COLOR_THEME);
+    ULogger.logValue(
+      'start:',
+      MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
+      ULogger.LOG_VALUE_COLOR_THEME,
+    );
+    return true;
+  }
+
+  /**
+   * Calculates the amount of time the task was running and logs starttime,
+   * endtime and duration to the screen.
+   */
+  public async runAfter(): Promise<boolean> {
+    this.runEndTime = MOMENT(new Date());
+    ULogger.logValue(
+      'start:',
+      MOMENT(this.runStartTime).format('hh:mm:ss SSS'),
+      ULogger.LOG_VALUE_COLOR_THEME,
+    );
+    ULogger.logValue(
+      'end:',
+      MOMENT(this.runEndTime).format('hh:mm:ss SSS'),
+      ULogger.LOG_VALUE_COLOR_THEME,
+    );
+    ULogger.logValue(
+      'duration:',
+      UDate.getDateDiff(this.runStartTime, this.runEndTime),
+      ULogger.LOG_VALUE_COLOR_THEME,
+    );
+    return true;
+  }
 }
-export const UTask = TaskUtility
+export const UTask = TaskUtility;
 
 /**
  * The Task, which all Tasks should implement, ensures, that a task is
@@ -253,30 +245,28 @@ export const UTask = TaskUtility
  * ```
  */
 export interface ITask {
+  /**
+   *
+   */
+  runSteps(): Promise<any>;
 
-    /**
-     *
-     */
-    runSteps(): Promise<any>;
+  /**
+   *
+   */
+  checkPrerequisites(): Promise<any>;
 
-    /**
-     *
-     */
-    checkPrerequisites(): Promise<any>;
+  /**
+   * - [ ] parses the options
+   */
+  setOptions(): any;
 
-    /**
-     * - [ ] parses the options
-     */
-    setOptions(): any;
+  /**
+   *
+   */
+  getProgram(): any;
 
-    /**
-     *
-     */
-    getProgram(): any;
-
-    /**
-     *
-     */
-    getPrompt(): any;
-
+  /**
+   *
+   */
+  getPrompt(): any;
 }
