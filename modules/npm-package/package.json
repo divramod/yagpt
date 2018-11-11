@@ -1,6 +1,6 @@
 {
     "name": "yagpt",
-    "version": "0.0.39",
+    "version": "0.0.40",
     "description": "A tmplate manager for projects",
     "main": "index.js",
     "scripts": {
@@ -103,7 +103,7 @@
         "terminal-link": "^1.1.0"
     },
     "bin": {
-        "yagpt": "./modules/npm-package/bin/yagpt-src",
-        "ya": "./modules/npm-package/bin/yagpt-src"
+        "yagpt": "./bin/yagpt-src",
+        "ya": "./bin/yagpt-src"
     }
 }
