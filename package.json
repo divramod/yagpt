@@ -1,6 +1,6 @@
 {
   "name": "yagpt",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "A tmplate manager for projects",
   "main": "index.js",
   "scripts": {
@@ -41,15 +41,23 @@
   },
   "homepage": "https://gitlab.com/divramod/yagpt#README",
   "nyc": {
-    "extension": [".ts", ".tsx"],
-    "include": ["src/**/*.ts"],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
     "exclude": [
       "**/*.d.ts",
       "node_modules/**",
       "test-assets/**",
       "src/**/*.spec.ts"
     ],
-    "reporter": ["text", "html"],
+    "reporter": [
+      "text",
+      "html"
+    ],
     "all": true
   },
   "devDependencies": {
