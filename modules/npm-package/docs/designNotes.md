@@ -48,39 +48,11 @@ the project has to look like:
 
 # TODO: yagpt modules
 
-# yagpt module-templates
+# yagpt product-templates
 Yagpt provides a list of standard module-templates which can be used by
 everyone in a yagpt project and whom are basically boilerplates for different
 types of software-projects.
-
-The name of a module-template is constructed as:
-TAGET-LANGUAGE-FRAMEWORK-SCOPE
-- TARGET: the target platform
-  - api: a api
-  - database: a database
-  - mobile: a mobile app
-  - website: a website
-  - desktop: a desktop application
-  - npm: a npm package
-  - git: a repository
-  - pwa: a progressive web app
-  - language: a language project
-  - ...
-- LANGUAGE: the language to use
-  - ts: typescript
-  - js: javascript
-  - py: python
-  - ...
-- FRAMEWORK (Optional): The framework/library which is used. Examples:
-  - reactjs: For example on website, electron-desktop-app
-  - electron:  A desktop application development framework.
-  - ...
-- SCOPE: How complex the setup is.
-  - basic: without any additional dependencies
-  - auth: authentication implemented
-  - ...
-You are also able to create own templates, for project-types you repeatedly use.
-See [yagpt standard module-templates](yagpt-standard-module-templates)
+See [yagpt product-templates](productTemplates.md)
 
 # yagpt tasks
 As you know as a developer, there are different tasks a devop has to solve in
