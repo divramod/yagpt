@@ -591,4 +591,4 @@ export class NpmPublishTask extends UTask {
 
 }
 export const TNpmPublish = NpmPublishTask
-export const TNpmPublishClass = NpmPublishTask
+export const Class = NpmPublishTask
