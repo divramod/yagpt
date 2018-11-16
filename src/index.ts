@@ -1,1 +1,1 @@
-export * from '@tasks/system/npm/publish'
+export * from '@tasks/npm/publish'

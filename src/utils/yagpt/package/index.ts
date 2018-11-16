@@ -96,6 +96,10 @@ export class UPackageUtility {
             module,
             task,
         )
+        console.log( // tslint:disable-line:no-console
+            'R_CHECK_IF_MODULE_TASK_EXISTANT',
+            R_CHECK_IF_MODULE_TASK_EXISTANT,
+        )
         switch (R_CHECK_IF_MODULE_TASK_EXISTANT) {
             case 0: {
                 // 0 runTask()
@@ -106,6 +110,10 @@ export class UPackageUtility {
                         'tasks',
                         module,
                         task,
+                    )
+                    console.log( // tslint:disable-line:no-console
+                        'TASK_PATH',
+                        TASK_PATH,
                     )
                     // const G = PATH.resolve('./src/tasks/npm/publish')
                     const G = PATH.resolve(TASK_PATH)

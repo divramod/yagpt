@@ -1,0 +1,12 @@
+#! /bin/bash
+# node node_modules/yagpt/dist/index.js
+# pwd
+# DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# ts-node
+DIR="$(dirname "$(readlink -f "$0")")"
+$DIR/../node_modules/.bin/ts-node \
+    -r $DIR/../node_modules/tsconfig-paths/register \
+    --project $DIR/../tsconfig.json \
+    $DIR/../src/cli.ts \
+    "$@"
