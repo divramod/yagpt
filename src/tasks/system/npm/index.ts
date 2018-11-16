@@ -1,4 +1,4 @@
-import { TNpmPublish } from '@tasks/npm/publish'
+import { TNpmPublish } from '@tasks/system/npm/publish'
 import { IModule } from '@utils/yagpt/module'
 
 /**

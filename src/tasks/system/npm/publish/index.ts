@@ -10,8 +10,8 @@ const PATH = require('path')
 const programCommander = require('commander')
 
 /**
- * This Class helps publishing an npm package. It is the first task I wrote for
- * the Package.
+ * This TNpmPublishClass helps publishing an npm package. It is the first task
+ * I wrote for the Package.
  *
  * A task class usually has to implement different functions as stated in ITask.
  * These are:
@@ -591,4 +591,4 @@ export class NpmPublishTask extends UTask {
 
 }
 export const TNpmPublish = NpmPublishTask
-export const Class = NpmPublishTask
+export const TNpmPublishClass = NpmPublishTask

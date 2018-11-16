@@ -1,6 +1,5 @@
 const programCommander = require('commander')
 const PATH = require('path')
-import { Npm } from '@tasks/npm'
 import { UEnvironment } from '@utils/nodejs/environment'
 import { UPath } from '@utils/nodejs/path'
 
