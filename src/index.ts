@@ -1,1 +1,1 @@
-export * from '@tasks/npm/publish'
+export { TNpmPublish } from '@tasks/npm/publish'

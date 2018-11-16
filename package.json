@@ -2,7 +2,7 @@
     "name": "yagpt",
     "version": "0.0.48",
     "description": "A tmplate manager for projects",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc",
         "build:watch": "rimraf dist && tsc -w",
