@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@utils/*": ["utils/*"],
+            "@tasks/*": ["tasks/*"],
+            "@src/*": [ "./*" ],
+            "@test/*": [ "test/*" ]
+        }
+    }
+}

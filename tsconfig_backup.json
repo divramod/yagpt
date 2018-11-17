@@ -5,8 +5,7 @@
         "module": "commonjs",
         "sourceMap": true,
         "rootDir": "./src",
-        "outDir": "./lib",
-        "declaration": true,
+        "outDir": "./dist",
         "resolveJsonModule": true,
         "lib": [
             "esnext", "dom"
@@ -21,8 +20,5 @@
     },
     "include": [
         "./src"
-    ],
-    "exclude": [
-        "node_modules"
     ]
 }

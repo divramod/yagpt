@@ -1,4 +1,5 @@
 const PATH = require('path')
+const FS = require('fs')
 const SHELL = require('shelljs')
 export class UJsonUtility {
 
@@ -22,11 +23,12 @@ export class UJsonUtility {
         const FILE_EXSITANT = SHELL.test('-f', PATH.resolve(filePath))
         if (FILE_EXSITANT) {
             if (keyName === undefined) {
-                delete require.cache[filePath]
-                result = require(filePath)
+                const RAW_DATA = FS.readFileSync(filePath)
+                const FILE = JSON.parse(RAW_DATA)
+                result = FILE
             } else {
-                delete require.cache[filePath]
-                const FILE = require(filePath)
+                const RAW_DATA = FS.readFileSync(filePath)
+                const FILE = JSON.parse(RAW_DATA)
                 if (FILE[keyName]) {
                     result = FILE[keyName]
                 } else {
