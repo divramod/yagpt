@@ -1,6 +1,6 @@
 {
     "name": "yagpt",
-    "version": "0.0.50",
+    "version": "0.0.51",
     "description": "A tmplate manager for projects",
     "main": "dist/index.js",
     "scripts": {
@@ -18,7 +18,7 @@
         "docs:watch": "nodemon --config nodemon.docs.json",
         "lint": "./node_modules/.bin/tslint 'src/**/*.ts'",
         "lint:watch": "nodemon --config nodemon.lint.json",
-        "prepare" : "npm run build",
+        "prepare": "npm run build",
         "prod": "node dist/index.js",
         "start": "./node_modules/.bin/ts-node -r tsconfig-paths/register ./src/index.ts",
         "start:watch": "./node_modules/.bin/nodemon",
