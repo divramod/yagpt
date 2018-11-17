@@ -133,7 +133,7 @@ class TaskUtility {
                     stepNumber,
                     step.name + ' (' + step.duration + ')',
                     ULogger.LOG_VALUE_COLOR_THEME,
-                    false,
+                    true,
                     2,
                 )
             }
